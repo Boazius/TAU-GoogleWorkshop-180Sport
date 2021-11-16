@@ -8,24 +8,24 @@
 This web app has four different kinds of users:
 
 Trainees:
-  -will know who their trainers are in each group they are in
-  -will know when and where is the next training session
-  -will be able to mark their planned attendance: are they coming to the next training session or not.
+  - will know who their trainers are in each group they are in
+  - will know when and where is the next training session
+  - will be able to mark their planned attendance: are they coming to the next training session or not.
   
 Volunteers:
-  -will be able to do the same things trainees do,
-  -will also be able to see all trainees and volunteers in their groups.
+  - will be able to do the same things trainees do,
+  - will also be able to see all trainees and volunteers in their groups.
 
 Trainers:
-  -will be able to do the same things volunteers do,
-  -will also be able to mark attendance once the session starts
-  -will be able to add notes about each trainee in their groups.
-  -will be able to edit group session informaton: time and place, as well as any misc notes about it.
+  - will be able to do the same things volunteers do,
+  - will also be able to mark attendance once the session starts
+  - will be able to add notes about each trainee in their groups.
+  - will be able to edit group session informaton: time and place, as well as any misc notes about it.
   
  Admins:
-  -will be able to see every group and every user in it
-  -will be able to add, edit, and remove users, and change their user type.
-  -will be able to create new groups and delete/edit existing ones.
+  - will be able to see every group and every user in it
+  - will be able to add, edit, and remove users, and change their user type.
+  - will be able to create new groups and delete/edit existing ones.
   
   
 every user must login using google login/ email+password when entering the app, and then will be redirected to the corresponding page for them.
