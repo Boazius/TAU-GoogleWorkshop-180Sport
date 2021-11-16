@@ -38,8 +38,18 @@ Source in Src folder.
 
 * assets folder: images used for the website
 * boot folder: for Vue Options API form, and other internal files.
-* Components folder - for all quasar components used, such us buttons and headers.
-* 
+* Components folder - for all quasar components used, such us buttons and headers and login.
+* css - which colors and fonts we will be using, as well as other common design elements.
+* i18n - all translation files in all languages. any text in the project that needs to be translated will be in file(s) here, to be referenced.
+* layouts - common design layout to thge entire app - such as the drawer, components used, stores, and translations.
+* mixins - to be used later for authentication
+* pages - all pages in the app
+* router to route from page to page - controls the flow.
+* statics - more png's needed for the app
+* store - anything pertaining to the store.
+*quasar.conf.js is a very important file to config anything in this quasar app.
+
+
 
 
 
@@ -54,7 +64,7 @@ https://sites.google.com/view/cloudweb21a/Home
 
 
 
-##Usage instructions:
+## Usage instructions:
 
 ## Install the dependencies
 ```bash
