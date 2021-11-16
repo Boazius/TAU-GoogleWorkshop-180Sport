@@ -1,3 +1,7 @@
+# 180Sport (180sport)
+
+#Sport without borders
+
 # A Project for the TAU Google workshop course.
 # A Web app by Boaz, Gal, Dana, and Danielle for 180Sport: to schedule and manage an Attendence sheet of trainers, trainees, and volunteers
 
@@ -36,3 +40,30 @@ https://sites.google.com/view/cloudweb21a/Home
 + Week 8   - 15/12/2021       - Milestone 2 (Backend and prepratation for Mileston 3)
 + Week 9   - 5/1/2021           -   Milestone 3 (Final Presentations) 
 
+
+
+
+##Usage instructions:
+
+## Install the dependencies
+```bash
+yarn
+```
+
+### Start the app in development mode (hot-code reloading, error reporting, etc.)
+```bash
+quasar dev
+```
+
+### Lint the files
+```bash
+yarn run lint
+```
+
+### Build the app for production
+```bash
+quasar build
+```
+
+### Customize the configuration
+See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
