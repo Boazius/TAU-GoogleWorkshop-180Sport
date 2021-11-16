@@ -9,11 +9,18 @@ export default {
     mainHeading:'180 Sport',
     menu:{
       heading:'Menu',
+      login:'Login',
       trainers:'Trainers',
       trainees:'Trainees',
       groups:'Groups',
       volunteers:'Volunteers',
-      logout:'Logout'
+      logout:'Logout',
+      testTrainee:'Test trainee'
+    },
+    confirmation:{
+      areYouComing:'Are you coming to the training?',
+      yes:'Of course!',
+      no:'Not this time'
     }
   },
   authentication: {
@@ -38,6 +45,12 @@ export default {
     wrong: "Something's went wrong, please try again",
     maxLength: 'Maximum length allowed is',
   },
+  dashboard:{
+    closest:'Closest training',
+    date:'on date',
+    time:'on',
+    location:'at'
+  }
 }
 
 

@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md float-right" style="max-width: 350px">
     <h3 class="group_header  q-mb-none">קבוצות</h3>
-    <q-list bordered separator style="direction:rtl" class="list-items">
+    <q-list bordered separator class="list-items">
       <q-item to="/groups/id" clickable v-ripple>
         <q-item-section>קבוצה 1 - תל אביב</q-item-section>
       </q-item>
@@ -65,31 +65,14 @@
   </div>
 </template>
 <style>
+.group_header,
 .q-table th {
-  text-align:right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif; 
   font-weight: bold;
-  color: #1D2172;
-}
-
-.q-table td {
-  text-align:right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif; 
-  
-  color: #1D2172;}
-.group_header {
-  text-align:right;
-    font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif; 
-
-  color: #1D2172;
 }
 
 .list-items{
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif; 
-  font-weight: bold;
+    font-weight: bold;
   font-size: large;
-  color: #1D2172;
 }
 </style>
 

@@ -24,9 +24,22 @@
           v-bind="link"
         />
       </q-list>
-      <switch-language></switch-language>
-    </q-drawer>
+      <switch-language @onChangeLanguage="locale = $event"></switch-language>
 
+        <q-select
+          v-model="locale"
+          :options="localeOptions"
+          label="Quasar Language"
+          dense
+          borderless
+          emit-value
+          map-options
+          options-dense
+          style="min-width: 150px"
+          class="q-pa-md"
+        />
+
+    </q-drawer>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -40,6 +53,7 @@ import SwitchLanguage from "components/basic/SwitchLanguage.vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { defineComponent, ref } from "vue";
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: "MainLayout",
@@ -52,8 +66,14 @@ export default defineComponent({
   setup() {
     const leftDrawerOpen = ref(false);
     const store = useStore();
+    const { locale } = useI18n({ useScope: 'global' })
 
     return {
+       locale,
+      localeOptions: [
+        { value: 'en-US', label: 'English' },
+        { value: 'he', label: 'עברית' }
+      ],
       menuLinks: computed(() => store.getters["app/getMenu"]),
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -174,9 +194,8 @@ export default {
 
 <style scoped>
 .drawer-items{
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  font-weight: bold;
-  color: #1D2172;
+    font-weight: bold;
+
 }
 </style>
 

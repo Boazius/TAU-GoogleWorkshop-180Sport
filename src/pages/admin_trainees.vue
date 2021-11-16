@@ -37,7 +37,7 @@
 
             <q-popup-proxy v-model="props.row.message" >
 
-              <q-banner style="direction:rtl" class="bg-primary text-white">
+              <q-banner class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
@@ -433,23 +433,11 @@ export default {
 </script>
 <style>
 .q-table th {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  font-weight: bold;
-  color: #1d2172;
+    font-weight: bold;
+
 }
 
-.q-table td {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
-}
 .table_header {
-  text-align: right;
   font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
 }
 </style>

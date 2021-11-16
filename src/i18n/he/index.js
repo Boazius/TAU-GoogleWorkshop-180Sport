@@ -7,11 +7,18 @@ export default {
     mainHeading:'ספורט 180',
     menu:{
       heading:'תפריט',
+      login:'התחברות',
       trainers:'מאמנים',
       trainees:'מתאמנים',
       groups:'קבוצות',
       volunteers:'מתנדבים',
-      logout:'התנתקות'
+      logout:'התנתקות',
+      testTrainee:'מתאמן (בדיקה)'
+    },
+    confirmation:{
+      areYouComing:'האם יוצא לך להגיע?',
+      yes:'ברור שכן',
+      no:'לא הפעם'
     }
   },
   authentication: {
@@ -37,4 +44,10 @@ export default {
     wrong: 'משהו השתבש, אנא נסו שנית',
     maxLength: 'אורך מקסימלי של שדה זה הוא',
   },
+  dashboard:{
+    closest:'האימון הקרוב',
+    date:'בתאריך',
+    time:'בשעה',
+    location:'במיקום'
+  }
 }

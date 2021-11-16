@@ -25,12 +25,12 @@
         clickable
         v-ripple
         class="switcher-button text-body-1 q-px-sm"
-        :class="{ 'active-button bg-grey-2 text-bold': language == 'en-us' }"
-        @click="onChangeLanguage('en-us')"
+        :class="{ 'active-button bg-grey-2 text-bold': language == 'en-US' }"
+        @click="onChangeLanguage('en-US')"
       >
         <q-item-section avatar>
           <q-icon
-            v-if="language === 'en-us'"
+            v-if="language === 'en-US'"
             size="20px"
             name="done"
             color="primary"
@@ -41,6 +41,8 @@
     </q-list>
   </div>
 </template>
+
+
 <script>
 import { mapState } from "vuex";
 import { defineComponent } from "vue";
@@ -48,6 +50,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   name: "SwitchLanguage",
   props: ["showChangeLang"],
+
   computed: {
     ...mapState({
       language: (state) => state.authentication.user.language,
@@ -55,11 +58,10 @@ export default defineComponent({
   },
   methods: {
     onChangeLanguage(lang) {
+      this.$emit('onChangeLanguage',lang);
       this.$store.dispatch("authentication/setLanguage", lang);
-      this.$emit("displayDialog", false);
     },
   },
-  components: {},
 });
 </script>
 

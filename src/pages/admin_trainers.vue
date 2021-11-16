@@ -102,17 +102,17 @@
 import { ref, onMounted } from "vue";
 
 const columns = [
-  { 
-    name: "groups", 
-    label: "קבוצות", 
-    field: "groups", 
-    sortable: false 
+  {
+    name: "groups",
+    label: "קבוצות",
+    field: "groups",
+    sortable: false
     },
   {
     name: "phone",
     label: "טלפון",
     field: "phone",
-    sortable: false 
+    sortable: false
 
   },
   { name: 'name',
@@ -292,23 +292,12 @@ export default {
 </script>
 <style>
 .q-table th {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  font-weight: bold;
-  color: #1d2172;
+    font-weight: bold;
+
 }
 
-.q-table td {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
-}
 .table_header {
-  text-align: right;
   font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
 
-  color: #1d2172;
 }
 </style>

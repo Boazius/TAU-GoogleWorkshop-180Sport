@@ -1,16 +1,18 @@
 <template>
   <div class="q-pa-md">
-    <div class="row reverse">
+    <div class="row">
+      <div>
       <q-btn
         class="q-ml-md"
-        dense
+        padding="sm"
+        round
         glossy
         ripple="center"
-        round
         color="primary"
         icon="arrow_forward"
         to="/groups"
       />
+      </div>
 
       <q-item-section
         class="table_header wrap q-mb-sm"
@@ -21,21 +23,18 @@
       <q-space />
     </div>
     <q-expansion-item
-      style="direction: rtl"
-      class="item justify-start"
+      class="item"
       switch-toggle-side
       expand-separator
       label="פרטי קבוצה"
     >
       <q-expansion-item
-        style="direction: rtl"
         class="item"
         switch-toggle-side
         expand-separator
         label="מתאמנים"
       >
         <q-table
-          style="direction: ltr"
           :rows="rows"
           :columns="columns"
           row-key="id"
@@ -209,7 +208,6 @@
         </q-table>
       </q-expansion-item>
       <q-expansion-item
-        style="direction: rtl"
         class="item"
         switch-toggle-side
         expand-separator
@@ -217,7 +215,6 @@
         label="מתנדבים"
       >
         <q-table
-          style="direction: ltr"
           :rows="rows"
           :columns="columns"
           row-key="id"
@@ -392,7 +389,6 @@
       </q-expansion-item>
 
       <q-expansion-item
-        style="direction: rtl"
         class="item"
         switch-toggle-side
         expand-separator
@@ -400,7 +396,6 @@
         label="מאמנים"
       >
         <q-table
-          style="direction: ltr"
           :rows="rows"
           :columns="columns"
           row-key="id"
@@ -576,7 +571,6 @@
     </q-expansion-item>
 
     <q-expansion-item
-      style="direction: rtl"
       class="item"
       expand-separator
       switch-toggle-side
@@ -597,57 +591,20 @@
           />
         </q-item-label>
         <q-separator spaced />
-        <q-item>
+        <q-item v-for="item in closestTrainingList" :key="item.name">
           <q-item-section top>
             <q-item-label lines="1">
-              <span class="item-small">תומר פיזון</span>
+              <span class="item-small">{{item.name}}</span>
             </q-item-label>
           </q-item-section>
-          <q-item-section top side>
-            <div class="text-grey-8 q-gutter-xs"></div>
-          </q-item-section>
-        </q-item>
-        <q-separator spaced />
-        <q-item>
-          <q-item-section top>
-            <q-item-label lines="1">
-              <span class="item-small">ברק עופר</span>
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section top side>
-            <div class="text-grey-8 q-gutter-xs"></div>
-          </q-item-section>
-        </q-item>
-        <q-separator spaced />
-        <q-item>
-          <q-item-section top>
-            <q-item-label lines="1">
-              <span class="item-small">נינט לוי</span>
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section top side>
-            <div class="text-grey-8 q-gutter-xs"></div>
+          <q-item-section side>
+            <q-chip :color="item.status ? 'green' : 'red'" text-color="white" :icon="item.status ? 'check' : 'close'"/>
           </q-item-section>
         </q-item>
 
-        <q-separator spaced />
-        <q-item>
-          <q-item-section top>
-            <q-item-label lines="1">
-              <span class="item-small">קרן פידרמן</span>
-            </q-item-label>
-          </q-item-section>
-
-          <q-item-section top side>
-            <div class="text-grey-8 q-gutter-xs"></div>
-          </q-item-section>
-        </q-item>
       </q-list>
     </q-expansion-item>
     <q-expansion-item
-      style="direction: rtl"
       class="item"
       switch-toggle-side
       expand-separator
@@ -753,6 +710,11 @@ import { exportFile, useQuasar } from "quasar";
 
 const columns = [
   {
+    name:'status',
+    label:'סטטוס הגעה',
+    field:'status'
+  },
+  {
     name: "comment",
     label: "פרסם הודעה למשתמש",
     field: "comment",
@@ -807,7 +769,6 @@ const originalRows = [
     phone: "0526831999",
     group: 1,
     area: "תל אביב",
-    message: true,
   },
   {
     id: 5,
@@ -824,6 +785,30 @@ const originalRows = [
     area: "תל אביב",
   },
 ];
+
+const closestTrainingList = [
+  {
+    name: "תומר פיזון",
+    status:true
+  },
+  {
+    name: "ברק עופר",
+    status:true,
+  },
+  {
+    name: "נינט לוי",
+    status:false,
+  },
+  {
+        name: "איתי שרון",
+status:false,
+  },
+  {
+    name: "קרן פידרמן",
+    status:true,
+
+}
+]
 
 function wrapCsvValue(val, formatFn) {
   let formatted = formatFn !== void 0 ? formatFn(val) : val;
@@ -949,6 +934,7 @@ export default {
       pagination,
       columns,
       rows,
+      closestTrainingList,
       onRequest,
 
       exportTable() {
@@ -1019,37 +1005,18 @@ export default {
 </script>
 <style>
 .q-table th {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-weight: bold;
-  color: #1d2172;
 }
 
-.q-table td {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
-}
 .table_header {
-  text-align: right;
   font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
 }
 .item {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-weight: bold;
   font-size: large;
-  color: #1d2172;
 }
 .item-small {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-weight: bold;
   font-size: medium;
-  color: #1d2172;
 }
 </style>
