@@ -1,17 +1,17 @@
 <template>
   <q-page>
-    <user-login-carousel />
+    <login />
   </q-page>
 </template>
 
 <script>
-import UserLoginCarousel from "components/login/UserLoginCarousel.vue";
+import Login from "components/login/Login.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "UserLogin",
   components: {
-    UserLoginCarousel,
+    Login,
   },
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
-<q-page>
-  <div class="q-pa-md" style="max-width: 355px">
+  <q-page padding>
+     <div class="q-pa-md" style="max-width: 355px">
     <h3 class="group_header  q-mb-none">{{$t('app.groups')}}</h3>
     <q-list bordered separator class="list-items">
       <q-item to="/groups/id" clickable v-ripple>
@@ -22,6 +22,13 @@
   </div>
   </q-page>
 </template>
+
+<script>
+export default {
+  name: 'Trainer',
+}
+</script>
+
 <style scoped lang="scss">
 .group_header,
 .q-table th {

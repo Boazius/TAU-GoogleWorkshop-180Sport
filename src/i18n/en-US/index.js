@@ -7,6 +7,7 @@ export default {
   app:{
     languageHeading:'Language',
     mainHeading:'180 Sport',
+    groups:'Groups',
     menu:{
       heading:'Menu',
       login:'Login',
@@ -15,7 +16,8 @@ export default {
       groups:'Groups',
       volunteers:'Volunteers',
       logout:'Logout',
-      testTrainee:'Test trainee'
+      trainee:'Test trainee',
+      trainer:'Test trainer'
     },
     confirmation:{
       areYouComing:'Are you coming to the training?',

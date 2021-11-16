@@ -5,6 +5,7 @@ export default {
   app:{
     languageHeading:'שינוי שפה',
     mainHeading:'ספורט 180',
+    groups:'קבוצות',
     menu:{
       heading:'תפריט',
       login:'התחברות',
@@ -13,7 +14,8 @@ export default {
       groups:'קבוצות',
       volunteers:'מתנדבים',
       logout:'התנתקות',
-      testTrainee:'מתאמן (בדיקה)'
+      trainee:'מתאמן (בדיקה)',
+      trainer:'מאמן (בדיקה)'
     },
     confirmation:{
       areYouComing:'האם יוצא לך להגיע?',

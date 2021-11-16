@@ -9,12 +9,30 @@
       :loading="loading"
       :filter="filter"
       @request="onRequest"
-      binary-state-sort>
+      binary-state-sort
+      >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="groups" :props="props">{{ props.row.groups }}
-            <q-popup-edit v-model="props.row.groups" title="ערוך קבוצה" >
-              <q-input v-model="props.row.groups" />
+           <q-td key="name" :props="props">
+            {{ props.row.name }}
+            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
+              <template v-slot="scope">
+                <q-input type="name" v-model="props.row.name" :rules="[
+                val => scope.validate(scope.value) || 'שם לא תקין']">
+                <template v-slot:after>
+                 <q-btn
+                 flat dense color="negative" icon="cancel"
+                 @click.stop="scope.cancel"/>
+
+                <q-btn
+                flat dense color="positive" icon="check_circle"
+                @click.stop="scope.set"
+                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
+              />
+            </template>
+            </q-input>
+            </template>
+
             </q-popup-edit>
           </q-td>
           <q-td key="phone" :props="props">
@@ -39,31 +57,11 @@
 
             </q-popup-edit>
           </q-td>
-
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
+           <q-td key="groups" :props="props">{{ props.row.groups }}
+            <q-popup-edit v-model="props.row.groups" title="ערוך קבוצה" >
+              <q-input v-model="props.row.groups" />
             </q-popup-edit>
           </q-td>
-
-
         </q-tr>
       </template>
       <template v-slot:top>
@@ -102,26 +100,28 @@
 import { ref, onMounted } from "vue";
 
 const columns = [
-  {
-    name: "groups",
-    label: "קבוצות",
-    field: "groups",
-    sortable: false
-    },
+  { name: 'name',
+    required: true,
+    label: "שם",
+    align: 'left',
+    field: row => row.name,
+    format: val => `${val}`,
+    sortable: true
+  },
   {
     name: "phone",
     label: "טלפון",
     field: "phone",
-    sortable: false
+    sortable: false,
+    align:'center'
 
   },
-  { name: 'name',
-    required: true,
-    label: "שם",
-    align: 'right',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
+    {
+    name: "groups",
+    label: "קבוצות",
+    field: "groups",
+    sortable: false,
+    align:'left'
   },
 ];
 

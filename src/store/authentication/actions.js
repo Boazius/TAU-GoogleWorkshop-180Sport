@@ -15,14 +15,16 @@ export async function setLanguage({ commit }, payload) {
       lang = local;
     } else {
       localStorage.setItem('user_lang', lang);
-      // lang = i18n.locale;
+      lang = i18n.locale;
     }
   }
-
   commit('setLanguage', lang);
-  const iso = await import('quasar/lang/' + lang);
-  // Quasar.lang.set(lang);
-  Quasar.lang.set(iso.default);
+  await import(
+    'quasar/lang/' + lang
+    )
+    .then(lang => {
+      Quasar.lang.set(lang.default)
+    })
 
   i18n.locale = lang;
 }

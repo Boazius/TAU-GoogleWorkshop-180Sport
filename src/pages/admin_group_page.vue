@@ -46,46 +46,46 @@
         >
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="comment" :props="props">
-                <q-badge color="primary" align="middle" rounded transparent>
-                  <q-icon name="edit" color="white" />
-                  <div v-html="props.row.comment"></div>
-                  <q-popup-edit
-                    buttons
-                    v-model="props.row.comment"
-                    v-slot="scope"
-                  >
-                    <q-editor
-                      v-model="scope.value"
-                      min-height="5rem"
-                      autofocus
-                      @keyup.enter.stop
-                    />
-                  </q-popup-edit>
-                </q-badge>
-              </q-td>
-              <q-td key="message" :props="props"
-                >{{ props.row.groups }}
-                <q-icon name="message" color="primary" />
-
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
-                </template>
-              </q-banner> -->
-                </q-popup-proxy>
-              </q-td>
-              <q-td key="area" :props="props"
-                >{{ props.row.area }}
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
                 <q-popup-edit
-                  v-model="props.row.area"
-                  title="ערוך איזור מגורים"
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
                 >
-                  <q-input v-model="props.row.area" />
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
+
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
                 </q-popup-edit>
+
               </q-td>
               <q-td key="phone" :props="props">
                 {{ props.row.phone }}
@@ -132,46 +132,46 @@
                   </template>
                 </q-popup-edit>
               </q-td>
-
-              <q-td key="name" :props="props">
-                {{ props.row.name }}
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
                 <q-popup-edit
-                  v-model="props.row.name"
-                  title="ערוך שם"
-                  :validate="(val) => val.length > 0"
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
                 >
-                  <template v-slot="scope">
-                    <q-input
-                      type="name"
-                      v-model="props.row.name"
-                      :rules="[
-                        (val) => scope.validate(scope.value) || 'שם לא תקין',
-                      ]"
-                    >
-                      <template v-slot:after>
-                        <q-btn
-                          flat
-                          dense
-                          color="negative"
-                          icon="cancel"
-                          @click.stop="scope.cancel"
-                        />
-
-                        <q-btn
-                          flat
-                          dense
-                          color="positive"
-                          icon="check_circle"
-                          @click.stop="scope.set"
-                          :disable="
-                            scope.validate(scope.value) === false ||
-                            scope.initialValue === scope.value
-                          "
-                        />
-                      </template>
-                    </q-input>
-                  </template>
+                  <q-input v-model="props.row.area" />
                 </q-popup-edit>
+              </q-td>
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
+
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                היי, לצערי לא אוכל להגיע לשיעור
+                <template v-slot:action>
+                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
+                  <q-btn flat color="white" label="הגב" v-close-popup/>
+                </template>
+              </q-banner> -->
+                </q-popup-proxy>
+              </q-td>
+              <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
               </q-td>
             </q-tr>
           </template>
@@ -226,48 +226,47 @@
         >
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="comment" :props="props">
-                <q-badge color="primary" align="middle" rounded transparent>
-                  <q-icon name="edit" color="white" />
-                  <div v-html="props.row.comment"></div>
-                  <q-popup-edit
-                    buttons
-                    v-model="props.row.comment"
-                    v-slot="scope"
-                  >
-                    <q-editor
-                      v-model="scope.value"
-                      min-height="5rem"
-                      autofocus
-                      @keyup.enter.stop
-                    />
-                  </q-popup-edit>
-                </q-badge>
-              </q-td>
-              <q-td key="message" :props="props"
-                >{{ props.row.groups }}
-                <q-icon name="message" color="primary" />
-
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
-                </template>
-              </q-banner> -->
-                </q-popup-proxy>
-              </q-td>
-              <q-td key="area" :props="props"
-                >{{ props.row.area }}
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
                 <q-popup-edit
-                  v-model="props.row.area"
-                  title="ערוך איזור מגורים"
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
                 >
-                  <q-input v-model="props.row.area" />
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
+
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
                 </q-popup-edit>
               </q-td>
-              <q-td key="phone" :props="props">
+               <q-td key="phone" :props="props">
                 {{ props.row.phone }}
                 <q-popup-edit
                   v-model="props.row.phone"
@@ -312,46 +311,47 @@
                   </template>
                 </q-popup-edit>
               </q-td>
-
-              <q-td key="name" :props="props">
-                {{ props.row.name }}
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
                 <q-popup-edit
-                  v-model="props.row.name"
-                  title="ערוך שם"
-                  :validate="(val) => val.length > 0"
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
                 >
-                  <template v-slot="scope">
-                    <q-input
-                      type="name"
-                      v-model="props.row.name"
-                      :rules="[
-                        (val) => scope.validate(scope.value) || 'שם לא תקין',
-                      ]"
-                    >
-                      <template v-slot:after>
-                        <q-btn
-                          flat
-                          dense
-                          color="negative"
-                          icon="cancel"
-                          @click.stop="scope.cancel"
-                        />
-
-                        <q-btn
-                          flat
-                          dense
-                          color="positive"
-                          icon="check_circle"
-                          @click.stop="scope.set"
-                          :disable="
-                            scope.validate(scope.value) === false ||
-                            scope.initialValue === scope.value
-                          "
-                        />
-                      </template>
-                    </q-input>
-                  </template>
+                  <q-input v-model="props.row.area" />
                 </q-popup-edit>
+              </q-td>
+
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
+
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                היי, לצערי לא אוכל להגיע לשיעור
+                <template v-slot:action>
+                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
+                  <q-btn flat color="white" label="הגב" v-close-popup/>
+                </template>
+              </q-banner> -->
+                </q-popup-proxy>
+              </q-td>
+                <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
               </q-td>
             </q-tr>
           </template>
@@ -407,45 +407,44 @@
         >
           <template v-slot:body="props">
             <q-tr :props="props">
-              <q-td key="comment" :props="props">
-                <q-badge color="primary" align="middle" rounded transparent>
-                  <q-icon name="edit" color="white" />
-                  <div v-html="props.row.comment"></div>
-                  <q-popup-edit
-                    buttons
-                    v-model="props.row.comment"
-                    v-slot="scope"
-                  >
-                    <q-editor
-                      v-model="scope.value"
-                      min-height="5rem"
-                      autofocus
-                      @keyup.enter.stop
-                    />
-                  </q-popup-edit>
-                </q-badge>
-              </q-td>
-              <q-td key="message" :props="props"
-                >{{ props.row.groups }}
-                <q-icon name="message" color="primary" />
-
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
-                </template>
-              </q-banner> -->
-                </q-popup-proxy>
-              </q-td>
-              <q-td key="area" :props="props"
-                >{{ props.row.area }}
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
                 <q-popup-edit
-                  v-model="props.row.area"
-                  title="ערוך איזור מגורים"
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
                 >
-                  <q-input v-model="props.row.area" />
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
+
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
                 </q-popup-edit>
               </q-td>
               <q-td key="phone" :props="props">
@@ -493,46 +492,46 @@
                   </template>
                 </q-popup-edit>
               </q-td>
-
-              <q-td key="name" :props="props">
-                {{ props.row.name }}
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
                 <q-popup-edit
-                  v-model="props.row.name"
-                  title="ערוך שם"
-                  :validate="(val) => val.length > 0"
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
                 >
-                  <template v-slot="scope">
-                    <q-input
-                      type="name"
-                      v-model="props.row.name"
-                      :rules="[
-                        (val) => scope.validate(scope.value) || 'שם לא תקין',
-                      ]"
-                    >
-                      <template v-slot:after>
-                        <q-btn
-                          flat
-                          dense
-                          color="negative"
-                          icon="cancel"
-                          @click.stop="scope.cancel"
-                        />
-
-                        <q-btn
-                          flat
-                          dense
-                          color="positive"
-                          icon="check_circle"
-                          @click.stop="scope.set"
-                          :disable="
-                            scope.validate(scope.value) === false ||
-                            scope.initialValue === scope.value
-                          "
-                        />
-                      </template>
-                    </q-input>
-                  </template>
+                  <q-input v-model="props.row.area" />
                 </q-popup-edit>
+              </q-td>
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
+
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                היי, לצערי לא אוכל להגיע לשיעור
+                <template v-slot:action>
+                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
+                  <q-btn flat color="white" label="הגב" v-close-popup/>
+                </template>
+              </q-banner> -->
+                </q-popup-proxy>
+              </q-td>
+              <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
               </q-td>
             </q-tr>
           </template>
@@ -710,33 +709,6 @@ import { exportFile, useQuasar } from "quasar";
 
 const columns = [
   {
-    name:'status',
-    label:'סטטוס הגעה',
-    field:'status'
-  },
-  {
-    name: "comment",
-    label: "פרסם הודעה למשתמש",
-    field: "comment",
-  },
-  {
-    name: "message",
-    label: "הודעות חדשות",
-    field: "message",
-  },
-  {
-    name: "area",
-    label: "איזור מגורים",
-    field: "area",
-    sortable: true,
-  },
-  {
-    name: "phone",
-    label: "טלפון",
-    field: "phone",
-    sortable: true,
-  },
-  {
     name: "name",
     required: true,
     label: "שם",
@@ -744,6 +716,33 @@ const columns = [
     field: (row) => row.name,
     format: (val) => `${val}`,
     sortable: true,
+  },
+    {
+    name: "phone",
+    label: "טלפון",
+    field: "phone",
+    sortable: true,
+  },
+    {
+    name: "area",
+    label: "איזור מגורים",
+    field: "area",
+    sortable: true,
+  },
+  {
+    name: "message",
+    label: "הודעות חדשות",
+    field: "message",
+  },
+      {
+    name: "comment",
+    label: "פרסם הודעה למשתמש",
+    field: "comment",
+  },
+    {
+    name:'status',
+    label:'סטטוס הגעה',
+    field:'status'
   },
 ];
 
