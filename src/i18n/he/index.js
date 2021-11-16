@@ -18,7 +18,7 @@ export default {
       trainer:'מאמן (בדיקה)'
     },
     confirmation:{
-      areYouComing:'האם יוצא לך להגיע?',
+      areYouComing:'האם אתה מתכנן להגיע?',
       yes:'ברור שכן',
       no:'לא הפעם'
     }
