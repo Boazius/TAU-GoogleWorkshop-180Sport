@@ -31,6 +31,17 @@ Trainers:
 every user must login using google login/ email+password when entering the app, and then will be redirected to the corresponding page for them.
 
 
+# Code Documentation:
+
+This project was programmed using quasar.dev , Vue 3.
+Source in Src folder.
+
+* assets folder: images used for the website
+* boot folder: for Vue Options API form, and other internal files.
+* Components folder - for all quasar components used, such us buttons and headers.
+* 
+
+
 
 Google workshop website:
 https://sites.google.com/view/cloudweb21a/Home
