@@ -1,573 +1,749 @@
 <template>
   <div class="q-pa-md">
+    <div class="row">
+      <div>
+      <q-btn
+        class="q-ml-md"
+        padding="sm"
+        round
+        glossy
+        ripple="center"
+        color="primary"
+        icon="arrow_forward"
+        to="/groups"
+      />
+      </div>
 
-    <div class="row reverse" >
-    <q-btn class="q-ml-md" dense glossy ripple=center round color="primary"   icon="arrow_forward" to = "/groups"/>
-
-    <q-item-section class="table_header wrap q-mb-sm" style="font-size:xx-large">
-              קבוצה 1 - תל אביב
-    </q-item-section>
-      <q-space/>
-
-
-
-
-    </div>
-    <q-expansion-item   style="direction:rtl" class= "item justify-start"
-            switch-toggle-side
-        expand-separator
-        label="פרטי קבוצה"
+      <q-item-section
+        class="table_header wrap q-mb-sm"
+        style="font-size: xx-large"
       >
-      <q-expansion-item  style="direction:rtl" class= "item"
-              switch-toggle-side
-
-
+        קבוצה 1 - תל אביב
+      </q-item-section>
+      <q-space />
+    </div>
+    <q-expansion-item
+      class="item"
+      switch-toggle-side
+      expand-separator
+      label="פרטי קבוצה"
+    >
+      <q-expansion-item
+        class="item"
+        switch-toggle-side
         expand-separator
-         
         label="מתאמנים"
       >
-    <q-table
-      style="direction:ltr"
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      v-model:pagination="pagination"
-      :loading="loading"
-      :filter="filter"
-      @request="onRequest"
-      binary-state-sort
-    > <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="comment" :props="props">
-            <q-badge color="primary"  align="middle" rounded transparent>
-              <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
-              />
-            </q-popup-edit>
-            </q-badge>
+        <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="id"
+          v-model:pagination="pagination"
+          :loading="loading"
+          :filter="filter"
+          @request="onRequest"
+          binary-state-sort
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
+                <q-popup-edit
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-          </q-td>
-          <q-td key="message" :props="props">{{ props.row.groups }}
-            <q-icon name="message" color="primary" />
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
 
-            <q-popup-proxy v-model="props.row.message" >
+              </q-td>
+              <q-td key="phone" :props="props">
+                {{ props.row.phone }}
+                <q-popup-edit
+                  v-model="props.row.phone"
+                  title="ערוך טלפון"
+                  :validate="
+                    (val) =>
+                      (val.length == 10 || val.length == 9) &&
+                      Number(val) != NaN
+                  "
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="phone"
+                      v-model="props.row.phone"
+                      :rules="[
+                        (val) =>
+                          scope.validate(scope.value) || 'מספר טלפון לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-              <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
+              </q-td>
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
+                <q-popup-edit
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
+                >
+                  <q-input v-model="props.row.area" />
+                </q-popup-edit>
+              </q-td>
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
+
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
               </q-banner> -->
-            </q-popup-proxy>
-          </q-td>
-          <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="phone" :props="props">
-            {{ props.row.phone }}
-            <q-popup-edit v-model="props.row.phone" title="ערוך טלפון" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
-              <template v-slot="scope">
-                <q-input type="phone" v-model="props.row.phone" :rules="[
-                val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-
-        </q-tr>
-      </template>
-      <template v-slot:top>
-
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="ערוך" @click="addRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" label="יצא טבלה" no-caps @click="exportTable" />
-        <q-space />
-        <q-input
-          borderless
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
+                </q-popup-proxy>
+              </q-td>
+              <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
+              </q-td>
+            </q-tr>
           </template>
-        </q-input>
-      </template>
-    </q-table>
-  </q-expansion-item>
-  <q-expansion-item style="direction:rtl" class= "item" switch-toggle-side
-
+          <template v-slot:top>
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              label="ערוך"
+              @click="addRow"
+            />
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              icon-right="archive"
+              label="יצא טבלה"
+              no-caps
+              @click="exportTable"
+            />
+            <q-space />
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              placeholder="Search"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
+        </q-table>
+      </q-expansion-item>
+      <q-expansion-item
+        class="item"
+        switch-toggle-side
         expand-separator
-         :header-inset-level="1"
+        :header-inset-level="1"
         label="מתנדבים"
       >
-          <q-table
-      style="direction:ltr"
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      v-model:pagination="pagination"
-      :loading="loading"
-      :filter="filter"
-      @request="onRequest"
-      binary-state-sort
-    > <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="comment" :props="props">
-            <q-badge color="primary"  align="middle" rounded transparent>
-              <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
-              />
-            </q-popup-edit>
-            </q-badge>
+        <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="id"
+          v-model:pagination="pagination"
+          :loading="loading"
+          :filter="filter"
+          @request="onRequest"
+          binary-state-sort
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
+                <q-popup-edit
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-          </q-td>
-          <q-td key="message" :props="props">{{ props.row.groups }}
-            <q-icon name="message" color="primary" />
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
+              </q-td>
+               <q-td key="phone" :props="props">
+                {{ props.row.phone }}
+                <q-popup-edit
+                  v-model="props.row.phone"
+                  title="ערוך טלפון"
+                  :validate="
+                    (val) =>
+                      (val.length == 10 || val.length == 9) &&
+                      Number(val) != NaN
+                  "
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="phone"
+                      v-model="props.row.phone"
+                      :rules="[
+                        (val) =>
+                          scope.validate(scope.value) || 'מספר טלפון לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-            <q-popup-proxy v-model="props.row.message" >
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
+              </q-td>
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
+                <q-popup-edit
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
+                >
+                  <q-input v-model="props.row.area" />
+                </q-popup-edit>
+              </q-td>
 
-              <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
+
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
               </q-banner> -->
-            </q-popup-proxy>
-          </q-td>
-          <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="phone" :props="props">
-            {{ props.row.phone }}
-            <q-popup-edit v-model="props.row.phone" title="ערוך טלפון" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
-              <template v-slot="scope">
-                <q-input type="phone" v-model="props.row.phone" :rules="[
-                val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-
-        </q-tr>
-      </template>
-      <template v-slot:top>
-
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="ערוך" @click="addRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" label="יצא טבלה" no-caps @click="exportTable" />
-        <q-space />
-        <q-input
-          borderless
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
+                </q-popup-proxy>
+              </q-td>
+                <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
+              </q-td>
+            </q-tr>
           </template>
-        </q-input>
-      </template>
-    </q-table>
-    </q-expansion-item>
+          <template v-slot:top>
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              label="ערוך"
+              @click="addRow"
+            />
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              icon-right="archive"
+              label="יצא טבלה"
+              no-caps
+              @click="exportTable"
+            />
+            <q-space />
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              placeholder="Search"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
+        </q-table>
+      </q-expansion-item>
 
-  <q-expansion-item style="direction:rtl" class= "item"
-          switch-toggle-side
-
+      <q-expansion-item
+        class="item"
+        switch-toggle-side
         expand-separator
-         :header-inset-level="1"
+        :header-inset-level="1"
         label="מאמנים"
       >
-          <q-table
-      style="direction:ltr"
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      v-model:pagination="pagination"
-      :loading="loading"
-      :filter="filter"
-      @request="onRequest"
-      binary-state-sort
-    > <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="comment" :props="props">
-            <q-badge color="primary"  align="middle" rounded transparent>
-              <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
-              />
-            </q-popup-edit>
-            </q-badge>
+        <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="id"
+          v-model:pagination="pagination"
+          :loading="loading"
+          :filter="filter"
+          @request="onRequest"
+          binary-state-sort
+        >
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
+                <q-popup-edit
+                  v-model="props.row.name"
+                  title="ערוך שם"
+                  :validate="(val) => val.length > 0"
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="name"
+                      v-model="props.row.name"
+                      :rules="[
+                        (val) => scope.validate(scope.value) || 'שם לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-          </q-td>
-          <q-td key="message" :props="props">{{ props.row.groups }}
-            <q-icon name="message" color="primary" />
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
+              </q-td>
+              <q-td key="phone" :props="props">
+                {{ props.row.phone }}
+                <q-popup-edit
+                  v-model="props.row.phone"
+                  title="ערוך טלפון"
+                  :validate="
+                    (val) =>
+                      (val.length == 10 || val.length == 9) &&
+                      Number(val) != NaN
+                  "
+                >
+                  <template v-slot="scope">
+                    <q-input
+                      type="phone"
+                      v-model="props.row.phone"
+                      :rules="[
+                        (val) =>
+                          scope.validate(scope.value) || 'מספר טלפון לא תקין',
+                      ]"
+                    >
+                      <template v-slot:after>
+                        <q-btn
+                          flat
+                          dense
+                          color="negative"
+                          icon="cancel"
+                          @click.stop="scope.cancel"
+                        />
 
-            <q-popup-proxy v-model="props.row.message" >
+                        <q-btn
+                          flat
+                          dense
+                          color="positive"
+                          icon="check_circle"
+                          @click.stop="scope.set"
+                          :disable="
+                            scope.validate(scope.value) === false ||
+                            scope.initialValue === scope.value
+                          "
+                        />
+                      </template>
+                    </q-input>
+                  </template>
+                </q-popup-edit>
+              </q-td>
+              <q-td key="area" :props="props"
+                >{{ props.row.area }}
+                <q-popup-edit
+                  v-model="props.row.area"
+                  title="ערוך איזור מגורים"
+                >
+                  <q-input v-model="props.row.area" />
+                </q-popup-edit>
+              </q-td>
+              <q-td key="message" :props="props"
+                >{{ props.row.groups }}
+                <q-icon name="message" color="primary" />
 
-              <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                <q-popup-proxy v-model="props.row.message">
+                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
               </q-banner> -->
-            </q-popup-proxy>
-          </q-td>
-          <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="phone" :props="props">
-            {{ props.row.phone }}
-            <q-popup-edit v-model="props.row.phone" title="ערוך טלפון" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
-              <template v-slot="scope">
-                <q-input type="phone" v-model="props.row.phone" :rules="[
-                val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit>
-          </q-td>
-
-
-        </q-tr>
-      </template>
-      <template v-slot:top>
-
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="ערוך" @click="addRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" label="יצא טבלה" no-caps @click="exportTable" />
-        <q-space />
-        <q-input
-          borderless
-          dense
-          debounce="300"
-          v-model="filter"
-          placeholder="Search"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
+                </q-popup-proxy>
+              </q-td>
+              <q-td key="comment" :props="props">
+                <q-badge color="primary" align="middle" rounded transparent>
+                  <q-icon name="edit" color="white" />
+                  <div v-html="props.row.comment"></div>
+                  <q-popup-edit
+                    buttons
+                    v-model="props.row.comment"
+                    v-slot="scope"
+                  >
+                    <q-editor
+                      v-model="scope.value"
+                      min-height="5rem"
+                      autofocus
+                      @keyup.enter.stop
+                    />
+                  </q-popup-edit>
+                </q-badge>
+              </q-td>
+            </q-tr>
           </template>
-        </q-input>
-      </template>
-    </q-table>
-  </q-expansion-item>
-  </q-expansion-item>
+          <template v-slot:top>
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              label="ערוך"
+              @click="addRow"
+            />
+            <q-btn
+              class="q-ml-sm"
+              color="primary"
+              :disable="loading"
+              icon-right="archive"
+              label="יצא טבלה"
+              no-caps
+              @click="exportTable"
+            />
+            <q-space />
+            <q-input
+              borderless
+              dense
+              debounce="300"
+              v-model="filter"
+              placeholder="Search"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </template>
+        </q-table>
+      </q-expansion-item>
+    </q-expansion-item>
 
-
-  <q-expansion-item style="direction:rtl" class= "item"
-        expand-separator
-        switch-toggle-side
-
-        label="פרטי האימון קרוב"
-      >
+    <q-expansion-item
+      class="item"
+      expand-separator
+      switch-toggle-side
+      label="פרטי האימון קרוב"
+    >
       <q-list bordered class="rounded-borders" style="max-width: 600px">
-      <q-item-label header>18.11.20
-       <q-btn class="q-ml-sm q-mr-md" color="primary" :disable="loading" glossy push padding="sm" icon="print"  no-caps  />
-
-      </q-item-label>
+        <q-item-label header
+          >18.11.20
+          <q-btn
+            class="q-ml-sm q-mr-md"
+            color="primary"
+            :disable="loading"
+            glossy
+            push
+            padding="sm"
+            icon="print"
+            no-caps
+          />
+        </q-item-label>
         <q-separator spaced />
-          <q-item>
-            <q-item-section top>
-              <q-item-label lines="1">
-                <span class="item-small">תומר פיזון</span>
-              </q-item-label>
-             </q-item-section>
-           <q-item-section top side>
-            <div class=" text-grey-8 q-gutter-xs">
+        <q-item v-for="item in closestTrainingList" :key="item.name">
+          <q-item-section top>
+            <q-item-label lines="1">
+              <span class="item-small">{{item.name}}</span>
+            </q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-chip :color="item.status ? 'green' : 'red'" text-color="white" :icon="item.status ? 'check' : 'close'"/>
+          </q-item-section>
+        </q-item>
+
+      </q-list>
+    </q-expansion-item>
+    <q-expansion-item
+      class="item"
+      switch-toggle-side
+      expand-separator
+      label="פרטי האימון האחרון"
+    >
+      <q-list bordered class="rounded-borders" style="max-width: 600px">
+        <q-item-label header>תאריך: 11.11.20</q-item-label>
+        <q-separator spaced />
+        <q-item>
+          <q-item-section top>
+            <q-item-label lines="1">
+              <span class="item-small">תומר פיזון</span>
+            </q-item-label>
+          </q-item-section>
+          <q-item-section top side>
+            <div class="text-grey-8 q-gutter-xs">
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                label="לא נכח"
+                icon="close"
+              />
             </div>
           </q-item-section>
-          </q-item>
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">ברק עופר</span>
-          </q-item-label>
-        </q-item-section>
-
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-          </div>
-        </q-item-section>
-      </q-item>
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">נינט לוי</span>
-          </q-item-label>
-        </q-item-section>
-
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-          </div>
-        </q-item-section>
-      </q-item>
-
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">קרן פידרמן</span>
-          </q-item-label>
-        </q-item-section>
-
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-          </div>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-expansion-item>
-  <q-expansion-item style="direction:rtl" class= "item"
-          switch-toggle-side
-
-        expand-separator
-        label="פרטי האימון האחרון"
-      >
-    <q-list bordered class="rounded-borders" style="max-width: 600px">
-      <q-item-label header>תאריך: 11.11.20</q-item-label>
+        </q-item>
         <q-separator spaced />
-          <q-item>
-            <q-item-section top>
-              <q-item-label lines="1">
-                <span class="item-small">תומר פיזון</span>
-              </q-item-label>
-             </q-item-section>
-           <q-item-section top side>
-            <div class=" text-grey-8 q-gutter-xs">
-             <q-btn class="gt-xs" size="12px" flat dense round label="לא נכח" icon="close" />
+        <q-item>
+          <q-item-section top>
+            <q-item-label lines="1">
+              <span class="item-small">ברק עופר</span>
+            </q-item-label>
+          </q-item-section>
+
+          <q-item-section top side>
+            <div class="text-grey-8 q-gutter-xs">
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                label="לא נכח"
+                icon="close"
+              />
             </div>
           </q-item-section>
-          </q-item>
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">ברק עופר</span>
-          </q-item-label>
-        </q-item-section>
+        </q-item>
+        <q-separator spaced />
+        <q-item>
+          <q-item-section top>
+            <q-item-label lines="1">
+              <span class="item-small">נינט לוי</span>
+            </q-item-label>
+          </q-item-section>
 
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-            <q-btn class="gt-xs" size="12px" flat dense round label="לא נכח" icon="close" />
-          </div>
-        </q-item-section>
-      </q-item>
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">נינט לוי</span>
-          </q-item-label>
-        </q-item-section>
+          <q-item-section top side>
+            <div class="text-grey-8 q-gutter-xs">
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                label="לא נכח"
+                icon="close"
+              />
+            </div>
+          </q-item-section>
+        </q-item>
 
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-            <q-btn class="gt-xs" size="12px" flat dense round label="לא נכח" icon="close" />
-          </div>
-        </q-item-section>
-      </q-item>
+        <q-separator spaced />
+        <q-item>
+          <q-item-section top>
+            <q-item-label lines="1">
+              <span class="item-small">קרן פידרמן</span>
+            </q-item-label>
+          </q-item-section>
 
-      <q-separator spaced />
-      <q-item>
-       <q-item-section top>
-          <q-item-label lines="1">
-            <span class="item-small">קרן פידרמן</span>
-          </q-item-label>
-        </q-item-section>
-
-        <q-item-section top side>
-          <div class="text-grey-8 q-gutter-xs">
-            <q-btn class="gt-xs" size="12px" flat dense round label="לא נכח" icon="close" />
-          </div>
-        </q-item-section>
-      </q-item>
-    </q-list>
-  </q-expansion-item>
-  
+          <q-item-section top side>
+            <div class="text-grey-8 q-gutter-xs">
+              <q-btn
+                class="gt-xs"
+                size="12px"
+                flat
+                dense
+                round
+                label="לא נכח"
+                icon="close"
+              />
+            </div>
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-expansion-item>
   </div>
-
 </template>
 <script>
 import { ref, onMounted } from "vue";
-import { exportFile, useQuasar } from 'quasar';
+import { exportFile, useQuasar } from "quasar";
 
 const columns = [
-  { 
-    name: "comment", 
-    label: "פרסם הודעה למשתמש", 
-    field: "comment", 
-    },
-  { 
-    name: "message", 
-    label: "הודעות חדשות", 
-    field: "message", 
-    },
-  { 
-    name: "area", 
-    label: "איזור מגורים", 
-    field: "area", 
-    sortable: true 
-    },
   {
+    name: "name",
+    required: true,
+    label: "שם",
+    align: "right",
+    field: (row) => row.name,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+    {
     name: "phone",
     label: "טלפון",
     field: "phone",
-    sortable: true 
-
+    sortable: true,
   },
-  { name: 'name',
-    required: true,
-    label: "שם",
-    align: 'right',
-    field: row => row.name,
-    format: val => `${val}`,
-    sortable: true
-  }
+    {
+    name: "area",
+    label: "איזור מגורים",
+    field: "area",
+    sortable: true,
+  },
+  {
+    name: "message",
+    label: "הודעות חדשות",
+    field: "message",
+  },
+      {
+    name: "comment",
+    label: "פרסם הודעה למשתמש",
+    field: "comment",
+  },
+    {
+    name:'status',
+    label:'סטטוס הגעה',
+    field:'status'
+  },
 ];
 
 const originalRows = [
@@ -588,15 +764,14 @@ const originalRows = [
   },
   {
     id: 4,
-        name: "נינט לוי",
+    name: "נינט לוי",
     phone: "0526831999",
     group: 1,
     area: "תל אביב",
-    message: true,
   },
   {
     id: 5,
-        name: "איתי שרון",
+    name: "איתי שרון",
     phone: "0526544599",
     group: 1,
     area: "תל אביב",
@@ -608,18 +783,39 @@ const originalRows = [
     group: 1,
     area: "תל אביב",
   },
+];
+
+const closestTrainingList = [
+  {
+    name: "תומר פיזון",
+    status:true
+  },
+  {
+    name: "ברק עופר",
+    status:true,
+  },
+  {
+    name: "נינט לוי",
+    status:false,
+  },
+  {
+        name: "איתי שרון",
+status:false,
+  },
+  {
+    name: "קרן פידרמן",
+    status:true,
+
+}
 ]
 
-function wrapCsvValue (val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
+function wrapCsvValue(val, formatFn) {
+  let formatted = formatFn !== void 0 ? formatFn(val) : val;
 
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
+  formatted =
+    formatted === void 0 || formatted === null ? "" : String(formatted);
 
-  formatted = formatted.split('"').join('""')
+  formatted = formatted.split('"').join('""');
   /**
    * Excel accepts \n and \r in strings, but some other CSV parsers do not
    * Uncomment the next two lines to escape new lines
@@ -627,7 +823,7 @@ function wrapCsvValue (val, formatFn) {
   // .split('\n').join('\\n')
   // .split('\r').join('\\r')
 
-  return `"${formatted}"`
+  return `"${formatted}"`;
 }
 
 export default {
@@ -642,9 +838,8 @@ export default {
       rowsPerPage: 7,
       rowsNumber: 10,
     });
-    const rowCount = ref(10)
-    const $q = useQuasar()
-
+    const rowCount = ref(10);
+    const $q = useQuasar();
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -737,99 +932,90 @@ export default {
       loading,
       pagination,
       columns,
-      rows,   
+      rows,
+      closestTrainingList,
       onRequest,
 
-      exportTable () {
+      exportTable() {
         // naive encoding to csv format
-        const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-          rows.map(row => columns.map(col => wrapCsvValue(
-            typeof col.field === 'function'
-              ? col.field(row)
-              : row[ col.field === void 0 ? col.name : col.field ],
-            col.format
-          )).join(','))
-        ).join('\r\n')
+        const content = [columns.map((col) => wrapCsvValue(col.label))]
+          .concat(
+            rows.value.map((row) =>
+              columns
+                .map((col) =>
+                  wrapCsvValue(
+                    typeof col.field === "function"
+                      ? col.field(row)
+                      : row[col.field === void 0 ? col.name : col.field],
+                    col.format
+                  )
+                )
+                .join(",")
+            )
+          )
+          .join("\r\n");
 
-        const status = exportFile(
-          'table-export.csv',
-          content,
-          'text/csv'
-        )
+        const status = exportFile("table-export.csv", content, "text/csv");
 
         if (status !== true) {
           $q.notify({
-            message: 'Browser denied file download...',
-            color: 'negative',
-            icon: 'warning'
-          })
+            message: "Browser denied file download...",
+            color: "negative",
+            icon: "warning",
+          });
         }
-      },      
-
-      addRow () {
-        loading.value = true
-        setTimeout(() => {
-          const
-            index = Math.floor(Math.random() * (rows.value.length + 1)),
-            row = originalRows[ Math.floor(Math.random() * originalRows.length) ]
-
-          if (rows.value.length === 0) {
-            rowCount.value = 0
-          }
-
-          row.id = ++rowCount.value
-          const newRow = { ...row } // extend({}, row, { name: `${row.name} (${row.__count})` })
-          rows.value = [ ...rows.value.slice(0, index), newRow, ...rows.value.slice(index) ]
-          loading.value = false
-        }, 500)
       },
 
-      removeRow () {
-        loading.value = true
+      addRow() {
+        loading.value = true;
         setTimeout(() => {
-          const index = Math.floor(Math.random() * rows.value.length)
-          rows.value = [ ...rows.value.slice(0, index), ...rows.value.slice(index + 1) ]
-          loading.value = false
-        }, 500)
-      }
+          const index = Math.floor(Math.random() * (rows.value.length + 1)),
+            row = originalRows[Math.floor(Math.random() * originalRows.length)];
+
+          if (rows.value.length === 0) {
+            rowCount.value = 0;
+          }
+
+          row.id = ++rowCount.value;
+          const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
+          rows.value = [
+            ...rows.value.slice(0, index),
+            newRow,
+            ...rows.value.slice(index),
+          ];
+          loading.value = false;
+        }, 500);
+      },
+
+      removeRow() {
+        loading.value = true;
+        setTimeout(() => {
+          const index = Math.floor(Math.random() * rows.value.length);
+          rows.value = [
+            ...rows.value.slice(0, index),
+            ...rows.value.slice(index + 1),
+          ];
+          loading.value = false;
+        }, 500);
+      },
     };
   },
 };
 </script>
 <style>
 .q-table th {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
   font-weight: bold;
-  color: #1d2172;
 }
 
-.q-table td {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
-}
 .table_header {
-  text-align: right;
   font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
 }
-.item{
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+.item {
   font-weight: bold;
   font-size: large;
-  color: #1d2172;
-  }
-  .item-small{
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
+}
+.item-small {
   font-weight: bold;
   font-size: medium;
-  color: #1d2172;
-  }
-
+}
 </style>
