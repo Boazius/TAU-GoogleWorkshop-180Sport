@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <h3 class="table_header wrap q-mb-none">מתאמנים</h3>
     <q-table
-    
+
       :rows="rows"
       :columns="columns"
       row-key="id"
@@ -13,47 +13,27 @@
       binary-state-sort
     > <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="comment" :props="props">
-            <q-badge color="primary"  align="middle" rounded transparent>
-              <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
+
+          <q-td key="name" :props="props">
+            {{ props.row.name }}
+            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
+              <template v-slot="scope">
+                <q-input type="name" v-model="props.row.name" :rules="[
+                val => scope.validate(scope.value) || 'שם לא תקין']">
+                <template v-slot:after>
+                 <q-btn
+                 flat dense color="negative" icon="cancel"
+                 @click.stop="scope.cancel"/>
+
+                <q-btn
+                flat dense color="positive" icon="check_circle"
+                @click.stop="scope.set"
+                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
               />
-            </q-popup-edit>
-            </q-badge>
+            </template>
+            </q-input>
+            </template>
 
-          </q-td>
-          <q-td key="message" :props="props">{{ props.row.groups }}
-            <q-icon name="message" color="primary" />
-
-            <q-popup-proxy v-model="props.row.message" >
-
-              <q-banner style="direction:rtl" class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
-                </template>
-              </q-banner>
-            </q-popup-proxy>
-          </q-td>
-          <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="group" :props="props">{{ props.row.group }}
-            <q-popup-edit v-model="props.row.group" title="ערוך קבוצה" >
-              <q-input v-model="props.row.group" dense autofocus hint="ניתן להוסיף כמה קבוצות" />
             </q-popup-edit>
           </q-td>
           <q-td key="phone" :props="props">
@@ -78,31 +58,50 @@
 
             </q-popup-edit>
           </q-td>
-
-          <q-td key="name" :props="props">
-            {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
+          <q-td key="group" :props="props">{{ props.row.group }}
+            <q-popup-edit v-model="props.row.group" title="ערוך קבוצה" >
+              <q-input v-model="props.row.group" dense autofocus hint="ניתן להוסיף כמה קבוצות" />
+            </q-popup-edit>
+          </q-td>
+          <q-td key="area" :props="props">{{ props.row.area }}
+            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
+              <q-input v-model="props.row.area" />
             </q-popup-edit>
           </q-td>
 
+          <q-td key="message" :props="props">{{ props.row.groups }}
+            <q-icon name="message" color="primary" />
 
+            <q-popup-proxy v-model="props.row.message" >
+
+              <q-banner class="bg-primary text-white">
+                היי, לצערי לא אוכל להגיע לשיעור
+                <template v-slot:action>
+                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
+                  <q-btn flat color="white" label="הגב" v-close-popup/>
+                </template>
+              </q-banner>
+            </q-popup-proxy>
+          </q-td>
+          <q-td key="comment" :props="props">
+            <q-badge color="primary"  align="middle" rounded transparent>
+              <q-icon name="edit" color="white" />
+            <div v-html="props.row.comment"></div>
+            <q-popup-edit
+              buttons
+              v-model="props.row.comment"
+              v-slot="scope"
+            >
+              <q-editor
+                v-model="scope.value"
+                min-height="5rem"
+                autofocus
+                @keyup.enter.stop
+              />
+            </q-popup-edit>
+            </q-badge>
+
+          </q-td>
         </q-tr>
       </template>
       <template v-slot:top>
@@ -130,43 +129,47 @@ import { ref, onMounted } from "vue";
 import { exportFile, useQuasar } from 'quasar';
 
 const columns = [
-  { 
-    name: "comment", 
-    label: "פרסם הודעה למשתמש", 
-    field: "comment", 
-    },
-  { 
-    name: "message", 
-    label: "הודעות חדשות", 
-    field: "message", 
-    },
-  { 
-    name: "area", 
-    label: "איזור מגורים", 
-    field: "area", 
-    sortable: true 
-    },
-  { 
-    name: "group", 
-    label: "קבוצה", 
-    field: "group", 
-    sortable: true 
-    },
-  {
-    name: "phone",
-    label: "טלפון",
-    field: "phone",
-    sortable: true 
-
-  },
   { name: 'name',
     required: true,
     label: "שם",
-    align: 'right',
+    align: 'left',
     field: row => row.name,
     format: val => `${val}`,
     sortable: true
-  }
+  },
+    {
+    name: "phone",
+    label: "טלפון",
+    field: "phone",
+    sortable: true,
+    align:'center'
+  },
+    {
+    name: "group",
+    label: "קבוצה",
+    field: "group",
+    sortable: true,
+    align:'center'
+    },
+      {
+    name: "area",
+    label: "איזור מגורים",
+    field: "area",
+    sortable: true,
+    align:'left'
+    },
+  {
+    name: "message",
+    label: "הודעות חדשות",
+    field: "message",
+    align:'left'
+    },
+    {
+    name: "comment",
+    label: "פרסם הודעה למשתמש",
+    field: "comment",
+    align:'left'
+    },
 ];
 
 const originalRows = [
@@ -372,13 +375,13 @@ export default {
       loading,
       pagination,
       columns,
-      rows,   
+      rows,
       onRequest,
 
       exportTable () {
         // naive encoding to csv format
         const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-          rows.map(row => columns.map(col => wrapCsvValue(
+          rows.value.map(row => columns.map(col => wrapCsvValue(
             typeof col.field === 'function'
               ? col.field(row)
               : row[ col.field === void 0 ? col.name : col.field ],
@@ -399,7 +402,7 @@ export default {
             icon: 'warning'
           })
         }
-      },      
+      },
 
       addRow () {
         loading.value = true
@@ -433,23 +436,11 @@ export default {
 </script>
 <style>
 .q-table th {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  font-weight: bold;
-  color: #1d2172;
+    font-weight: bold;
+
 }
 
-.q-table td {
-  text-align: right;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
-}
 .table_header {
-  text-align: right;
   font-weight: bold;
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-
-  color: #1d2172;
 }
 </style>

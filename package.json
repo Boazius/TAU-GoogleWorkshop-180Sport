@@ -1,20 +1,31 @@
 {
-  "name": "180_web_app",
+  "name": "180sport",
   "version": "0.0.1",
-  "description": "180_wab_app",
-  "productName": "180_web_app",
-  "author": "Rotholtz <danielle.rotholtz@gmail.com>",
+  "description": "Sport without borders",
+  "productName": "180Sport",
+  "author": "Boaz Yakubov <garret866@gmail.com>",
   "private": true,
   "scripts": {
-    "test": "echo \"No test specified\" && exit 0"
+    "lint": "eslint --ext .js,.vue ./",
+    "lint:fix": "eslint --ext .js,.ts,.vue --fix ./",
+    "test": "echo \"No test specified\" && exit 0",
+    "dev": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "quasar": "^2.0.0"
+    "quasar": "^2.0.0",
+    "vue-i18n": "^9.0.0",
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@quasar/app": "^3.0.0"
+    "@babel/eslint-parser": "^7.13.14",
+    "@quasar/app": "^3.0.0",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^7.0.0",
+    "eslint-webpack-plugin": "^2.4.0"
   },
   "browserslist": [
     "last 10 Chrome versions",
