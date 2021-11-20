@@ -5,15 +5,15 @@ import jwt
 from flask import Blueprint, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from models import User
-from utils import token_required
+from Server.models import User
+from Server.utils import token_required
 
 user = Blueprint('user', __name__)
 
 
 @user.post('/login')
 def login():
-    from main import db, app
+    from Server.main import db, app
     auth = flask.request.authorization
     if not auth or not auth.username or not auth.password:
         return jsonify({"message": "Authentication credentials were not supplied"}), 400
@@ -42,21 +42,21 @@ def login():
 
 @user.post('/signup')
 def signup():
-    data = flask.request.json
-    hashed_password = generate_password_hash(data['password'], method='sha256')
-    new_user = User(full_name=data['full_name'], password=hashed_password, user_type=int(1))
-    from main import db
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "new user created"})
-    # json_data = flask.request.json
-    # a_value = json_data["a_key"]
-    # return "JSON value sent: " + a_value, 201
-    # from main import db
-    # user = db.session.query(User_type).all()
-    # if not user:
-    # return str(1)
-    # return "HI"
+    from Server.main import db
+    try:
+        data = flask.request.json
+        user_exists = db.session.query(User).filter_by(email=data['email']).first()
+        if user_exists:
+            return jsonify({'success':False, 'message': 'User with current email is already exists'})
+        hashed_password = generate_password_hash(data['password'], method='sha256')
+        new_user = User(user_type=int(data['user_type']), email=data['email'], full_name=data['full_name'],
+                        phone_number=str(data['phone_number']), active_or_not=True, attendance=int(1),
+                        password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"success": True, "user": new_user.to_dict()})
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"})
 
 
 @user.post('/logout')
@@ -72,7 +72,6 @@ def update_user():
 @user.delete('/user')
 def delete_user():
     return 1
-
 
 
 @user.get('/user/<user_id>')

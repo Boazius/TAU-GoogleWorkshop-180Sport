@@ -6,7 +6,7 @@ config.py
 
 class BaseConfig(object):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///foo.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///180.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # used for encryption and session management
     SECRET_KEY = '111mysecretkey111'

@@ -5,31 +5,31 @@ models.py
 
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, create_engine
-from flask_login import UserMixin
 
 Base = declarative_base()
-engine = create_engine('sqlite:///foo.db', echo=True)
+engine = create_engine('sqlite:///180.db', echo=True)
 Session = sessionmaker()
 
 
-class User(Base, UserMixin):
+class User(Base):
     __tablename__ = 'users'
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     user_type = Column(Integer(), ForeignKey("user_types.id"))
-    email = Column(String())
+    email = Column(String(), unique=True)
     password = Column(String())
     full_name = Column(String())
     phone_number = Column(String())
     group_ids = Column(String())
     training_ids = Column(String())
-    attendance = Column(Boolean())
-    is_active = Column(Boolean())
+    attendance = Column(Integer(), ForeignKey("attendance_options.id"))
+    active_or_not = Column(Boolean())
 
     def to_dict(self):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            ret_data[key] = getattr(self, key)
+            if key != 'password':
+                ret_data[key] = getattr(self, key)
         return ret_data
 
 
@@ -50,7 +50,7 @@ class Group(Base):
     volunteers_list = Column(String())
     training_ids = Column(String())
     training_ids_list = Column(String())
-    is_active = Column(Boolean(), nullable=False)
+    active_or_not = Column(Boolean(), nullable=False)
 
 
 class Training(Base):
@@ -72,3 +72,9 @@ class Message(Base):
     training_id = Column(Integer(), ForeignKey("trainings.id"), nullable=False)
     test = Column(String(), nullable=False)
     date = Column(DateTime())
+
+
+class Attendance_options(Base):
+    __tablename__ = 'attendance_options'
+    id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
+    name = Column(String())
