@@ -4,7 +4,8 @@ models.py
 """
 
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, create_engine
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, create_engine, ForeignKeyConstraint, \
+    CheckConstraint
 
 Base = declarative_base()
 engine = create_engine('sqlite:///180.db', echo=True)
@@ -13,6 +14,8 @@ Session = sessionmaker()
 
 class User(Base):
     __tablename__ = 'users'
+    __tableargs__ = (CheckConstraint('user_type IN (1, 2, 3, 4)'),
+                     CheckConstraint('NOT(trainings_ids IS NULL)'))
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     user_type = Column(Integer(), ForeignKey("user_types.id"))
     email = Column(String(), unique=True)
