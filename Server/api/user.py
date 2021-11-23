@@ -52,51 +52,65 @@ def logout():
     return 1
 
 
-@user.put('/user/<user_id>')
+@user.put('/user/<user_id>/')
 @token_required
 def update_user_by_id(current_user, user_id):
     from Server.main import db
-    if current_user.user_type in [3, 4] and current_user.id != user_id:
-        return jsonify({"success": False,
-                        "message": "User cannot update different user details, unless it is admin/trainer"}), 401
-    data = flask.request.json
-    user_from_db = db.session.query(User).filter_by(id=user_id).first()
-
-    for key in data.keys():
-        if key == 'email':
-            user_exists = db.session.query(User).filter_by(email=data['email']).first()
-            if user_exists:
-                return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
-            user_from_db.email = data['email']
-        if key == 'password':
-            hashed_password = generate_password_hash(data['password'], method='sha256')
-            user_from_db.password = hashed_password
-        if key == 'full_name':
-            user_from_db.full_name = data['full_name']
-        if key == 'phone_number':
-            user_from_db.phone_number = str(data['phone_number'])
-        if key == 'attendance':
-            user_from_db.attendance = data['attendance']
-    db.session.commit()
-    return jsonify({"success": True, "user": user_from_db.to_dict()})
-    # except:
-      # return jsonify({"success": False, "message": "Something went wrong"}), 400
-    return 1
-
-
-@user.delete('/user')
-def delete_user():
-    return 1
-
-
-@user.get('/user/<user_id>')
-@token_required
-def get_user(current_user, user_id):
-    from Server.main import db
-    if current_user.user_type in [3, 4] and current_user.id != user_id:
-        return jsonify({"success": False,
-                        "message": "User cannot view different user details, unless it is admin/trainer"}), 401
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
     if not user_from_db:
         return jsonify({'success': False, 'message': 'No user found!'})
+    if current_user.user_type in [3, 4] and current_user.id != int(user_id):
+        return jsonify({"success": False,
+                        "message": "User cannot update different user details, unless it is admin/trainer"}), 401
+    data = flask.request.json
+    try:
+        for key in data.keys():
+            if key == 'email':
+                user_exists = db.session.query(User).filter_by(email=data['email']).first()
+                if user_exists:
+                    return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
+                user_from_db.email = data['email']
+            if key == 'password':
+                hashed_password = generate_password_hash(data['password'], method='sha256')
+                user_from_db.password = hashed_password
+            if key == 'full_name':
+                user_from_db.full_name = data['full_name']
+            if key == 'phone_number':
+                user_from_db.phone_number = str(data['phone_number'])
+            if key == 'attendance':
+                user_from_db.attendance = data['attendance']
+            if key == 'user_type':
+                user_from_db.user_type = data['user_type']
+        db.session.commit()
+        return jsonify({"success": True, "user": user_from_db.to_dict()})
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
+
+
+@user.delete('/user/<user_id>/')
+@token_required
+def delete_user(current_user, user_id):
+    from Server.main import db
+    user_to_delete = db.session.query(User).filter_by(id=user_id).first()
+    if not user_to_delete:
+        return jsonify({'success': False, 'message': 'No user found!'})
+    if current_user.user_type != 1:
+        return jsonify({"success": False,
+                        "message": "User cannot delete users, unless it is admin"}), 401
+    db.session.delete(user_to_delete)
+    db.session.commit()
+    return jsonify({"success": True,
+                    "message": "User: " + user_id + " was deleted successfully"}), 200
+
+
+@user.get('/user/<user_id>/')
+@token_required
+def get_user(current_user, user_id):
+    from Server.main import db
+    user_from_db = db.session.query(User).filter_by(id=user_id).first()
+    if not user_from_db:
+        return jsonify({'success': False, 'message': 'No user found!'})
+    if current_user.user_type in [3, 4] and current_user.id != int(user_id):
+        return jsonify({"success": False,
+                        "message": "User cannot view different user details, unless it is admin/trainer"}), 401
     return jsonify({'success': True, 'user': user_from_db.to_dict()})
