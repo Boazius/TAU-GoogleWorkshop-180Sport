@@ -1,6 +1,4 @@
-# 180Sport (180sport)
-
-#Sport without borders
+# 180Sport - Sport without borders
 
 # A Project for the TAU Google workshop course.
 # A Web app by Boaz, Gal, Dana, and Danielle for 180Sport: to schedule and manage an Attendence sheet of trainers, trainees, and volunteers
@@ -48,13 +46,13 @@ https://sites.google.com/view/cloudweb21a/Home
 + Week 5   - 17/11/2021       -  Milestone 1 (Proof Of Concept - Flow Demo)
 + Week 6   - 24/11/2021       -  UX Research
 + Week 7   -  1/12/2021        -  TBD
-+ Week 8   - 15/12/2021       - Milestone 2 (Backend and prepratation for Mileston 3)
++ Week 8   - 15/12/2021       - Milestone 2 (Backend and prepratation for Mileston 3) - NOT GRADED
 + Week 9   - 5/1/2021           -   Milestone 3 (Final Presentations) 
 
 
 
 
-##Usage instructions:
+## Usage instructions:
 
 ## Install the dependencies
 ```bash
