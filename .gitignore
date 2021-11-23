@@ -35,7 +35,6 @@ yarn-error.log*
 
 tutorial.py
 *.db
-create_db.py
 test.py
 
 __pycache__/
