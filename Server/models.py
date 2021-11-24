@@ -51,9 +51,22 @@ class Group(Base):
     trainers_list = Column(String())
     trainees_list = Column(String())
     volunteers_list = Column(String())
-    training_ids = Column(String())
-    training_ids_list = Column(String())
+    trainings_list = Column(String())
     active_or_not = Column(Boolean(), nullable=False)
+
+    def to_dict(self):
+        columns = self.__table__.columns.keys()
+        ret_data = {}
+        for key in columns:
+            if key == "trainers_list" or key == "trainees_list" or key == "volunteers_list" or key == "trainings_list":
+                if getattr(self, key) is not None:
+                    ret_data[key] = str(getattr(self, key)).split(',')
+                else:
+                    ret_data[key] = getattr(self, key)
+            else:
+                ret_data[key] = getattr(self, key)
+        return ret_data
+
 
 
 class Training(Base):

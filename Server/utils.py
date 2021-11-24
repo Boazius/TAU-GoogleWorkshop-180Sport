@@ -5,9 +5,9 @@ from models import User
 
 
 def token_required(f):
-    from main import db, app
     @wraps(f)
     def decorated(*args, **kwargs):
+        from main import db, app
         token = None
 
         if 'x-access-token' in request.headers:
