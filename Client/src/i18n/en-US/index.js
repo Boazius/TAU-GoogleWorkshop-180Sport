@@ -52,7 +52,41 @@ export default {
     date:'on date',
     time:'on',
     location:'at'
-  }
+  }  ,
+  groups:{
+    name:'Group \'%d\' \'%s\''    //make number and description from api
+  },
+  group:{
+    groupDetails:'Group details',
+    closest:'Closest training',
+    prior:'Last training'
+  },
+  table:{
+    add:'Add',
+    delete:'Delete',
+    export:'Export',
+    title:{
+      trainers:'Trainers',
+      trainees:'Trainees',
+      volunteers:'Volunteers',
+    },
+    name:'Name',      
+    editName:'Edit name',
+    invalidName:'Invalid name given',
+    phone:'Phone',
+    editPhone:'Edit phone number',
+    invalidPhone:'Invalid phone number given',
+    groups:'Groups',
+    editGroups:'Edit groups',
+    invalidGroups:'Invalid groups',
+    hintGroups:'It is possible to take part of multiple groups',
+    livingArea:'Living area',
+    editLivingArea:'Edit living area',
+    invalidLivingArea:'Invalid living area',
+    posticks:'New notes',
+    markAsRead:'Mark as read',
+    post:'Post note'
+ } 
 }
 
 
