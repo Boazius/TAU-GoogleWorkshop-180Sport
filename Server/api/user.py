@@ -1,30 +1,42 @@
 import datetime
 import flask
 import jwt
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from Server.models import User
-from Server.utils import token_required
+from Server.utils import token_required, login_required
 
 user = Blueprint('user', __name__)
 
 
-@user.post('/login')
+@user.route('/login')
 def login():
-    from Server.main import db, app
-    auth = flask.request.authorization
-    if not auth or not auth.username or not auth.password:
-        return jsonify({"success": False, "message": "Authentication credentials were not supplied"}), 400
-    user_from_db = db.session.query(User).filter_by(email=auth.username).first()
-    if not user_from_db:
-        return jsonify({"success": False, "message": "User does not exist with current email"}), 400
-    if check_password_hash(user_from_db.password, auth.password):
-        token = jwt.encode(
-            {'id': user_from_db.id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30), 'email':
-                user_from_db.email}, app.config['SECRET_KEY'], algorithm="HS256")
-        return jsonify({'success': True, 'token': token, 'user': user_from_db.to_dict()})
-    return jsonify({'success': False, "message": "Incorrect password"}), 400
+    from Server.main import oauth
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('user.authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@user.route('/authorize')
+def authorize():
+    from Server.main import oauth
+    google = oauth.create_client('google')  # create the google oauth client
+    token = google.authorize_access_token()  # Access token from google (needed to get user info)
+    resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
+    user_info = resp.json()
+    user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
+    # Here you use the profile/user data that you got and query your database find/register the user
+    # and set ur own data in the session not the profile from google
+    session['profile'] = user_info
+    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+    return jsonify({"success": True, "token": token}), 200
+
+
+@user.post('/logout')
+def logout():
+    for key in list(session.keys()):
+        session.pop(key)
+    return jsonify({"success": True, "message": "Logged out succesfully"}), 200
 
 
 @user.post('/signup')
@@ -44,12 +56,6 @@ def signup():
         return jsonify({"success": True, "user": new_user.to_dict()})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
-
-
-@user.post('/logout')
-def logout():
-    # !!!!!!!THINK ABOUT WHAT DOING HERE!!!!! #####
-    return 1
 
 
 @user.put('/user/<user_id>/')

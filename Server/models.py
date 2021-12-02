@@ -19,7 +19,6 @@ class User(Base):
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     user_type = Column(Integer(), ForeignKey("user_types.id"))
     email = Column(String(), unique=True)
-    password = Column(String())
     full_name = Column(String())
     phone_number = Column(String())
     group_ids = Column(String())
@@ -31,8 +30,7 @@ class User(Base):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            if key != 'password':
-                ret_data[key] = getattr(self, key)
+            ret_data[key] = getattr(self, key)
         return ret_data
 
 

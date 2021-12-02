@@ -1,7 +1,7 @@
 import flask
 from flask import Blueprint, jsonify
 from Server.utils import token_required
-from Server.models import Group
+from Server.models import Group, User
 
 group = Blueprint('group', __name__)
 
@@ -88,16 +88,38 @@ def put_group(current_user, group_id):
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
 
-@group.put('/delete_user_from_group/<user_id>/')
+@group.put('/delete_user_from_group/<group_id>/')
 @token_required
 def delete_user_from_group(current_user, user_id):
     return 1
 
 
-@group.put('/add_user_to_group/<user_id>/')
+@group.put('/add_user_to_group/<group_id>/')
 @token_required
-def add_user_to_group(current_user, user_id):
-    return 1
+def add_user_to_group(current_user, group_id):
+    from Server.main import db
+    group_from_db = db.session.query(Group).filter_by(id=group_id).first()
+    if not group_from_db:
+        return jsonify({'success': False, 'message': 'No group found!'})
+    if current_user.user_type in [3, 4]:
+        return jsonify({"success": False,
+                        "message": "User cannot add users to group details, unless it is admin/trainer"}), 401
+    try:
+        data = flask.request.json
+        user_id = int(data['user'])
+        user_from_db = db.session.query(User).filter_by(id=user_id).first()
+        if not user_from_db:
+            return jsonify({'success': False, 'message': 'No user found!'})
+        groups_string = user_from_db.group_ids
+        groups_list = groups_string.split(",")
+        if str(group_id) in groups_list:
+            return jsonify({'success': False, 'message': 'User is already part of the group!'}), 400
+        groups_list.append(str(group_id))
+        user_from_db.group_ids = str(groups_list)
+        db.session.commit()
+        return jsonify({"success": False, "message": "Group was updated successfully"}), 200
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
 
 
 @group.get('/get_all_users_by_group/<group_id>/')
