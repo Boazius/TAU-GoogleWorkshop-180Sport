@@ -19,7 +19,6 @@ class User(Base):
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     user_type = Column(Integer(), ForeignKey("user_types.id"))
     email = Column(String(), unique=True)
-    password = Column(String())
     full_name = Column(String())
     phone_number = Column(String())
     group_ids = Column(String())
@@ -31,8 +30,7 @@ class User(Base):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            if key != 'password':
-                ret_data[key] = getattr(self, key)
+            ret_data[key] = getattr(self, key)
         return ret_data
 
 
@@ -51,9 +49,22 @@ class Group(Base):
     trainers_list = Column(String())
     trainees_list = Column(String())
     volunteers_list = Column(String())
-    training_ids = Column(String())
-    training_ids_list = Column(String())
+    trainings_list = Column(String())
     active_or_not = Column(Boolean(), nullable=False)
+
+    def to_dict(self):
+        columns = self.__table__.columns.keys()
+        ret_data = {}
+        for key in columns:
+            if key == "trainers_list" or key == "trainees_list" or key == "volunteers_list" or key == "trainings_list":
+                if getattr(self, key) is not None:
+                    ret_data[key] = str(getattr(self, key)).split(',')
+                else:
+                    ret_data[key] = getattr(self, key)
+            else:
+                ret_data[key] = getattr(self, key)
+        return ret_data
+
 
 
 class Training(Base):
