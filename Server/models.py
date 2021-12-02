@@ -46,9 +46,6 @@ class Group(Base):
     day = Column(Integer(), nullable=False)
     time = Column(String(), nullable=False)
     meeting_place = Column(String(), nullable=False)
-    trainers_list = Column(String())
-    trainees_list = Column(String())
-    volunteers_list = Column(String())
     trainings_list = Column(String())
     active_or_not = Column(Boolean(), nullable=False)
 
@@ -56,7 +53,7 @@ class Group(Base):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            if key == "trainers_list" or key == "trainees_list" or key == "volunteers_list" or key == "trainings_list":
+            if key == "trainings_list":
                 if getattr(self, key) is not None:
                     ret_data[key] = str(getattr(self, key)).split(',')
                 else:
