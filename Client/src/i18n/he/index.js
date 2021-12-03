@@ -52,4 +52,41 @@ export default {
     time:'בשעה',
     location:'במיקום'
   }
+  ,groups:{
+    name:'קבוצה \'%d\' \'%s\''    //make number and description from api
+  },
+  group:{
+    groupDetails:'פרטי הקבוצה',
+    closest:'פרטי האימון הקרוב',
+    prior:'פרטי האימון האחרון'
+  },
+  table:{
+    add:'הוסף',
+    delete:'מחק',
+    export:'יצא טבלה',
+    title:{
+      trainers:'מאמנים',
+      trainees:'מתאמנים',
+      volunteers:'מתנדבים',
+    },
+    name:'שם',
+    editName:'ערוך שם',
+    invalidName:'שם לא תקין',
+    phone:'טלפון',
+    editPhone:'ערוך מספר טלפון',
+    invalidPhone:'מספר הטלפון שניתן אינו תקין',
+    groups:'קבוצות',
+    editGroups:'ערוך קבוצות',
+    invalidGroups:'קבוצות לא תקינות',
+    hintGroups:'ניתן להוסיף כמה קבוצות',
+    livingArea:'איזור מגורים',
+    editLivingArea:'ערוך איזור מגורים',
+    invalidLivingArea:'איזור מגורים לא תקין',
+    posticks:'פתקים חדשים',
+    markAsRead:'סמן כנקרא',
+    post:'פרסם פתק למשתמש'
+
+
+
+ } 
 }

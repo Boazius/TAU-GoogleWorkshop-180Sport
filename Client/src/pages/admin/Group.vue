@@ -17,8 +17,7 @@
       <q-item-section
         class="table_header wrap q-mb-sm"
         style="font-size: xx-large"
-      >
-        קבוצה 1 - תל אביב
+      >{{$t('groups.name')}}
       </q-item-section>
       <q-space />
     </div>
@@ -26,13 +25,14 @@
       class="item"
       switch-toggle-side
       expand-separator
-      label="פרטי קבוצה"
+      :label="$t('groups.groupDetails')"
     >
       <q-expansion-item
         class="item"
         switch-toggle-side
+        :header-inset-level="1"
         expand-separator
-        label="מתאמנים"
+        :label="$t('table.title.trainees')"
       >
         <q-table
           :rows="rows"
@@ -145,14 +145,14 @@
                 >{{ props.row.groups }}
                 <q-icon name="message" color="primary" />
 
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                <q-popup-proxy v-model="label">
+                   <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
-              </q-banner> -->
+              </q-banner>
                 </q-popup-proxy>
               </q-td>
               <q-td key="comment" :props="props">
@@ -325,14 +325,14 @@
                 >{{ props.row.groups }}
                 <q-icon name="message" color="primary" />
 
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                <q-popup-proxy v-model="label">
+                <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
-              </q-banner> -->
+              </q-banner> 
                 </q-popup-proxy>
               </q-td>
                 <q-td key="comment" :props="props">
@@ -505,15 +505,15 @@
                 >{{ props.row.groups }}
                 <q-icon name="message" color="primary" />
 
-                <q-popup-proxy v-model="props.row.message">
-                  <!-- <q-banner style="direction:rtl" class="bg-primary text-white">
+                <!-- <q-popup-proxy v-model="lable">
+                  <q-banner style="direction:rtl" class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
                   <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
                   <q-btn flat color="white" label="הגב" v-close-popup/>
                 </template>
-              </q-banner> -->
-                </q-popup-proxy>
+              </q-banner>
+                </q-popup-proxy> -->
               </q-td>
               <q-td key="comment" :props="props">
                 <q-badge color="primary" align="middle" rounded transparent>

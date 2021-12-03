@@ -1,7 +1,8 @@
 <template>
   <div class="q-pa-md">
-    <h3 class="table_header wrap q-mb-none">מתנדבים</h3>
-   <q-table
+    <h3 class="table_header wrap q-mb-none">{{$t('table.title.trainees')}}</h3>
+    <q-table
+
       :rows="rows"
       :columns="columns"
       row-key="id"
@@ -12,9 +13,10 @@
       binary-state-sort
     > <template v-slot:body="props">
         <q-tr :props="props">
+
           <q-td key="name" :props="props">
             {{ props.row.name }}
-            <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
+            <q-popup-edit v-model="props.row.name"  :title="$t('table.editName')" :validate="val => val.length > 0">
               <template v-slot="scope">
                 <q-input type="name" v-model="props.row.name" :rules="[
                 val => scope.validate(scope.value) || 'שם לא תקין']">
@@ -36,7 +38,7 @@
           </q-td>
           <q-td key="phone" :props="props">
             {{ props.row.phone }}
-            <q-popup-edit v-model="props.row.phone" title="ערוך טלפון" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
+            <q-popup-edit v-model="props.row.phone" :title="$t('table.editPhone')" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
               <template v-slot="scope">
                 <q-input type="phone" v-model="props.row.phone" :rules="[
                 val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
@@ -57,26 +59,30 @@
             </q-popup-edit>
           </q-td>
           <q-td key="group" :props="props">{{ props.row.group }}
-            <q-popup-edit v-model="props.row.group" title="ערוך קבוצה" >
+            <q-popup-edit v-model="props.row.group" :title="$t('table.editGroups')" >
               <q-input v-model="props.row.group" dense autofocus hint="ניתן להוסיף כמה קבוצות" />
             </q-popup-edit>
           </q-td>
           <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
+            <q-popup-edit v-model="props.row.area" :title="$t('table.editLivingArea')" >
               <q-input v-model="props.row.area" />
             </q-popup-edit>
           </q-td>
+
           <q-td key="message" :props="props">{{ props.row.groups }}
             <q-icon name="message" color="primary" />
-            <q-popup-proxy v-model="props.row.message" >
+
+            <q-popup-proxy v-model="label" >
+
               <q-banner class="bg-primary text-white">
                 היי, לצערי לא אוכל להגיע לשיעור
                 <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
+                  <q-btn flat color="white" :label="$t('table.markAsRead')" v-close-popup/>
+                  <q-btn flat color="white" :label="$t('table.post')" v-close-popup/>
                 </template>
               </q-banner>
             </q-popup-proxy>
+
           </q-td>
           <q-td key="comment" :props="props">
             <q-badge color="primary"  align="middle" rounded transparent>
@@ -97,13 +103,12 @@
             </q-badge>
 
           </q-td>
-
         </q-tr>
       </template>
       <template v-slot:top>
-        <q-btn color="primary" :disable="loading" label="הוסף מתאמן" @click="addRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="הסר מתאמן" @click="removeRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" label="יצא טבלה" no-caps @click="exportTable" />
+        <q-btn class="q-ml-sm" color="primary" :disable="loading" :label="$t('table.add')" no-caps @click="addRow" />
+        <q-btn class="q-ml-sm" color="primary" :disable="loading" :label="$t('table.delete')" no-caps @click="removeRow" />
+        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" :label="$t('table.export')" no-caps @click="exportTable" />
         <q-space />
         <q-input
           borderless
@@ -120,13 +125,13 @@
     </q-table>
   </div>
 </template>
+
 <script>
 import { ref, onMounted } from "vue";
 import { exportFile, useQuasar } from 'quasar';
 
 const columns = [
-  {
-    name: 'name',
+  { name: 'name',
     required: true,
     label: "שם",
     align: 'left',
@@ -139,8 +144,7 @@ const columns = [
     label: "טלפון",
     field: "phone",
     sortable: true,
-    align: 'center',
-
+    align:'center'
   },
     {
     name: "group",
@@ -154,20 +158,19 @@ const columns = [
     label: "איזור מגורים",
     field: "area",
     sortable: true,
-    align: 'left',
-
-  },
+    align:'left'
+    },
   {
     name: "message",
     label: "הודעות חדשות",
     field: "message",
-    align: 'left',
+    align:'left'
     },
-      {
+    {
     name: "comment",
     label: "פרסם הודעה למשתמש",
     field: "comment",
-    align: 'left',
+    align:'left'
     },
 ];
 
@@ -436,7 +439,9 @@ export default {
 <style>
 .q-table th {
     font-weight: bold;
+
 }
+
 .table_header {
   font-weight: bold;
 }

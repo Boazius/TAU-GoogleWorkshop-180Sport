@@ -1,8 +1,7 @@
 <template>
   <div class="q-pa-md">
-    <h3 class="table_header wrap q-mb-none">מתאמנים</h3>
+    <h3 class="table_header wrap q-mb-none">{{$t('table.title.trainers')}}</h3>
     <q-table
-
       :rows="rows"
       :columns="columns"
       row-key="id"
@@ -11,10 +10,10 @@
       :filter="filter"
       @request="onRequest"
       binary-state-sort
-    > <template v-slot:body="props">
+      >
+      <template v-slot:body="props">
         <q-tr :props="props">
-
-          <q-td key="name" :props="props">
+           <q-td key="name" :props="props">
             {{ props.row.name }}
             <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
               <template v-slot="scope">
@@ -58,56 +57,16 @@
 
             </q-popup-edit>
           </q-td>
-          <q-td key="group" :props="props">{{ props.row.group }}
-            <q-popup-edit v-model="props.row.group" title="ערוך קבוצה" >
-              <q-input v-model="props.row.group" dense autofocus hint="ניתן להוסיף כמה קבוצות" />
+           <q-td key="groups" :props="props">{{ props.row.groups }}
+            <q-popup-edit v-model="props.row.groups" title="ערוך קבוצה" >
+              <q-input v-model="props.row.groups" />
             </q-popup-edit>
-          </q-td>
-          <q-td key="area" :props="props">{{ props.row.area }}
-            <q-popup-edit v-model="props.row.area" title="ערוך איזור מגורים" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit>
-          </q-td>
-
-          <q-td key="message" :props="props">{{ props.row.groups }}
-            <q-icon name="message" color="primary" />
-
-            <q-popup-proxy v-model="props.row.message" >
-
-              <q-banner class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" label="סמן כנקרא" v-close-popup/>
-                  <q-btn flat color="white" label="הגב" v-close-popup/>
-                </template>
-              </q-banner>
-            </q-popup-proxy>
-          </q-td>
-          <q-td key="comment" :props="props">
-            <q-badge color="primary"  align="middle" rounded transparent>
-              <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
-              />
-            </q-popup-edit>
-            </q-badge>
-
           </q-td>
         </q-tr>
       </template>
       <template v-slot:top>
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="הוסף מתאמן" @click="addRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="הסר מתאמן" @click="removeRow" />
-        <q-btn class="q-ml-sm" color="primary" :disable="loading" icon-right="archive" label="יצא טבלה" no-caps @click="exportTable" />
+        <q-btn color="primary" :disable="loading" label="הוסף מאמן" @click="addRow" />
+        <q-btn class="q-ml-sm" color="primary" :disable="loading" label="מחק מאמן" @click="removeRow" />
         <q-space />
         <q-input
           borderless
@@ -121,12 +80,24 @@
           </template>
         </q-input>
       </template>
+      <template v-slot:top-left>
+        <q-btn
+          borderless
+          dense
+          debounce="300"
+          v-model="filter"
+        >
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-btn>
+      </template>
     </q-table>
   </div>
 </template>
+
 <script>
 import { ref, onMounted } from "vue";
-import { exportFile, useQuasar } from 'quasar';
 
 const columns = [
   { name: 'name',
@@ -137,152 +108,64 @@ const columns = [
     format: val => `${val}`,
     sortable: true
   },
-    {
+  {
     name: "phone",
     label: "טלפון",
     field: "phone",
-    sortable: true,
+    sortable: false,
     align:'center'
+
   },
     {
-    name: "group",
-    label: "קבוצה",
-    field: "group",
-    sortable: true,
-    align:'center'
-    },
-      {
-    name: "area",
-    label: "איזור מגורים",
-    field: "area",
-    sortable: true,
+    name: "groups",
+    label: "קבוצות",
+    field: "groups",
+    sortable: false,
     align:'left'
-    },
-  {
-    name: "message",
-    label: "הודעות חדשות",
-    field: "message",
-    align:'left'
-    },
-    {
-    name: "comment",
-    label: "פרסם הודעה למשתמש",
-    field: "comment",
-    align:'left'
-    },
+  },
 ];
 
 const originalRows = [
   {
     id: 1,
-    name: "תומר פיזון",
+    name: "דנה טושינקי",
     phone: "0526831999",
-    group: 1,
-    area: "תל אביב",
-    message: true,
+    groups: "1"
   },
   {
     id: 2,
-    name: "מאיה קימל",
+    name: "גל לימנואל",
     phone: "054969614",
-    group: 3,
-    area: "הרצליה",
-    message: true,
-
+    groups: "2",
   },
   {
     id: 3,
-    name: "ברק עופר",
+    name: "בועז יעקב",
     phone: "0526834333",
-    group: 1,
-    area: "תל אביב",
+    groups: "3",
   },
   {
     id: 4,
-        name: "נינט לוי",
+    name: "דניאל רוט",
     phone: "0526831999",
-    group: 1,
-    area: "תל אביב",
-    message: true,
-  },
-  {
-    id: 5,
-        name: "איתי שרון",
-    phone: "0526544599",
-    group: 1,
-    area: "תל אביב",
-  },
-  {
-        name: "עומר אדם",
-    phone: "0526831999",
-    group: 2,
-    area: "רמת גן",
-  },
-  {
-    id: 7,
-    name: "אליהו ענבי",
-    phone: "0527766455",
-    group: 3,
-    area: "הרצליה",
-  },
-  {
-    id: 8,
-    name: "דני דנקר",
-    phone: "0526831455",
-    group: 3,
-    area: "הרצליה",
-  },
-  {
-    id: 9,
-    name: "קרן פידרמן",
-    phone: "054696989",
-    group: 1,
-    area: "תל אביב",
-  },
-  {
-    id: 10,
-    name: "אופק גלר",
-    phone: "0521211999",
-    group: 2,
-    area: "רמת גן",
+    groups: "2",
   }
-]
-
-function wrapCsvValue (val, formatFn) {
-  let formatted = formatFn !== void 0
-    ? formatFn(val)
-    : val
-
-  formatted = formatted === void 0 || formatted === null
-    ? ''
-    : String(formatted)
-
-  formatted = formatted.split('"').join('""')
-  /**
-   * Excel accepts \n and \r in strings, but some other CSV parsers do not
-   * Uncomment the next two lines to escape new lines
-   */
-  // .split('\n').join('\\n')
-  // .split('\r').join('\\r')
-
-  return `"${formatted}"`
-}
+];
 
 export default {
   setup() {
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
+    const rowCount = ref(10)
+
     const pagination = ref({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 5,
       rowsNumber: 10,
     });
-    const rowCount = ref(10)
-    const $q = useQuasar()
-
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -377,33 +260,6 @@ export default {
       columns,
       rows,
       onRequest,
-
-      exportTable () {
-        // naive encoding to csv format
-        const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-          rows.value.map(row => columns.map(col => wrapCsvValue(
-            typeof col.field === 'function'
-              ? col.field(row)
-              : row[ col.field === void 0 ? col.name : col.field ],
-            col.format
-          )).join(','))
-        ).join('\r\n')
-
-        const status = exportFile(
-          'table-export.csv',
-          content,
-          'text/csv'
-        )
-
-        if (status !== true) {
-          $q.notify({
-            message: 'Browser denied file download...',
-            color: 'negative',
-            icon: 'warning'
-          })
-        }
-      },
-
       addRow () {
         loading.value = true
         setTimeout(() => {
@@ -442,5 +298,6 @@ export default {
 
 .table_header {
   font-weight: bold;
+
 }
 </style>
