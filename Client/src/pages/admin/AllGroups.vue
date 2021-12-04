@@ -4,18 +4,18 @@
     <h3 class="group_header  q-mb-none">{{$t('app.groups')}}</h3>
     <q-list bordered separator class="list-items">
       <q-item to="/groups/id" clickable v-ripple>
-        <q-item-section>קבוצה 1 - תל אביב</q-item-section>
+        <q-item-section>{{$t('groups.name')}}</q-item-section>
       </q-item>
 
       <q-item to="/groups/id" clickable v-ripple>
         <q-item-section>
-          <q-item-label>קבוצה 2 - רמת גן</q-item-label>
+          <q-item-label>{{$t('groups.name')}}</q-item-label>
         </q-item-section>
       </q-item>
 
       <q-item to="/groups/id" clickable v-ripple>
         <q-item-section>
-          <q-item-label>קבוצה 3 - הרצליה</q-item-label>
+          <q-item-label>{{$t('groups.name')}}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
