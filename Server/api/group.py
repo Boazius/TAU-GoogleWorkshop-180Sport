@@ -1,7 +1,7 @@
 import flask
 from flask import Blueprint, jsonify
-from Server.utils import token_required
-from Server.models import Group, User, Training
+from utils import token_required
+from models import Group, User, Training
 
 group = Blueprint('group', __name__)
 
@@ -9,7 +9,7 @@ group = Blueprint('group', __name__)
 @group.post('/group')
 @token_required
 def post_group(current_user):
-    from Server.main import db
+    from main import db
     if current_user.user_type in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot create new group, unless it is admin/trainer"}), 401
@@ -28,7 +28,7 @@ def post_group(current_user):
 @group.delete('/group/<group_id>/')
 @token_required
 def delete_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_to_delete = db.session.query(Group).filter_by(id=group_id).first()
     if not group_to_delete:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -44,7 +44,7 @@ def delete_group(current_user, group_id):
 @group.get('/group/<group_id>/')
 @token_required
 def get_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -57,7 +57,7 @@ def get_group(current_user, group_id):
 @group.put('/group/<group_id>/')
 @token_required
 def put_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -102,7 +102,7 @@ def listToString(lst):
 @group.put('/delete_user_from_group/<group_id>/')
 @token_required
 def delete_user_from_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -133,7 +133,7 @@ def delete_user_from_group(current_user, group_id):
 @group.put('/add_user_to_group/<group_id>/')
 @token_required
 def add_user_to_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -174,7 +174,7 @@ def id_in_group(group_ids, group_id):
 @group.get('/get_all_users_by_group/<group_id>/')
 @token_required
 def get_all_users_by_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -196,7 +196,7 @@ def get_all_users_by_group(current_user, group_id):
 @group.get('/get_all_trainers_by_group/<group_id>/')
 @token_required
 def get_all_trainers_by_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
@@ -218,7 +218,7 @@ def get_all_trainers_by_group(current_user, group_id):
 @group.get('/get_all_trainings_by_group/<group_id>/')
 @token_required
 def get_all_trainings_by_group(current_user, group_id):
-    from Server.main import db
+    from main import db
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})

@@ -2,6 +2,9 @@ from functools import wraps
 import jwt
 from flask import request, jsonify, session
 from models import User
+import google
+from google.auth.transport import requests
+from google.oauth2 import id_token
 
 
 def token_required(f):
@@ -17,9 +20,9 @@ def token_required(f):
             return jsonify({'message': 'Token is missing!'}), 401
 
         try:
-            data = jwt.decode(token, options={"verify_signature": False})
-            print(data)
-            current_user = db.session.query(User).filter_by(email=data['email']).first()
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), "919619848127-0d5ata8oi64g4neesm7vss0cb30evnph.apps.googleusercontent.com")
+            print(idinfo)
+            current_user = db.session.query(User).filter_by(email=idinfo['email']).first()
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 

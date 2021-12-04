@@ -3,15 +3,15 @@ import flask
 import jwt
 from flask import Blueprint, jsonify, url_for, session
 from werkzeug.security import generate_password_hash, check_password_hash
-from Server.models import User
-from Server.utils import token_required, login_required
+from models import User
+from utils import token_required, login_required
 
 user = Blueprint('user', __name__)
 
 
 @user.route('/login')
 def login():
-    from Server.main import oauth
+    from main import oauth
     google = oauth.create_client('google')  # create the google oauth client
     redirect_uri = url_for('user.authorize', _external=True)
     return google.authorize_redirect(redirect_uri)
@@ -19,7 +19,7 @@ def login():
 
 @user.route('/authorize')
 def authorize():
-    from Server.main import oauth
+    from main import oauth
     google = oauth.create_client('google')  # create the google oauth client
     token = google.authorize_access_token()  # Access token from google (needed to get user info)
     resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
@@ -32,7 +32,7 @@ def authorize():
     return jsonify({"success": True, "token": token}), 200
 
 
-@user.post('/logout')
+@user.route('/logout')
 def logout():
     for key in list(session.keys()):
         session.pop(key)
@@ -41,7 +41,7 @@ def logout():
 
 @user.post('/signup')
 def signup():
-    from Server.main import db
+    from main import db
     try:
         data = flask.request.json
         user_exists = db.session.query(User).filter_by(email=data['email']).first()
@@ -61,7 +61,7 @@ def signup():
 @user.put('/user/<user_id>/')
 @token_required
 def update_user_by_id(current_user, user_id):
-    from Server.main import db
+    from main import db
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
     if not user_from_db:
         return jsonify({'success': False, 'message': 'No user found!'})
@@ -96,7 +96,7 @@ def update_user_by_id(current_user, user_id):
 @user.delete('/user/<user_id>/')
 @token_required
 def delete_user(current_user, user_id):
-    from Server.main import db
+    from main import db
     user_to_delete = db.session.query(User).filter_by(id=user_id).first()
     if not user_to_delete:
         return jsonify({'success': False, 'message': 'No user found!'})
@@ -112,7 +112,7 @@ def delete_user(current_user, user_id):
 @user.get('/user/<user_id>/')
 @token_required
 def get_user(current_user, user_id):
-    from Server.main import db
+    from main import db
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
     if not user_from_db:
         return jsonify({'success': False, 'message': 'No user found!'})
