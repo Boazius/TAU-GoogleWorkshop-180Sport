@@ -1,6 +1,3 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
   failed: 'Action failed',
   success: 'Action was successful',
@@ -26,26 +23,16 @@ export default {
     }
   },
   authentication: {
-    login: 'Login',
-    signin: 'Sign in',
-    signin2: 'Click here to login',
-    signup: 'Sign up',
-    already: 'Already have an account?',
-    account: "Don't have an account?",
-    account2: 'Click to register',
+    signin: 'Sign in with Google',
     email: 'Email',
     password: 'Password',
     confirm: 'Confirm Password',
     email1: 'E-mail is required',
-    email2: 'E-mail must be valid',
     password1: 'Password is required',
-    password2: 'Password must be at least 6 characters',
-    password3: 'Passwords must match',
     invalidPassword: 'Invalid password, please try again',
     invalidEmail: 'No such email registered, please try again',
     field: 'This field is required',
     wrong: "Something's went wrong, please try again",
-    maxLength: 'Maximum length allowed is',
   },
   dashboard:{
     closest:'Closest training',
@@ -70,7 +57,7 @@ export default {
       trainees:'Trainees',
       volunteers:'Volunteers',
     },
-    name:'Name',      
+    name:'Name',
     editName:'Edit name',
     invalidName:'Invalid name given',
     phone:'Phone',
@@ -86,7 +73,7 @@ export default {
     posticks:'New notes',
     markAsRead:'Mark as read',
     post:'Post note'
- } 
+ }
 }
 
 
