@@ -1,9 +1,9 @@
 from flask import Blueprint, abort,jsonify, url_for, session
 import flask
 
-from Server.models import User
-from Server.models import Group
-from Server.utils import token_required, login_required
+from models import User
+from models import Group
+from utils import token_required, login_required
 
 
 admin = Blueprint('admin', __name__)
@@ -12,7 +12,7 @@ admin = Blueprint('admin', __name__)
 @admin.put('/admin/status_user')
 @token_required
 def status_user(current_user): #disable or activate user
-    from Server.main import db
+    from main import db
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot change user details, unless it is admin"}), 401
@@ -36,7 +36,7 @@ def status_user(current_user): #disable or activate user
 @admin.get('/admin/get_all_groups')
 @token_required
 def get_all_groups(current_user):
-    from Server.main import db
+    from main import db
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot see all group, unless it is admin"}), 401
@@ -55,7 +55,7 @@ def get_all_groups(current_user):
 @admin.get('/admin/get_all_trainers')
 @token_required
 def get_all_trainers(current_user):
-    from Server.main import db
+    from main import db
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot see all group, unless it is admin"}), 401
@@ -74,7 +74,7 @@ def get_all_trainers(current_user):
 @admin.get('/admin/get_all_users')
 @token_required
 def get_all_users(current_user):
-    from Server.main import db
+    from main import db
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot see all group, unless it is admin"}), 401
