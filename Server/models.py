@@ -71,12 +71,27 @@ class Training(Base):
     __tablename__ = 'trainings'
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     group_id = Column(Integer(), ForeignKey("groups.id"), nullable=False)
-    date = Column(DateTime(), nullable=False)
+    #date = Column(DateTime(), nullable=False)
+    day = Column(Integer(), nullable=False)
+    time = Column(String(), nullable=False)
     meeting_place = Column(String(), nullable=False)
-    attendance_users = Column(String())
+    attendance_users = Column(String()) #list
     is_happened = Column(Boolean())
-    trainer_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
-    notes = Column(String())
+    trainers_id= Column(Integer(), ForeignKey("users.id"), nullable=False) #list
+    notes = Column(String()) #list
+
+    def to_dict(self):
+        columns = self.__table__.columns.keys()
+        ret_data = {}
+        for key in columns:
+            if key == "attendance_users" or key == "trainers_id" or key == "notes":
+                if getattr(self, key) is not None:
+                    ret_data[key] = str(getattr(self, key)).split(',')
+                else:
+                    ret_data[key] = getattr(self, key)
+            else:
+                ret_data[key] = getattr(self, key)
+        return ret_data
 
 
 class Message(Base):
