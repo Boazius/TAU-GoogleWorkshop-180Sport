@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <h3 class="table_header wrap q-mb-none">{{$t('table.title.vulonteers')}}</h3>
+    <h3 class="table_header wrap q-mb-none">{{$t('table.title.volunteers')}}</h3>
    <q-table
       :rows="rows"
       :columns="columns"
