@@ -17,7 +17,7 @@ def post_group(current_user):
     try:
         data = flask.request.json
         new_group = Group(day=data['day'], time=data['time'], meeting_place=data['meeting_place'],
-                          trainers_list=data['trainers_list'], active_or_not=True)
+                          trainings_list=data['trainers_list'], active_or_not=True)
         db.session.add(new_group)
         db.session.commit()
         return jsonify({"success": True, "group": new_group.to_dict()})
@@ -73,12 +73,6 @@ def put_group(current_user, group_id):
                 group_from_db.time = data['time']
             if key == 'meeting_place':
                 group_from_db.meeting_place = data['meeting_place']
-            if key == 'trainers_list':
-                group_from_db.trainers_list = data['trainers_list']
-            if key == 'trainees_list':
-                group_from_db.trainees_list = data['trainees_list']
-            if key == 'volunteers_list':
-                group_from_db.volunteers_list = data['volunteers_list']
             if key == 'trainings_list':
                 group_from_db.trainings_list = data['trainings_list']
         db.session.commit()
