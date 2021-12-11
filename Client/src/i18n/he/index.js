@@ -53,7 +53,7 @@ export default {
     location:'במיקום'
   }
   ,groups:{
-    name:'קבוצה \'%d\' \'%s\''    //make number and description from api
+    name:'קבוצה '    //make number and description from api
   },
   group:{
     groupDetails:'פרטי הקבוצה',
@@ -85,8 +85,8 @@ export default {
     posticks:'פתקים חדשים',
     markAsRead:'סמן כנקרא',
     post:'פרסם פתק למשתמש'
-
-
-
- } 
+ } ,
+ user:{
+  userPageHeader:'פרטי משתמש'
+} 
 }

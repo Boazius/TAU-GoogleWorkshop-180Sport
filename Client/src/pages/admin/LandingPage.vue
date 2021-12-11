@@ -2,7 +2,8 @@
   <q-page class="flex flex-center">
     <img
       alt="180 logo"
-      src="~assets/180page.png"
+      src="~assets/images/logo-dark.webp"
+      style="width: 200px; height: auto"
 
       >
   </q-page>
