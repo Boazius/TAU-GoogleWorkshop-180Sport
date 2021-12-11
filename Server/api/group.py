@@ -16,8 +16,7 @@ def post_group(current_user):
 
     try:
         data = flask.request.json
-        new_group = Group(day=data['day'], time=data['time'], meeting_place=data['meeting_place'],
-                          trainings_list=data['trainers_list'], active_or_not=True)
+        new_group = Group(day=data['day'], time=data['time'], meeting_place=data['meeting_place'], active_or_not=True)
         db.session.add(new_group)
         db.session.commit()
         return jsonify({"success": True, "group": new_group.to_dict()})
@@ -35,6 +34,15 @@ def delete_group(current_user, group_id):
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot delete groups, unless it is admin"}), 401
+    groups_trainings = group_to_delete.trainings_list
+    print(groups_trainings)
+    if groups_trainings != "" and groups_trainings is not None:
+        trainings_list = groups_trainings.split(",")
+        print(trainings_list)
+        for training in trainings_list:
+            training_from_db = db.session.query(Training).filter_by(id=int(training)).first()
+            db.session.delete(training_from_db)
+            db.session.commit()
     db.session.delete(group_to_delete)
     db.session.commit()
     return jsonify({"success": True,
@@ -51,7 +59,7 @@ def get_group(current_user, group_id):
     if current_user.user_type in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view group details, unless it is admin/trainer"}), 401
-    return jsonify({'success': True, 'user': group_from_db.to_dict()})
+    return jsonify({'success': True, 'Group': group_from_db.to_dict()})
 
 
 @group.put('/group/<group_id>/')
@@ -73,8 +81,8 @@ def put_group(current_user, group_id):
                 group_from_db.time = data['time']
             if key == 'meeting_place':
                 group_from_db.meeting_place = data['meeting_place']
-            if key == 'trainings_list':
-                group_from_db.trainings_list = data['trainings_list']
+            if key == 'active_or_not':
+                group_from_db.active_or_not = data['active_or_not']
         db.session.commit()
         return jsonify({"success": True, "user": group_from_db.to_dict()})
     except:
@@ -141,7 +149,7 @@ def add_user_to_group(current_user, group_id):
         if not user_from_db:
             return jsonify({'success': False, 'message': 'No user found!'})
         groups_string = user_from_db.group_ids
-        if groups_string == "":
+        if groups_string == "" or groups_string is None:
             groups_list = []
         else:
             groups_list = groups_string.split(",")

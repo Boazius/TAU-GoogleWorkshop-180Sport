@@ -47,10 +47,8 @@ def signup():
         user_exists = db.session.query(User).filter_by(email=data['email']).first()
         if user_exists:
             return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
-        hashed_password = generate_password_hash(data['password'], method='sha256')
         new_user = User(user_type=int(data['user_type']), email=data['email'], full_name=data['full_name'],
-                        phone_number=str(data['phone_number']), active_or_not=True, attendance=int(1),
-                        password=hashed_password)
+                        phone_number=str(data['phone_number']), active_or_not=True, attendance=int(1))
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"success": True, "user": new_user.to_dict()})
