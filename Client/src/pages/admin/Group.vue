@@ -25,7 +25,7 @@
       class="item"
       switch-toggle-side
       expand-separator
-      :label="$t('groups.groupDetails')"
+      :label="$t('group.groupDetails')"
     >
       <q-expansion-item
         class="item"

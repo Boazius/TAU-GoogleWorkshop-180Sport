@@ -41,7 +41,7 @@ export default {
     location:'at'
   }  ,
   groups:{
-    name:'Group \'%d\' \'%s\''    //make number and description from api
+    name:'Group '    //make number and description from api
   },
   group:{
     groupDetails:'Group details',
@@ -73,8 +73,12 @@ export default {
     posticks:'New notes',
     markAsRead:'Mark as read',
     post:'Post note'
+ },
+ user:{
+    userPageHeader:'User details'
+ } 
+=======
  }
-}
 
 
 

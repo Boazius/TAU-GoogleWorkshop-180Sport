@@ -13,6 +13,8 @@ const routes = [
       { path: '/trainees', component: () => import('pages/admin/Trainees.vue'), },
       { path: '/trainees/:id', component: () => import('pages/Trainee.vue')},
       { path: '/login', component: () => import('pages/login/UserLogin.vue') },
+      { path: '/user/:id', component: () => import('pages/admin/UserPage.vue'), },
+
     ]
   },
 

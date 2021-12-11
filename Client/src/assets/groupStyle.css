@@ -1,0 +1,12 @@
+.group_header,
+.q-table th {
+  font-weight: bold;
+  color: #012d5d;
+}
+
+.list-items{
+    font-weight: bold;
+  font-size: large;
+  color: #012d5d;
+
+}
