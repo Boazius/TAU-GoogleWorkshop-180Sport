@@ -56,7 +56,7 @@ def post_training_by_group_id(current_user):
         db.session.add(new_training)
         training_id=db.session.query(func.max(Training.id)).scalar()
         training_string = group_from_db.trainings_list
-        if training_string == "":
+        if training_string == "" or training_string is None:
             training_list = []
         else:
             training_list = training_string.split(",")
