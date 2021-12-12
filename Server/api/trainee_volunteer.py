@@ -18,7 +18,7 @@ def post_message(current_user,user_id,training_id):
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
         return jsonify({'success': False, 'message': 'No training found!'})
-    if not id_in_group(current_user.group_ids, training_from_db.group_id): #user not in the group fit for training
+    if not id_in_group(current_user.group_ids, training_from_db.group_id) and current_user.user_type != 1: #user not in the group fit for training
         return jsonify({'success': False, 'message': 'user not in the group fit for training'})
 
     try:
