@@ -1,0 +1,11 @@
+
+user type:
+    admin - 1
+    trainer - 2
+    trainee - 3
+    volunteer - 4
+
+attendance options:
+    none - 0
+    yes - 1
+    no - 2

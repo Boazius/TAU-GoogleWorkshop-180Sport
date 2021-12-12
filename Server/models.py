@@ -74,7 +74,7 @@ class Training(Base):
     meeting_place = Column(String(), nullable=False)
     attendance_users = Column(String()) #list
     is_happened = Column(Boolean())
-    trainers_id= Column(Integer(), ForeignKey("users.id"), nullable=False) #list
+    trainers_id = Column(Integer(), ForeignKey("users.id"), nullable=False) #list
     notes = Column(String()) #list
 
     def to_dict(self):

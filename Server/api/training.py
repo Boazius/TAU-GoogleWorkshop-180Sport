@@ -16,11 +16,13 @@ def id_in_group(group_ids, group_id):
         return True
     return False
 
+
 def list_intToString(lst):
     string_ints = [str(int) for int in lst]
 
     str_of_ints = ",".join(string_ints)
     return str_of_ints
+
 
 @training.post('/training/by_group_id/')
 @token_required
@@ -67,6 +69,7 @@ def post_training_by_group_id(current_user):
     except:
             return jsonify(
             {"success": False, "message": "Something went wrong"}), 400
+
 
 @training.put('/training/<training_id>/')
 @token_required
@@ -136,7 +139,7 @@ def delete_training(current_user,training_id):
 
 @training.get('/training/<training_id>/')
 @token_required
-def get_training(current_user,training_id):
+def get_training(current_user, training_id):
     from main import db
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
@@ -165,6 +168,7 @@ def get_attendance_list_by_training(current_user,training_id):
     except:
         return jsonify(
             {"success": False, "message": "Something went wrong3"}), 400
+
 
 @training.get('/training/get_messages_by_training/<training_id>/')
 @token_required
