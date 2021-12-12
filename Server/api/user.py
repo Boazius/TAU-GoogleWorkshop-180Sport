@@ -2,7 +2,6 @@ import datetime
 import flask
 import jwt
 from flask import Blueprint, jsonify, url_for, session
-from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 from utils import token_required, login_required
 
@@ -74,9 +73,6 @@ def update_user_by_id(current_user, user_id):
                 if user_exists:
                     return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
                 user_from_db.email = data['email']
-            if key == 'password':
-                hashed_password = generate_password_hash(data['password'], method='sha256')
-                user_from_db.password = hashed_password
             if key == 'full_name':
                 user_from_db.full_name = data['full_name']
             if key == 'phone_number':
