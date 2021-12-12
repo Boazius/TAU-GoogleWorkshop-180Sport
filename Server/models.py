@@ -73,11 +73,10 @@ class Training(Base):
     day = Column(Integer(), nullable=False)
     time = Column(String(), nullable=False)
     meeting_place = Column(String(), nullable=False)
-    attendance_users = Column(String()) #list
+    attendance_users = Column(String()) #dict
     is_happened = Column(Boolean())
-    #trainers_id = Column(Integer(), ForeignKey("users.id"), nullable=False) #list
-    trainers_id = Column(String()) #list
-    notes = Column(String()) #list
+    trainers_id = Column(Integer(), ForeignKey("users.id")) #list
+    notes = Column(String()) #dict
 
 
     def to_dict(self):
