@@ -77,7 +77,7 @@ def post_training_by_group_id(current_user):
         return jsonify({"success": True, "training": new_training.to_dict()})
     except:
             return jsonify(
-            {"success": False, "message": "Something went wrong2"}), 400
+            {"success": False, "message": "Something went wrong"}), 400
 
 
 @training.put('/training/<training_id>/')
@@ -100,14 +100,14 @@ def put_training(current_user, training_id):
                 training_from_db.time = data['time']
             if key == 'meeting_place':
                 training_from_db.meeting_place = data['meeting_place']
-            if key == 'attendance_users':
-                training_from_db.attendance_users = data['attendance_users']
+           # if key == 'attendance_users':
+           #     training_from_db.attendance_users = data['attendance_users']
             if key == 'is_happened':
                 training_from_db.is_happened = data['is_happened']
             if key == 'trainers_id':
                 training_from_db.trainers_id = data['trainers_id']
-            if key == 'notes':
-                training_from_db.notes = data['notes']
+            #if key == 'notes':
+            #    training_from_db.notes = data['notes']
         db.session.commit()
         return jsonify({"success": True, "training": training_from_db.to_dict()})
     except:
@@ -173,7 +173,7 @@ def get_attendance_list_by_training(current_user,training_id):
             return jsonify(
                 {'success': False, 'message': 'No attendance for training found!'})
         return jsonify(
-            {"success": True, "training_attendance": training_attendance})
+            {"success": True, "training_attendance": json.loads(training_attendance)})
     except:
         return jsonify(
             {"success": False, "message": "Something went wrong3"}), 400
@@ -187,5 +187,6 @@ def get_messages_by_user_and_training(current_user,training_id):
         return jsonify({"success": False,
                         "message": "User cannot view messages list per training, unless it is admin/trainer"}), 401
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+
     return jsonify(
-            {"success": True, "training_messages": training_from_db.notes})
+            {"success": True, "training_messages": json.loads(training_from_db.notes)})

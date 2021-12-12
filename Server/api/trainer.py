@@ -2,6 +2,7 @@ import flask
 from flask import Blueprint, abort, jsonify
 from models import User, Group, Training, Attendance_options
 from utils import token_required, login_required
+import json
 
 trainer = Blueprint('trainer', __name__)
 
@@ -26,19 +27,17 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
             id=training_id).first()
         if not training_from_db:
             return jsonify({'success': False, 'message': 'No training found!'})
-        attendance_string = training_from_db.attendance_users
-        if attendance_string == "":
+        attendance = training_from_db.attendance_users
+        if attendance == None:
             return jsonify({"success": False,
                             "message": "attendance list is empty"}), 401
         else:
-            attendance_list = attendance_string.split(",")
-
-        if str(user_id) not in attendance_list:
+            attendance_dict = json.loads(attendance)
+        if str(user_id) not in attendance_dict.keys():
             return jsonify({"success": False,
                             "message": "user not in attendance training"}), 401
-        attendance_list.remove(str(user_id))
-        training_from_db.attendance_users = listToString(attendance_list)
-        user_from_db.attendance = data['attendance']
+        attendance_dict[user_id] = data['attendance']
+        training_from_db.attendance_users = json.dumps(attendance_dict)
         db.session.commit()
         return jsonify({"success": True,
                         "message": "update attendance for training: " + training_id + " for user: " + str(
