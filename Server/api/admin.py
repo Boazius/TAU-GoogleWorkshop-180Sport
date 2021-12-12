@@ -82,9 +82,20 @@ def get_all_users(current_user):
     try:
         all_users_3 = db.session.query(User).filter_by(user_type=3).all()
         all_users_4 = db.session.query(User).filter_by(user_type=4).all()
+        if not all_users_3:
+            if not all_users_4:
+                return jsonify({'success': False, 'message': 'No users found!'})
+            else:  # all_users_3 = None , all_users_4 not empty
+                list_return = [user.to_dict() for user in all_users_4]
+                db.session.commit()
+                return jsonify(
+                    {'success': True, 'list of users': list_return}), 200
+        if not all_users_4:
+            list_return = [user.to_dict() for user in all_users_3]
+            db.session.commit()
+            return jsonify(
+                {'success': True, 'list of users': list_return}), 200
         all_users=all_users_3+all_users_4
-        if not all_users:
-            return jsonify({'success': False, 'message': 'No users found!'})
         list_return = [user.to_dict() for user in all_users]
         db.session.commit()
         return jsonify({'success': True, 'list of users': list_return}), 200

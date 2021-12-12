@@ -18,10 +18,18 @@ def id_in_group(group_ids, group_id):
 
 
 def list_intToString(lst):
+    if lst == []:
+        return None;
     string_ints = [str(int) for int in lst]
 
     str_of_ints = ",".join(string_ints)
     return str_of_ints
+
+def checkdict(dict):
+    if dict == {}:
+        return None;
+    else:
+        return json.dumps(dict);
 
 
 @training.post('/training/by_group_id/')
@@ -47,14 +55,15 @@ def post_training_by_group_id(current_user):
                 list_of_trainers.append(user.id)
             if user.user_type in [3, 4] and id_in_group(user.group_ids,group_id):
                 list_of_users.append(user.id)
-        notes_dict = dict((el, 0) for el in list_of_users)
+        notes_dict = dict((str(el), "0") for el in list_of_users)
+        users_dict = dict((str(el), "0") for el in list_of_users)
         new_training = Training(group_id=group_id, day=group_from_db.day,
                                 time=group_from_db.time,
                                 meeting_place=group_from_db.meeting_place,
-                                attendance_users=list_intToString(list_of_users),
+                                attendance_users=checkdict(users_dict),
                                 is_happened=True,
                                 trainers_id=list_intToString(list_of_trainers),
-                                notes=json.dumps(notes_dict))
+                                notes=checkdict(notes_dict))
         db.session.add(new_training)
         training_id=db.session.query(func.max(Training.id)).scalar()
         training_string = group_from_db.trainings_list
@@ -68,7 +77,7 @@ def post_training_by_group_id(current_user):
         return jsonify({"success": True, "training": new_training.to_dict()})
     except:
             return jsonify(
-            {"success": False, "message": "Something went wrong"}), 400
+            {"success": False, "message": "Something went wrong2"}), 400
 
 
 @training.put('/training/<training_id>/')

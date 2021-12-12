@@ -6,8 +6,7 @@ from utils import token_required, login_required
 trainer = Blueprint('trainer', __name__)
 
 
-@trainer.put(
-    '/trainer/update_attendance_list_per_training_per_user/<training_id>/')
+@trainer.put('/trainer/update_attendance_list_per_training_per_user/<training_id>/')
 @token_required
 def update_attendance_list_per_training_per_user(current_user, training_id):
     from main import db

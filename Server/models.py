@@ -2,10 +2,11 @@
 models.py
 - Data classes for the surveyapi application
 """
-
+import json
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, create_engine, ForeignKeyConstraint, \
-    CheckConstraint
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, \
+    create_engine, ForeignKeyConstraint, \
+    CheckConstraint, inspect
 
 Base = declarative_base()
 engine = create_engine('sqlite:///180.db', echo=True)
@@ -74,18 +75,26 @@ class Training(Base):
     meeting_place = Column(String(), nullable=False)
     attendance_users = Column(String()) #list
     is_happened = Column(Boolean())
-    trainers_id = Column(Integer(), ForeignKey("users.id"), nullable=False) #list
+    #trainers_id = Column(Integer(), ForeignKey("users.id"), nullable=False) #list
+    trainers_id = Column(String()) #list
     notes = Column(String()) #list
+
 
     def to_dict(self):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            if key == "attendance_users" or key == "trainers_id" or key == "notes":
+            if key == "trainers_id" :
                 if getattr(self, key) is not None:
                     ret_data[key] = str(getattr(self, key)).split(',')
                 else:
                     ret_data[key] = getattr(self, key)
+            elif key == "attendance_users" or key == "notes":
+                if getattr(self, key) is not None:
+                    ret_data[key] = json.loads(getattr(self, key))
+                else:
+                    ret_data[key] = getattr(self, key)
+
             else:
                 ret_data[key] = getattr(self, key)
         return ret_data
