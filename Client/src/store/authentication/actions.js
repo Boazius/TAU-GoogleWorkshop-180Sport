@@ -1,30 +1,39 @@
-import i18n from 'src/boot/i18n';
-import { Quasar } from 'quasar';
+import i18n from "src/boot/i18n";
+import { Quasar } from "quasar";
+
+//
+//  Action: Set current edited user
+//
+export async function setEditedUser({ commit }, payload) {
+  commit("setEditedUser", payload);
+}
+
+//
+//  Action: Update user
+//
+export async function updateUserData({ commit }, payload) {}
 
 //
 //  Action: Set Language
 //
 export async function setLanguage({ commit }, payload) {
-  let lang = '';
+  let lang = "";
   if (payload) {
     lang = payload;
-    localStorage.setItem('user_lang', lang);
+    localStorage.setItem("user_lang", lang);
   } else {
-    const local = localStorage.getItem('user_lang');
+    const local = localStorage.getItem("user_lang");
     if (local) {
       lang = local;
     } else {
-      localStorage.setItem('user_lang', lang);
+      localStorage.setItem("user_lang", lang);
       lang = i18n.locale;
     }
   }
-  commit('setLanguage', lang);
-  await import(
-    'quasar/lang/' + lang
-    )
-    .then(lang => {
-      Quasar.lang.set(lang.default)
-    })
+  commit("setLanguage", lang);
+  await import("quasar/lang/" + lang).then((lang) => {
+    Quasar.lang.set(lang.default);
+  });
 
   i18n.locale = lang;
 }

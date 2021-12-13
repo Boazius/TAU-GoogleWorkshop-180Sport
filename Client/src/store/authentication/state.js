@@ -1,13 +1,14 @@
-export default function() {
+export default function () {
   return {
     error: {
       show: false,
-      message: ''
+      message: "",
     },
+    editedUser: {},
     user: {
       authenticated: false,
       currentUser: {},
-      language: '',
+      language: "",
     },
   };
 }

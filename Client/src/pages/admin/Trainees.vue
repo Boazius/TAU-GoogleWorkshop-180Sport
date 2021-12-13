@@ -11,7 +11,7 @@
 import userTable from 'components/table/UserTable.vue';
 
 export default {
-  components: { 
+  components: {
     userTable
     },
  };
