@@ -1,12 +1,12 @@
 <template>
-  <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-md">
+  <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-lg item" >
     <p class="q-ma-none">{{ $t("dashboard.closest") }}</p>
     <p class="q-ma-none">{{ $t("dashboard.date") }}</p>
-    <q-input v-model="date" type="date" />
+    <q-input class="item" v-model="date" type="date" />
     <p class="q-ma-none">{{ $t("dashboard.time") }}</p>
-    <q-input v-model="time" type="time" />
+    <q-input class="item" v-model="time" type="time" />
     <p class="q-ma-none">{{ $t("dashboard.location") }}</p>
-    <q-input v-model="location" type="text" />
+    <q-input class="item" v-model="location" type="text" />
   </div>
 </template>
 
@@ -25,3 +25,6 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+@import "assets/groupStyle.css";
+</style>

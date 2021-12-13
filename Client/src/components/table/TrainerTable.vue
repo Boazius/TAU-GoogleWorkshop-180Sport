@@ -12,61 +12,23 @@
       <template v-slot:body="props">
         <q-tr :props="props">
            <q-td key="name" :props="props">
-             <q-item to="/user/:id" clickable v-ripple style="display: table-cell; vertical-align: end;">    <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+            <q-item @click="goToUserPage(props.row)" clickable v-ripple style="display: table-cell; vertical-align: end;">    <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
             {{ props.row.name }}
-            <!-- <q-popup-edit v-model="props.row.name"  title="ערוך שם" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit> -->
             </q-item>
 
           </q-td>
           <q-td key="phone" :props="props">
             {{ props.row.phone }}
-            <!-- <q-popup-edit v-model="props.row.phone" title="ערוך טלפון" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
-              <template v-slot="scope">
-                <q-input type="phone" v-model="props.row.phone" :rules="[
-                val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit> -->
           </q-td>
            <q-td key="groups" :props="props">{{ props.row.groups }}
-            <q-popup-edit v-model="props.row.groups" title="ערוך קבוצה" >
-              <q-input v-model="props.row.groups" />
-            </q-popup-edit>
           </q-td>
         </q-tr>
       </template>
       <template v-slot:top>
-        <table-top-buttons></table-top-buttons>
+        <table-top-buttons 
+      :rows="rows"
+      :rowCount="rowCount"
+      :loading="loading"></table-top-buttons>
         <q-space />
     <q-input  borderless dense debounce="300" color="primary" v-model="filter" outlined placeholder="Search">
         <template v-slot:append>
@@ -85,10 +47,17 @@ import TableTopButtons from 'components/table/TableTopButtons.vue';
 
 const columns = trainerColumns;
 const originalRows = mockTrainers; //temporary for mock data until fetch from server is implemented
-
 export default defineComponent({
+  name:'TrainerTable',
   components: { TableTopButtons },
+   methods:{
+    goToUserPage(row){
+      const user = JSON.stringify(row);
+      localStorage.setItem('userdata', user);      
+      this.$router.push('/user/:id'); 
+    },  
 
+  },
   setup() {
     const rows = ref([]);
     const filter = ref("");

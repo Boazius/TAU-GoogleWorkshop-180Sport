@@ -16,31 +16,14 @@ export const userColumns = [
     align:'center'
   },
     {
-    name: "group",
+    name: "groups",
     label: "קבוצה",
-    field: "group",
+    field: "groups",
     sortable: true,
     align:'center'
     },
-      {
-    name: "area",
-    label: "איזור מגורים",
-    field: "area",
-    sortable: true,
-    align:'left'
-    },
-  {
-    name: "message",
-    label: "הודעות חדשות",
-    field: "message",
-    align:'left'
-    },
-    {
-    name: "comment",
-    label: "פרסם הודעה למשתמש",
-    field: "comment",
-    align:'left'
-    },
+
+
 ];
 export const trainerColumns = [
   { name: 'name',

@@ -11,7 +11,7 @@
         ripple="center"
         color="primary"
         icon="arrow_forward"
-        to="/trainees"
+        to="/trainees/:id"
       />
       
       </div>
@@ -39,7 +39,7 @@ created() {
         this.userData = JSON.parse(localStorage.getItem("userdata"));
    }
    else{
-     this.userData ={}
+     this.userData ={id: 4, name: "נינט לוי", phone: "0526831999", groups: 1, postick: "היי,לצערי לא אוכל להגיע", "attendance":1,"userType":3}
    }
   window.addEventListener('beforeunload', this.handler)
 
@@ -51,12 +51,7 @@ data() {
         userData: undefined
     };
   },
-  methods: {
-    handler() {
-      console.log(8);
-      window.localStorage.removeItem('userdata');
-    },
-  },
+  
   components: {
     UserCredentialsList
   },
