@@ -1,6 +1,7 @@
 <template>
   <div class="row  q-gutter-x-md items-center bg-grey-2 q-pa-md">
     <q-list separator class="list-items">
+
         <q-item>
                 <q-item-label>{{$t("table.name")}}
                   <q-input class="list-items" v-model="name" type="text" />
@@ -16,11 +17,9 @@
                   <q-input class="list-items" v-model="groups" type="text" />
             </q-item-label>
       </q-item>
-              <q-item>
-                <q-item-label>{{$t("table.livingArea")}}
-                  <q-input class="list-items" v-model="livingArea" type="text" />
-                </q-item-label>
-            </q-item>
+
+        <q-btn class="q-ml-sm" color="primary" :disable="loading" :label="$t('user.delete')" no-caps />
+
     </q-list>
   </div>
 </template>
@@ -35,7 +34,7 @@ export default defineComponent({
     return {
       name: this.userData.name,
       phone: this.userData.phone,
-      groups: [this.userData.group],
+      groups: [this.userData.groups],
       livingArea: this.userData.area,
     };
   },

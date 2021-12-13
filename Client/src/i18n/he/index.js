@@ -13,13 +13,20 @@ export default {
       groups:'קבוצות',
       volunteers:'מתנדבים',
       logout:'התנתקות',
-      trainee:'מתאמן (בדיקה)',
-      trainer:'מאמן (בדיקה)'
+      trainee:'האימון הקרוב',
+      traineeDetails:'הפרטים שלי',
+      trainer:'הקבוצות שלי'
     },
     confirmation:{
       areYouComing:'האם אתה מתכנן להגיע?',
       yes:'ברור שכן',
-      no:'לא הפעם'
+      no:'לא הפעם',
+      savedSelection: "תודה רבה, בחירתך נשמרה!",
+      post:'רוצה להשאיר הודעה קצרה למאמן?',
+      noNewPosts:"לא התקבלה הודעה",
+      close:"סגור",
+
+
     }
   },
   authentication: {
@@ -46,11 +53,16 @@ export default {
   group:{
     groupDetails:'פרטי הקבוצה',
     closest:'פרטי האימון הקרוב',
-    prior:'פרטי האימון האחרון'
+    prior:'פרטי האימון האחרון',
+    markPresent:"סמן שנכח",
+    markNotPresent: 'סמן שלא נכח',
+    present: "נכחו",
+    notPresent: "לא נכחו",
+    unknown:"לא ידוע",
+
   },
   table:{
     add:'הוסף',
-    delete:'מחק',
     export:'יצא טבלה',
     title:{
       trainers:'מאמנים',
@@ -67,14 +79,13 @@ export default {
     editGroups:'ערוך קבוצות',
     invalidGroups:'קבוצות לא תקינות',
     hintGroups:'ניתן להוסיף כמה קבוצות',
-    livingArea:'איזור מגורים',
-    editLivingArea:'ערוך איזור מגורים',
-    invalidLivingArea:'איזור מגורים לא תקין',
     posticks:'פתקים חדשים',
-    markAsRead:'סמן כנקרא',
-    post:'פרסם פתק למשתמש'
  } ,
  user:{
-  userPageHeader:'פרטי משתמש'
+  userPageHeader:'פרטי משתמש',
+  yes:"כן",
+  no:"לא",
+  unknown:"לא ידוע",
+  delete:'מחק משתמש',
 } 
 }

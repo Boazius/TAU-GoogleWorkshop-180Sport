@@ -12,6 +12,7 @@ const routes = [
       { path: '/volunteers', component: () => import('pages/admin/Volunteers.vue') },
       { path: '/trainees', component: () => import('pages/admin/Trainees.vue'), },
       { path: '/trainees/:id', component: () => import('pages/Trainee.vue')},
+      { path: '/trainees/:id/details', component: () => import('pages/TraineeDetails.vue')},
       { path: '/login', component: () => import('pages/login/UserLogin.vue') },
       { path: '/user/:id', component: () => import('pages/admin/UserPage.vue'), },
 
