@@ -13,6 +13,7 @@
   </section>
 </template>
 
+<<<<<<< HEAD
 <script>
 import { exportFile, useQuasar } from "quasar";
 import { defineComponent, ref } from "vue";
@@ -42,6 +43,22 @@ export default defineComponent({
   data() {
     return {
       loading: false,
+=======
+
+
+ <script > 
+
+import { defineComponent } from "vue";
+
+// }     
+export default 
+defineComponent({
+  name: "TableTopButtons",
+  props:["type"],
+  data(){
+    return{
+      loading: false
+>>>>>>> origin/main
     };
   },
 
@@ -49,6 +66,7 @@ export default defineComponent({
     addUser() {
       this.loading = true;
       setTimeout(() => {
+<<<<<<< HEAD
         this.loading = false;
         this.$router.push({
           path: "/user/123",
@@ -65,5 +83,27 @@ export default defineComponent({
     //   }, 500)
     // }
   },
+=======
+        
+        this.loading = false
+      }, 500)
+      // if (type == 2){
+      //  const user = JSON.stringify({id, name: "", phone: "", groups, postick: "", attendance,userType:type});
+
+      // }
+      // else if(type == 3| type == 4){
+      // const user = JSON.stringify({id, name: "", phone: "", groups,area:"", postick: "", attendance,userType:type});
+
+      // }
+      // else {
+      //   const user = {};
+      // }
+      // localStorage.setItem('userdata', user);      
+      // this.$router.push('/user/:id'); 
+  },
+
+    },   
+ 
+>>>>>>> origin/main
 });
 </script>

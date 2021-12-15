@@ -23,6 +23,7 @@
             <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
 
             {{ props.row.name }}
+<<<<<<< HEAD
             <!-- <q-popup-edit v-model="props.row.name"  :title="$t('table.editName')" :validate="val => val.length > 0">
               <template v-slot="scope">
                 <q-input type="name" v-model="props.row.name" :rules="[
@@ -120,6 +121,26 @@
         :rows="rows"
         :rowCount="rowCount"
         :loading="loading"
+=======
+            </q-item>
+          </q-td>
+          
+          <q-td key="phone" :props="props">
+            {{ props.row.phone }}
+          </q-td>
+          <q-td key="groups" :props="props">{{ props.row.groups }}
+          </q-td>
+          <q-td key="area" :props="props">{{ props.row.area }}
+          </q-td>
+        </q-tr>
+
+      </template>
+      <template v-slot:top>
+        <table-top-buttons 
+      :rows="rows"
+      :rowCount="rowCount"
+      :loading="loading"
+>>>>>>> origin/main
       ></table-top-buttons>
       <q-space />
       <q-input
@@ -141,10 +162,18 @@
 
 <script>
 import { ref, onMounted, defineComponent } from "vue";
+<<<<<<< HEAD
 import { useQuasar } from "quasar";
 import { userColumns } from "components/table/TableColumns.js";
 import { mockRows } from "./mockdata.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
+=======
+import { useQuasar } from 'quasar';
+import { userColumns  } from "components/table/TableColumns.js";
+import { mockRows  } from "./mockdata.js";
+import TableTopButtons from 'components/table/TableTopButtons.vue';
+
+>>>>>>> origin/main
 
 const originalRows = mockRows; //temporary for mock data until fetch from server is implemented
 const columns = userColumns;
@@ -153,6 +182,7 @@ export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
 
+<<<<<<< HEAD
   methods: {
     goToUserPage(row) {
       const user = JSON.parse(JSON.stringify(row));
@@ -163,6 +193,14 @@ export default defineComponent({
       user = JSON.stringify(row);
       localStorage.setItem("userdata", user);
     },
+=======
+  methods:{
+    goToUserPage(row){
+      const user = JSON.stringify(row);
+      localStorage.setItem('userdata', user);      
+      this.$router.push('/user/:id'); 
+    },  
+>>>>>>> origin/main
   },
   setup() {
     const rows = ref([]);
@@ -181,14 +219,20 @@ export default defineComponent({
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
+<<<<<<< HEAD
       // console.log(1);
+=======
+>>>>>>> origin/main
       const data = filter
         ? originalRows.filter((row) => row.name.includes(filter))
         : originalRows.slice();
 
       // handle sortBy
       if (sortBy) {
+<<<<<<< HEAD
         // console.log(2);
+=======
+>>>>>>> origin/main
 
         const sortFn =
           sortBy === "desc"
@@ -206,19 +250,29 @@ export default defineComponent({
 
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
+<<<<<<< HEAD
       // console.log(3);
 
       if (!filter) {
         // console.log(4);
+=======
+
+      if (!filter) {
+>>>>>>> origin/main
 
         return originalRows.length;
       }
       let count = 0;
+<<<<<<< HEAD
       // console.log(5);
 
       originalRows.forEach((treat) => {
         if (treat.name.includes(filter)) {
           // console.log(6);
+=======
+      originalRows.forEach((treat) => {
+        if (treat.name.includes(filter)) {
+>>>>>>> origin/main
 
           ++count;
         }
@@ -229,7 +283,10 @@ export default defineComponent({
     function onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const filter = props.filter;
+<<<<<<< HEAD
       // console.log(7);
+=======
+>>>>>>> origin/main
 
       loading.value = true;
 
@@ -269,7 +326,10 @@ export default defineComponent({
     }
 
     onMounted(() => {
+<<<<<<< HEAD
       // console.log(8);
+=======
+>>>>>>> origin/main
 
       // get initial data from server (1st page)
       onRequest({
