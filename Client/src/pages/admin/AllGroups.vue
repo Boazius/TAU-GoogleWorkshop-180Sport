@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import groupsList from 'components/list/groupsList.vue'
+import groupsList from 'components/list/GroupsList.vue'
 
 export default {
   components: { groupsList }
@@ -13,6 +13,6 @@ export default {
 
 
 <style scoped lang="scss">
-@import "assets/groupStyle.css"
+@import "assets/groupStyle.css";
 </style>
 

@@ -141,7 +141,7 @@
 
 <script>
 import { ref, onMounted, defineComponent } from "vue";
-import { exportFile, useQuasar } from "quasar";
+import { useQuasar } from "quasar";
 import { userColumns } from "components/table/TableColumns.js";
 import { mockRows } from "./mockdata.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";

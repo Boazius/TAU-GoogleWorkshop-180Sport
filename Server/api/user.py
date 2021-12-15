@@ -1,7 +1,7 @@
 import datetime
 import flask
 import jwt
-from flask import Blueprint, jsonify, url_for, session
+from flask import Blueprint, jsonify, url_for, session, redirect
 from models import User
 from utils import token_required, login_required
 
@@ -21,14 +21,17 @@ def authorize():
     from main import oauth
     google = oauth.create_client('google')  # create the google oauth client
     token = google.authorize_access_token()  # Access token from google (needed to get user info)
-    resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
+    resp = google.get('userinfo')  # userinfo contains stuff u specified in the scrope
     user_info = resp.json()
     user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
     # Here you use the profile/user data that you got and query your database find/register the user
     # and set ur own data in the session not the profile from google
     session['profile'] = user_info
-    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
-    return jsonify({"success": True, "token": token}), 200
+    session.permanent = True  # make the session permanent, so it keeps existing after browser gets closed
+
+    #return jsonify({"success": True, "token": token}), 200
+    return redirect('http://localhost:8080/login_success?id_token='+str(token))
+    # jsonify({"success": True, "token": token}), 200
 
 
 @user.route('/logout')

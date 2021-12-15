@@ -38,6 +38,7 @@ import { defineComponent, ref } from "vue";
 // }
 export default defineComponent({
   name: "TableTopButtons",
+  props: ["type"],
   data() {
     return {
       loading: false,

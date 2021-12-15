@@ -3,6 +3,8 @@ from application import create_app
 from models import User
 from models import User_type
 from authlib.integrations.flask_client import OAuth
+from flask_cors import CORS
+
 
 app = create_app()
 # oAuth Setup
@@ -21,7 +23,7 @@ google = oauth.register(
     client_kwargs={'scope': 'openid email profile'},
 )
 db = SQLAlchemy(app)
-
+CORS(app)
 
 @app.route("/hello")
 def hello():

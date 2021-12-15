@@ -1,5 +1,22 @@
 import i18n from "src/boot/i18n";
 import { Quasar } from "quasar";
+import axios from "axios";
+
+const serverUrl = "http://127.0.0.1:5000";
+
+//
+//  Action: Google login
+//
+export async function login({}) {
+  const response = await axios
+    .post(`${serverUrl}/user/5`)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.log(error);
+      return error;
+    });
+  return response;
+}
 
 //
 //  Action: Set current edited user

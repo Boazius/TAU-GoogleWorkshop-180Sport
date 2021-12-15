@@ -1,6 +1,26 @@
 <template>
   <q-page padding>
-    <h3 class="table_header q-ma-sm">{{ $t("user.userPageHeader") }}</h3>
+    <div class="row">
+      <div>
+        <q-btn
+          size="sm"
+          class="q-ml-md"
+          padding="sm"
+          round
+          glossy
+          ripple="center"
+          color="primary"
+          icon="arrow_forward"
+          to="/trainees"
+        />
+      </div>
+      <q-item-section
+        class="table_header wrap q-mb-sm"
+        style="font-size: xx-large"
+        >{{ $t("user.userPageHeader") }}
+      </q-item-section>
+      <q-space />
+    </div>
     <user-credentials-list></user-credentials-list>
   </q-page>
 </template>

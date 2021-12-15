@@ -3,9 +3,9 @@
   <div class="q-pa-md" style="max-width: 355px">
     <h3 class="group_header  q-mb-none">{{$t('app.groups')}}</h3>
     <q-list bordered separator class="list-items">
-      <q-item v-for="group in groups" v-bind:key='group' to="/groups/id" :props="group" clickable v-ripple>
+      <q-item v-for="group in groups" v-bind:key='group' @click="goToGroupPage(group)" clickable v-ripple>
         <q-item-section>
-          <q-item-label>{{$t('groups.name')+group.number}}</q-item-label>
+          <q-item-label>{{$t('groups.name')+group.number+" - "+group.location}}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -25,7 +25,18 @@ data(){
     {number: 3, location: "רמת גן"},        
     ]
   }
-}
+},
+  methods:{
+    goToGroupPage(group){
+      const groupdata = JSON.stringify(group);
+      localStorage.setItem('groupdata', groupdata);      
+      this.$router.push('/groups/:id'); 
+    },  
+    saveUser(group){
+      groupdata = JSON.stringify(group);
+      localStorage.setItem('groupdata', groupdata);
+    },
+  },
 });
 </script>
 
