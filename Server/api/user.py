@@ -117,3 +117,16 @@ def get_user(current_user, user_id):
         return jsonify({"success": False,
                         "message": "User cannot view different user details, unless it is admin/trainer"}), 401
     return jsonify({'success': True, 'user': user_from_db.to_dict()})
+
+
+@user.get('/user/<user_email>/')
+@token_required
+def get_user_by_email(current_user, user_email):
+    from main import db
+    user_from_db = db.session.query(User).filter_by(email=user_email).first()
+    if not user_from_db:
+        return jsonify({'success': False, 'message': 'No user found!'})
+    if current_user.user_type in [3, 4] and current_user.email != user_email:
+        return jsonify({"success": False,
+                        "message": "User cannot view different user details, unless it is admin/trainer"}), 401
+    return jsonify({'success': True, 'user': user_from_db.to_dict()})
