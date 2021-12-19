@@ -71,11 +71,6 @@ def update_user_by_id(current_user, user_id):
     data = flask.request.json
     try:
         for key in data.keys():
-            if key == 'email':
-                user_exists = db.session.query(User).filter_by(email=data['email']).first()
-                if user_exists:
-                    return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
-                user_from_db.email = data['email']
             if key == 'full_name':
                 user_from_db.full_name = data['full_name']
             if key == 'phone_number':
