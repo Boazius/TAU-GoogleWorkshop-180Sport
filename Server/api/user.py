@@ -114,7 +114,7 @@ def get_user(current_user, user_id):
     return jsonify({'success': True, 'user': user_from_db.to_dict()})
 
 
-@user.get('/user/<user_email>/')
+@user.get('/user/email/<user_email>/')
 @token_required
 def get_user_by_email(current_user, user_email):
     from main import db

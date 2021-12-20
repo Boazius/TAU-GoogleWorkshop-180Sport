@@ -5,9 +5,24 @@
 <script>
 export default {
   name: "SuccessPage",
-  beforeMount() {
+  async beforeMount() {
     const urlParams = new URLSearchParams(window.location.search);
-    let id_token = urlParams.get("id_token");
+    let id = urlParams.get("id_token");
+    let id_token = id.split(",").find((x) => x.includes("id_token"));
+    id_token = id_token
+      .replace(/\s/g, "")
+      .replace(/["']/g, "")
+      .replace("id_token:", "");
+    if (id_token !== "") {
+      localStorage.setItem("id_token", id_token);
+      const pageToRedirectTo = await this.$store.dispatch(
+        "authentication/setActiveUser",
+        id_token
+      );
+      this.$router.push(`/${pageToRedirectTo}`);
+    } else {
+      this.$router.push("/login");
+    }
   },
 };
 </script>
