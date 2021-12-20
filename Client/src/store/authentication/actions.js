@@ -9,7 +9,7 @@ const serverUrl = "http://127.0.0.1:5000";
 //
 export async function setActiveUser(id_token) {
   const response = await axios
-    .get(`${serverUrl}/user_by_email/felix.yakubov91@gmail.com`, {
+    .get(`${serverUrl}/user/email/garret866@gmail.com`, {
       headers: {
         "x-access-token": id_token,
       },
