@@ -3,9 +3,17 @@ import json
 from flask import Blueprint, abort,jsonify
 from models import User, Group, Training, Attendance_options
 from utils import token_required, login_required
+import datetime
+from datetime import  datetime, timedelta,date
 
 trainee = Blueprint('trainee_volunteer', __name__)
 
+def find_closest_date(x):
+    today_date=date.today()
+    b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
+    d = datetime.strptime(str(x), "%Y-%m-%d")
+    delta = d - b_d if d > b_d else timedelta.max
+    return delta
 
 @trainee.post('/trainee/message/<user_id>/<training_id>/')
 @token_required
@@ -50,23 +58,54 @@ def delete_message(current_user,user_id,training_id):
     return jsonify({"success": True,
                     "message": "message was deleted successfully"}), 200
 
-"""""
-@trainee.get('/trainee/<user_id>/get_closest_training_by_user_id')
+@trainee.get('/trainee/get_closest_training/<user_id>/')
 @token_required
-def get_closest_training_by_group_id(current_user,user_id,group_id):
-    from Server.main import db
-    group_from_db = db.session.query(Group).filter_by(id=group_id).first()
-    trainings=group_from_db.trainings_list
-    
+def get_closest_training(current_user,user_id):
+    from main import db
+    if current_user.user_type in [3,4] and current_user.user_id != user_id:
+        return jsonify({"success": False,
+                    "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
+    user_from_db = db.session.query(User).filter_by(id=user_id).first()
+    if not user_from_db:
+        return jsonify({"success": False,"message": "no user found"}), 401
+    today_date=date.today()
+    b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
+    dict_training_date={}
+    for group_id in user_from_db.group_ids:
+        trainings = db.session.query(Training).filter_by(group_id=int(group_id)).all()
+        list_date=[]
+        for training in trainings:
+            if not training:
+                return jsonify({"success": False, "message": "no training found"}), 401
+            training_date = datetime.strptime(str(training.date), "%Y-%m-%d")
+            if training_date>b_d:
+                list_date.append(training.date)
+        if list_date is None or list_date==[]:
+            return jsonify({"success": False, "message": "no training found"}), 401
+        the_date=min(list_date, key=find_closest_date)
+        training_from_db =db.session.query(Training).filter_by(group_id=group_id,date=the_date).first()
+        if not training_from_db:
+            return jsonify({"success": False, "message": "no training found"}), 401
+        date_value=datetime.strptime(str(training_from_db.date),"%Y-%m-%d")
+        dict_training_date[training_from_db.id]=date_value
 
-"""""
+    if dict_training_date == {}:
+        return jsonify({"success": False, "message": "no training found"}), 401
+    the_id= min(dict_training_date,key=dict_training_date.get) #get the key corresponding to the minimum value within a dictionary
+    the_training = db.session.query(Training).filter_by(id=the_id).first()
+    if not the_training:
+        return jsonify({"success": False, "message": "no training found"}), 401
+
+    return jsonify({'success': True, 'training': the_training.to_dict()})
 
 
-@trainee.get('/trainee/get_closest_training_by_user_id/<user_id>/<training_id>/')
+@trainee.get('/trainee/get_closest_training_by_training_id/<user_id>/<training_id>/')
 @token_required
-def get_closest_training_by_user_id(current_user, user_id, training_id):
+def get_closest_training_by_training_id(current_user, user_id, training_id):
     from main import db
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({"success": False,"message": "no training found"}), 401
     if current_user.user_type in [3,4] and current_user.user_id != user_id:
         return jsonify({"success": False,
                     "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
