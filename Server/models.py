@@ -4,9 +4,10 @@ models.py
 """
 import json
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, \
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, \
     create_engine, ForeignKeyConstraint, \
     CheckConstraint, inspect
+
 
 Base = declarative_base()
 engine = create_engine('sqlite:///180.db', echo=True)
@@ -69,7 +70,7 @@ class Training(Base):
     __tablename__ = 'trainings'
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     group_id = Column(Integer(), ForeignKey("groups.id"), nullable=False)
-    #date = Column(DateTime(), nullable=False)
+    date = Column(Date(), nullable=False)
     day = Column(Integer(), nullable=False)
     time = Column(String(), nullable=False)
     meeting_place = Column(String(), nullable=False)
@@ -83,7 +84,7 @@ class Training(Base):
         columns = self.__table__.columns.keys()
         ret_data = {}
         for key in columns:
-            if key == "trainers_id" :
+            if key == "trainers_id":
                 if getattr(self, key) is not None:
                     ret_data[key] = str(getattr(self, key)).split(',')
                 else:
@@ -93,6 +94,8 @@ class Training(Base):
                     ret_data[key] = json.loads(getattr(self, key))
                 else:
                     ret_data[key] = getattr(self, key)
+            elif key == "date":
+                ret_data[key] = getattr(self, key)
 
             else:
                 ret_data[key] = getattr(self, key)
@@ -105,7 +108,7 @@ class Message(Base):
     user_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
     training_id = Column(Integer(), ForeignKey("trainings.id"), nullable=False)
     test = Column(String(), nullable=False)
-    date = Column(DateTime())
+    date = Column(Date())
 
 
 class Attendance_options(Base):
