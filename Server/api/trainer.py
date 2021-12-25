@@ -77,8 +77,6 @@ def get_closest_training(current_user, user_id,group_id):
         return jsonify({"success": False, "message": "no user found"}), 401
     today_date = date.today()
     b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
-    data = flask.request.json
-    group_id = int(data['group_id'])
     trainings = db.session.query(Training).filter_by(group_id=group_id).all()
     list_date = []
     for training in trainings:
@@ -91,7 +89,6 @@ def get_closest_training(current_user, user_id,group_id):
         return jsonify({"success": False, "message": "no training found"}), 401
     the_date = min(list_date, key=find_closest_date)
     training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=the_date).first()
-    print(training_from_db.id)
 
     if not training_from_db:
         return jsonify({"success": False, "message": "no training found"}), 401
