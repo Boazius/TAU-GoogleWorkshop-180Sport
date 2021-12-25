@@ -45,6 +45,8 @@ def get_all_groups(current_user):
         if not all_groups:
             return jsonify({'success': False, 'message': 'No groups found!'})
         list_return =[group.to_dict() for group in all_groups]
+        if list_return == [] or list_return is None:
+            return jsonify({'success': False, 'message': 'No groups found!'})
         db.session.commit()
         return jsonify({'success': True, 'list of group': list_return}), 200
     except:
@@ -64,6 +66,8 @@ def get_all_trainers(current_user):
         if not all_trainers:
             return jsonify({'success': False, 'message': 'No trainers found!'})
         list_return = [user.to_dict() for user in all_trainers]
+        if list_return == [] or list_return is None:
+            return jsonify({'success': False, 'message': 'No trainers found!'})
         db.session.commit()
         return jsonify({'success': True, 'list of trainers': list_return}), 200
     except:
@@ -97,8 +101,53 @@ def get_all_users(current_user):
                 {'success': True, 'list of users': list_return}), 200
         all_users=all_users_3+all_users_4
         list_return = [user.to_dict() for user in all_users]
+        if list_return == [] or list_return is None:
+            return jsonify({'success': False, 'message': 'No users found!'})
         db.session.commit()
         return jsonify({'success': True, 'list of users': list_return}), 200
+    except:
+        return jsonify(
+            {"success": False, "message": "Something went wrong"}), 400
+
+@admin.get('/admin/get_all_trainees')
+@token_required
+def get_all_trainees(current_user):
+    from main import db
+    if current_user.user_type != 1:
+        return jsonify({"success": False,
+                        "message": "User cannot see all group, unless it is admin"}), 401
+
+    try:
+        all_users_3 = db.session.query(User).filter_by(user_type=3).all()
+        if not all_users_3 or all_users_3 is None:
+            return jsonify({'success': False, 'message': 'No trainees found!'})
+        list_return = [user.to_dict() for user in all_users_3]
+        db.session.commit()
+        if list_return == [] or list_return is None:
+            return jsonify({'success': False, 'message': 'No trainees found!'})
+        return jsonify({'success': True, 'list of trainees': list_return}), 200
+    except:
+        return jsonify(
+            {"success": False, "message": "Something went wrong"}), 400
+
+
+@admin.get('/admin/get_all_volunteers')
+@token_required
+def get_all_volunteers(current_user):
+    from main import db
+    if current_user.user_type != 1:
+        return jsonify({"success": False,
+                        "message": "User cannot see all group, unless it is admin"}), 401
+
+    try:
+        all_users_4 = db.session.query(User).filter_by(user_type=4).all()
+        if not all_users_4 or all_users_4 is None:
+            return jsonify({'success': False, 'message': 'No volunteers found!'})
+        list_return = [user.to_dict() for user in all_users_4]
+        db.session.commit()
+        if list_return == [] or list_return is None:
+            return jsonify({'success': False, 'message': 'No volunteers found!'})
+        return jsonify({'success': True, 'list of volunteers': list_return}), 200
     except:
         return jsonify(
             {"success": False, "message": "Something went wrong"}), 400

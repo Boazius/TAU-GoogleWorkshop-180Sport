@@ -1,10 +1,12 @@
+
 import flask
 import json
-from flask import Blueprint, abort,jsonify
+from flask import Blueprint, abort, jsonify, Response
 from models import User, Group, Training, Attendance_options
 from utils import token_required, login_required
 import datetime
 from datetime import  datetime, timedelta,date
+import requests
 
 trainee = Blueprint('trainee_volunteer', __name__)
 
@@ -71,7 +73,10 @@ def get_closest_training(current_user,user_id):
     today_date=date.today()
     b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
     dict_training_date={}
-    for group_id in user_from_db.group_ids:
+    user_groups = user_from_db.group_ids
+    if user_groups != "" and user_groups is not None:
+        user_groups_list = user_groups.split(",")
+    for group_id in user_groups_list:
         trainings = db.session.query(Training).filter_by(group_id=int(group_id)).all()
         list_date=[]
         for training in trainings:
@@ -130,11 +135,27 @@ def update_attendance(current_user, user_id):
     try:
         data = flask.request.json
         user_from_db.attendance = data['attendance']
+        training=(get_closest_training(user_id).json)["training"]
+        if not training:
+            return jsonify({"success": False, "message": "no training found"}), 401
+        attendance = training["attendance_users"]
+        training_id =training["id"]
+        if attendance == None:
+            return jsonify({"success": False,
+                        "message": "attendance list is empty"}), 401
+        if str(user_id) not in attendance.keys():
+            return jsonify({"success": False,
+                        "message": "user not in attendance training"}), 401
+        attendance[user_id] = str(data['attendance'])
+        training_from_db = db.session.query(Training).filter_by(id=int(training_id)).first()
+        if not training_from_db:
+            return jsonify({"success": False, "message": "no training found"}), 401
+        training_from_db.attendance_users = json.dumps(attendance)
         db.session.commit()
-        return jsonify({"success": True, "user": "user update is attendance to:" + data['attendance'] })
+        return jsonify({"success": True,
+                    "user": "user update is attendance to:" + str(data['attendance'])})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
-
 
 
 
