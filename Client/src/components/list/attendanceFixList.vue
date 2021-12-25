@@ -5,7 +5,7 @@
           <q-item v-if='item.attendance==attendance' :key='item'>
           <q-item-section top>
             <q-item-label lines="1">
-              <span class="item-small">{{item.name}}</span>
+              <span class="item-small">{{item.full_name}}</span>
             </q-item-label>
           </q-item-section>
           <q-item-section side>

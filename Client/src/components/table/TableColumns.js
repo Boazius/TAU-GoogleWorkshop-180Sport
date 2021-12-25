@@ -1,6 +1,6 @@
 export const userColumns = [
   { 
-    name: 'name',
+    name: 'full_name',
     required: true,
     label: "שם",
     align: 'left',
@@ -9,9 +9,9 @@ export const userColumns = [
     sortable: true
   },
     {
-    name: "phone",
+    name: "phone_number",
     label: "טלפון",
-    field: "phone",
+    field: "phone_number",
     sortable: true,
     align:'center'
   },
@@ -22,6 +22,13 @@ export const userColumns = [
     sortable: true,
     align:'center'
     },
+    {
+      name: "email",
+      label: "מייל",
+      field: "email",
+      sortable: false,
+      align:'center'
+      },
 
 
 ];
