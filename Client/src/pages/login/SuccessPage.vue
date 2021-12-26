@@ -8,6 +8,7 @@ export default {
   async beforeMount() {
     const urlParams = new URLSearchParams(window.location.search);
     let id = urlParams.get("id_token");
+    let user_info = urlParams.get("user_info");
     let id_token = id.split(",").find((x) => x.includes("id_token"));
     id_token = id_token
       .replace(/\s/g, "")

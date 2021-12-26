@@ -7,7 +7,7 @@ const serverUrl = "http://127.0.0.1:5000";
 //
 //  Action: Set Active User
 //
-export async function setActiveUser(id_token) {
+export async function setActiveUser({}, id_token) {
   const response = await axios
     .get(`${serverUrl}/user/email/garret866@gmail.com`, {
       headers: {
