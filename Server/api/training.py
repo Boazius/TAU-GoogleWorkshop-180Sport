@@ -4,8 +4,27 @@ from models import User, Group, Training, Attendance_options
 from utils import token_required, login_required
 import json
 from sqlalchemy import func
+import datetime
+
 training = Blueprint('training', __name__)
 
+Days_and_numbers = {
+    "Sunday": 6,
+    "ראשון": 6,
+    "Monday": 0,
+    "שני": 0,
+    "Tuesday": 1,
+    "שלישי": 1,
+    "Wednesday": 2,
+    "רביעי": 2,
+    "Thursday": 3,
+    "חמישי": 3,
+    "Friday": 4,
+    "שישי": 4,
+    "Saturday": 5,
+    "שבת": 5
+}
+days=["Monday","Tuesday","Wednesday","Thursday","Friday", "Saturday","Sunday"]
 
 def id_in_group(group_ids, group_id):
     if group_ids == "":
@@ -47,6 +66,10 @@ def post_training_by_group_id(current_user):
         group_from_db = db.session.query(Group).filter_by(id=group_id).first()
         if not group_from_db:
             return jsonify({'success': False, 'message': 'No group found!'})
+        day = group_from_db.day
+        trainging_date = datetime.date.today()
+        while trainging_date.weekday() != Days_and_numbers[day]:
+            trainging_date += datetime.timedelta(1)
         users_from_db = db.session.query(User).all()
         list_of_trainers = []
         list_of_users = []
@@ -57,7 +80,8 @@ def post_training_by_group_id(current_user):
                 list_of_users.append(user.id)
         notes_dict = dict((str(el), "0") for el in list_of_users)
         users_dict = dict((str(el), "0") for el in list_of_users)
-        new_training = Training(group_id=group_id, day=group_from_db.day,
+        new_training = Training(group_id=group_id,
+                                date=trainging_date,day=group_from_db.day,
                                 time=group_from_db.time,
                                 meeting_place=group_from_db.meeting_place,
                                 attendance_users=checkdict(users_dict),
@@ -65,16 +89,16 @@ def post_training_by_group_id(current_user):
                                 trainers_id=list_intToString(list_of_trainers),
                                 notes=checkdict(notes_dict))
         db.session.add(new_training)
-        training_id=db.session.query(func.max(Training.id)).scalar()
+        training_from_db = db.session.query(Training).filter_by(group_id=group_id,date=trainging_date).first()
         training_string = group_from_db.trainings_list
         if training_string == "" or training_string is None:
             training_list = []
         else:
             training_list = training_string.split(",")
-        training_list.append(str(training_id))
+        training_list.append(str(training_from_db.id))
         group_from_db.trainings_list = listToString(training_list)
         db.session.commit()
-        return jsonify({"success": True, "training": new_training.to_dict()})
+        return jsonify({"success": True, "training": training_from_db.to_dict()})
     except:
             return jsonify(
             {"success": False, "message": "Something went wrong"}), 400
@@ -94,10 +118,15 @@ def put_training(current_user, training_id):
     try:
         data = flask.request.json
         for key in data.keys():
-            if key == 'day':
-                training_from_db.day = data['day']
+            #if key == 'day':
+            #    training_from_db.day = data['day']
             if key == 'time':
                 training_from_db.time = data['time']
+            if key == 'date':
+                date1= data['date'].split('-')
+                the_date=datetime.date(int(date1[0]),int(date1[1]),int(date1[2]))
+                training_from_db.date = the_date #yyyy-mm-dd
+                training_from_db.day=days[int(datetime.date(int(date1[0]),int(date1[1]),int(date1[2])).weekday())]
             if key == 'meeting_place':
                 training_from_db.meeting_place = data['meeting_place']
            # if key == 'attendance_users':
@@ -129,7 +158,7 @@ def delete_training(current_user,training_id):
     group_id = int(training_to_delete.group_id)
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     training_string = group_from_db.trainings_list
-    if training_string == "":
+    if training_string == "" or training_string is None:
         return jsonify({"success": False,
                         "message": "no training to delete in the group"}), 401
     else:
