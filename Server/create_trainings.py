@@ -71,7 +71,7 @@ def create_closest_training_for_each_group():
                 list_of_trainers.append(user.id)
             if user.user_type in [3, 4] and id_in_group(user.group_ids, group.id):
                 list_of_users.append(user.id)
-        notes_dict = dict((str(el), "0") for el in list_of_users)
+        notes_dict = dict((str(el), "") for el in list_of_users)
         users_dict = dict((str(el), "0") for el in list_of_users)
         new_training = Training(group_id=group.id,
                                 date=trainging_date,
