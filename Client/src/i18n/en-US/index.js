@@ -25,6 +25,8 @@ export default {
       post: "Do you want to leave a note for the trainer?",
       noNewPosts: "The are no messages",
       close: "Close",
+      send: "Send message",
+
     },
   },
   authentication: {
@@ -43,8 +45,20 @@ export default {
   dashboard: {
     closest: "Closest training",
     date: "on date",
+    day: "on day",
     time: "on",
     location: "at",
+  },
+  trainee: {
+    days: {
+      sunday: "Sunday",
+      monday: "Monday",
+      tuesday: "Tuesday",
+      wednesday: "Wednesday",
+      thursday: "Thursday",
+      friday: "Friday",
+      saturday: "Saturday",
+    }
   },
   groups: {
     name: "Group ", //make number and description from api

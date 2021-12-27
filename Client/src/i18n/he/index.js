@@ -25,6 +25,7 @@ export default {
       post: "רוצה להשאיר הודעה קצרה למאמן?",
       noNewPosts: "לא התקבלה הודעה",
       close: "סגור",
+      send: "שלח את ההודעה",
     },
   },
   authentication: {
@@ -43,8 +44,20 @@ export default {
   dashboard: {
     closest: "האימון הקרוב",
     date: "בתאריך",
+    day: "ביום",
     time: "בשעה",
     location: "במיקום",
+  },
+  trainee: {
+    days: {
+      sunday: "ראשון",
+      monday: "שני",
+      tuesday: "שלישי",
+      wednesday: "רביעי",
+      thursday: "חמישי",
+      friday: "שישי",
+      saturday: "שבת",
+    }
   },
   groups: {
     name: "קבוצה ", //make number and description from api

@@ -12,107 +12,37 @@
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td
-          key="name"
+          key="full_name"
           :props="props"
-          @click="goToUserPage(props.row)"
-          clickable
-          v-ripple
+
           class="cursor-pointer"
         >
-          <q-item style="display: table-cell; vertical-align: end">
-            <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+          <q-item 
+          v-if="userType == 1"          
+          @click="goToUserPage(props.row)"
+          clickable
+          v-ripple 
+          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+            {{ props.row.full_name }}
+          </q-item>
 
-            {{ props.row.name }}
-            <!-- <q-popup-edit v-model="props.row.name"  :title="$t('table.editName')" :validate="val => val.length > 0">
-              <template v-slot="scope">
-                <q-input type="name" v-model="props.row.name" :rules="[
-                val => scope.validate(scope.value) || 'שם לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit> -->
+          <q-item 
+          v-if="userType == 2" 
+          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+            {{ props.row.full_name }}
           </q-item>
         </q-td>
 
-        <q-td key="phone" :props="props">
-          {{ props.row.phone }}
-          <!-- <q-popup-edit v-model="props.row.phone" :title="$t('table.editPhone')" :validate="val => (val.length == 10 || val.length == 9) && Number(val) !=NaN">
-              <template v-slot="scope">
-                <q-input type="phone" v-model="props.row.phone" :rules="[
-                val => scope.validate(scope.value) || 'מספר טלפון לא תקין']">
-                <template v-slot:after>
-                 <q-btn
-                 flat dense color="negative" icon="cancel"
-                 @click.stop="scope.cancel"/>
-
-                <q-btn
-                flat dense color="positive" icon="check_circle"
-                @click.stop="scope.set"
-                :disable="scope.validate(scope.value) === false || scope.initialValue === scope.value"
-              />
-            </template>
-            </q-input>
-            </template>
-
-            </q-popup-edit> -->
+        <q-td key="phone_number" :props="props">
+          {{ props.row.phone_number }}
         </q-td>
-        <q-td key="group" :props="props"
-          >{{ props.row.group }}
-          <!-- <q-popup-edit v-model="props.row.group" :title="$t('table.editGroups')" >
-              <q-input v-model="props.row.group" dense autofocus hint="ניתן להוסיף כמה קבוצות" />
-            </q-popup-edit> -->
+        <q-td key="group_ids" :props="props"
+          >{{ props.row.group_ids }}
         </q-td>
-        <q-td key="area" :props="props"
-          >{{ props.row.area }}
-          <!-- <q-popup-edit v-model="props.row.area" :title="$t('table.editLivingArea')" >
-              <q-input v-model="props.row.area" />
-            </q-popup-edit> -->
+        <q-td key="email" :props="props"
+          >{{ props.row.email }}
         </q-td>
 
-        <q-td key="message" :props="props"
-          >{{ props.row.groups }}
-          <q-icon name="message" color="primary" />
-
-          <!-- <q-popup-proxy v-model="label" >
-
-              <q-banner class="bg-primary text-white">
-                היי, לצערי לא אוכל להגיע לשיעור
-                <template v-slot:action>
-                  <q-btn flat color="white" :label="$t('table.markAsRead')" v-close-popup/>
-                  <q-btn flat color="white" :label="$t('table.post')" v-close-popup/>
-                </template>
-              </q-banner>
-            </q-popup-proxy> -->
-        </q-td>
-        <q-td key="comment" :props="props">
-          <q-badge color="primary" align="middle" rounded transparent>
-            <q-icon name="edit" color="white" />
-            <div v-html="props.row.comment"></div>
-            <!-- <q-popup-edit
-              buttons
-              v-model="props.row.comment"
-              v-slot="scope"
-            >
-              <q-editor
-                v-model="scope.value"
-                min-height="5rem"
-                autofocus
-                @keyup.enter.stop
-              />
-            </q-popup-edit> -->
-          </q-badge>
-        </q-td>
       </q-tr>
     </template>
     <template v-slot:top>
@@ -140,18 +70,19 @@
 </template>
 
 <script>
-import { ref, onMounted, defineComponent } from "vue";
+import { ref ,onMounted, defineComponent } from "vue";
 import { useQuasar } from "quasar";
 import { userColumns } from "components/table/TableColumns.js";
-import { mockRows } from "./mockdata.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
 
-const originalRows = mockRows; //temporary for mock data until fetch from server is implemented
 const columns = userColumns;
 
 export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
+  props:["table_data"],
+
+
 
   methods: {
     goToUserPage(row) {
@@ -164,7 +95,9 @@ export default defineComponent({
       localStorage.setItem("userdata", user);
     },
   },
-  setup() {
+  setup(props) {
+    const tableData = ref([]);
+    const userType = ref(2);
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -172,7 +105,7 @@ export default defineComponent({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 5,
       rowsNumber: 10,
     });
     const rowCount = ref(10);
@@ -181,14 +114,14 @@ export default defineComponent({
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
-      // console.log(1);
+      tableData.value = props.table_data;
+      //userType.value = getUserType(); // default val is 1 for admin, waiting for data in store in order to implement*/
       const data = filter
-        ? originalRows.filter((row) => row.name.includes(filter))
-        : originalRows.slice();
+        ?tableData.value.filter((row) => row.name.includes(filter))
+        :tableData.value.slice();
 
       // handle sortBy
       if (sortBy) {
-        // console.log(2);
 
         const sortFn =
           sortBy === "desc"
@@ -203,23 +136,18 @@ export default defineComponent({
 
       return data.slice(startRow, startRow + count);
     }
+    async function getUserType(){
+        //implement with api or get from store
+    }
 
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
-      // console.log(3);
-
       if (!filter) {
-        // console.log(4);
-
-        return originalRows.length;
+        return tableData.value.length;
       }
       let count = 0;
-      // console.log(5);
-
-      originalRows.forEach((treat) => {
+      tableData.value.forEach((treat) => {
         if (treat.name.includes(filter)) {
-          // console.log(6);
-
           ++count;
         }
       });
@@ -229,8 +157,6 @@ export default defineComponent({
     function onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const filter = props.filter;
-      // console.log(7);
-
       loading.value = true;
 
       // emulate server
@@ -269,7 +195,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // console.log(8);
 
       // get initial data from server (1st page)
       onRequest({
@@ -285,7 +210,9 @@ export default defineComponent({
       columns,
       rows,
       rowCount,
+      tableData,
       onRequest,
+      userType,
     };
   },
 });

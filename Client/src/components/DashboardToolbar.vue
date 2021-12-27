@@ -1,12 +1,18 @@
 <template>
   <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-lg item" >
-    <p class="q-ma-none">{{ $t("dashboard.closest") }}</p>
+    <p class="q-ma-none">{{ $t("dashboard.closest")+":" }}</p>
+   
     <p class="q-ma-none">{{ $t("dashboard.date") }}</p>
-    <q-input class="item" v-model="date" type="date" />
+    <q-input readonly  class="item" v-model="date" type="date" dense/>
+   
+    <p class="q-ma-none">{{ $t("dashboard.day") }}</p>
+    <q-input readonly  class="item" v-model="day" type="day" dense/>
+    
     <p class="q-ma-none">{{ $t("dashboard.time") }}</p>
-    <q-input class="item" v-model="time" type="time" />
+    <q-input readonly  class="item" v-model="time" type="time" dense/>
+   
     <p class="q-ma-none">{{ $t("dashboard.location") }}</p>
-    <q-input class="item" v-model="location" type="text" />
+    <q-input readonly  class="item" v-model="meeting_place" type="text" dense/>
   </div>
 </template>
 
@@ -15,12 +21,13 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Trainee",
-  props: ["trainingData"],
+  props: ["trainingData","everthingIsReady"],
   data() {
     return {
-      time: this.trainingData.time,
       date: this.trainingData.date,
-      location: this.trainingData.location,
+      day: this.trainingData.day,      
+      time: this.trainingData.time,
+      meeting_place: this.trainingData.meeting_place,
     };
   },
 });

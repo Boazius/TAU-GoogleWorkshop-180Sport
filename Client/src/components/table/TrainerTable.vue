@@ -11,17 +11,20 @@
       >
       <template v-slot:body="props">
         <q-tr :props="props">
-           <q-td key="name" :props="props">
+           <q-td key="full_name" :props="props">
             <q-item @click="goToUserPage(props.row)" clickable v-ripple style="display: table-cell; vertical-align: end;">    <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
-            {{ props.row.name }}
+            {{ props.row.full_name }}
             </q-item>
 
           </q-td>
-          <q-td key="phone" :props="props">
-            {{ props.row.phone }}
+          <q-td key="phone_number" :props="props">
+            {{ props.row.phone_number }}
           </q-td>
-           <q-td key="groups" :props="props">{{ props.row.groups }}
+           <q-td key="group_ids" :props="props">{{ props.row.group_ids }}
           </q-td>
+          <q-td key="email" :props="props"
+          >{{ props.row.email }}
+        </q-td>
         </q-tr>
       </template>
       <template v-slot:top>
@@ -41,15 +44,18 @@
 <script>
 import { ref, onMounted,defineComponent } from "vue";
 import { mockTrainers  } from "./mockdata.js";
-import { trainerColumns  } from "components/table/TableColumns.js";
+import { userColumns  } from "components/table/TableColumns.js";
 import TableTopButtons from 'components/table/TableTopButtons.vue';
 
 
-const columns = trainerColumns;
-const originalRows = mockTrainers; //temporary for mock data until fetch from server is implemented
+const columns = userColumns;
+//const originalRows = mockTrainers; //temporary for mock data until fetch from server is implemented
+
 export default defineComponent({
   name:'TrainerTable',
   components: { TableTopButtons },
+  props:["table_data"],
+
    methods:{
     goToUserPage(row){
       const user = JSON.stringify(row);
@@ -58,7 +64,8 @@ export default defineComponent({
     },  
 
   },
-  setup() {
+  setup(props) {
+    const tableData = ref([])
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -75,9 +82,11 @@ export default defineComponent({
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
+      tableData.value = props.table_data;
+      console.log(tableData.value);
       const data = filter
-        ? originalRows.filter((row) => row.name.includes(filter))
-        : originalRows.slice();
+        ? tableData.value.filter((row) => row.name.includes(filter))
+        : tableData.value.slice();
 
       // handle sortBy
       if (sortBy) {
@@ -98,10 +107,10 @@ export default defineComponent({
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
       if (!filter) {
-        return originalRows.length;
+        return tableData.value.length;
       }
       let count = 0;
-      originalRows.forEach((treat) => {
+      tableData.value.forEach((treat) => {
         if (treat.name.includes(filter)) {
           ++count;
         }
@@ -164,6 +173,7 @@ export default defineComponent({
       pagination,
       columns,
       rows,
+      tableData,
       onRequest,
      
     };
