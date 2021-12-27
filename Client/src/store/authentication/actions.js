@@ -5,17 +5,21 @@ import axios from "axios";
 const serverUrl = "http://127.0.0.1:5000";
 
 //
-//  Action: Google login
+//  Action: Set Active User
 //
-export async function login({}) {
+export async function setActiveUser({}, id_token) {
   const response = await axios
-    .post(`${serverUrl}/user/5`)
+    .get(`${serverUrl}/user/email/garret866@gmail.com`, {
+      headers: {
+        "x-access-token": id_token,
+      },
+    })
     .then((res) => res.data)
     .catch((error) => {
       console.log(error);
       return error;
     });
-  return response;
+  return "groups";
 }
 
 //
