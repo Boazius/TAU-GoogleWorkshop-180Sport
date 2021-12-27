@@ -186,7 +186,7 @@ def get_training(current_user, training_id):
     return jsonify({'success': True, 'training': training_from_db.to_dict()})
 
 
-@training.get('/training/get_attendance_list_by_training/<training_id>')
+@training.get('/training/get_attendance_list_by_training/<training_id>/')
 @token_required
 def get_attendance_list_by_training(current_user,training_id):
     from main import db
