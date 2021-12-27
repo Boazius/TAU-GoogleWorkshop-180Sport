@@ -17,6 +17,14 @@
         }]
       ]"
     />
+  <div class="column">
+    <q-btn
+      size="22px"
+      style="height:10px;"
+      class="e-caret-up item-small q-px-md q-py-xs wrap"
+      :label="$t('app.confirmation.send')" 
+      @click="sendMessage()"
+      />
     <q-btn
       size="22px"
       style="height:10px;"
@@ -33,18 +41,57 @@
         </q-banner>
     </q-menu>
     </q-btn>
-
+  </div>
 </div>
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref,onMounted } from 'vue'
+import axios from "axios";
+const serverUrl = "http://127.0.0.1:5000";
+const id_token = localStorage.getItem("id_token");
 
 export default {
     name:"EditorPosticks",
-  setup () {
+    props:["trainingData", "user"],
+setup (props) {
+    const editor= ref("");
+    
+    function onRequest() {
+      editor.value = props.trainingData.notes[props.user.id];
+    }
+
+    async function sendMessage(){
+      var message = JSON.stringify({
+      "message": editor.value
+    });
+
+    const response = await axios.post(`${serverUrl}/trainee/message/${props.user.id}/${props.trainingData.id}/`,
+    message,
+    {
+        headers: { 
+            'x-access-token': id_token,
+            'Content-Type': 'application/json',
+        },
+    })    
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+      editor.value = "";
+      alert("ההודעה נשלחה")
+    }
+    
+
+    onMounted(() => {
+      onRequest();
+    });
+
     return {
-      editor: ref("")
+      editor,
+      sendMessage
     }
   }
 }
@@ -53,3 +100,4 @@ export default {
 <style scoped>
 @import "assets/groupStyle.css";
 </style>
+

@@ -14,23 +14,30 @@
         <q-td
           key="full_name"
           :props="props"
-          @click="goToUserPage(props.row)"
-          clickable
-          v-ripple
+
           class="cursor-pointer"
         >
-          <q-item style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
-
+          <q-item 
+          v-if="userType == 1"          
+          @click="goToUserPage(props.row)"
+          clickable
+          v-ripple 
+          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
             {{ props.row.full_name }}
+          </q-item>
 
+          <q-item 
+          v-if="userType == 2" 
+          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+            {{ props.row.full_name }}
           </q-item>
         </q-td>
 
         <q-td key="phone_number" :props="props">
           {{ props.row.phone_number }}
         </q-td>
-        <q-td key="groups" :props="props"
-          >{{ props.row.groups }}
+        <q-td key="group_ids" :props="props"
+          >{{ props.row.group_ids }}
         </q-td>
         <q-td key="email" :props="props"
           >{{ props.row.email }}
@@ -63,24 +70,18 @@
 </template>
 
 <script>
-import { ref, onMounted, defineComponent } from "vue";
+import { ref ,onMounted, defineComponent } from "vue";
 import { useQuasar } from "quasar";
 import { userColumns } from "components/table/TableColumns.js";
-import { mockRows } from "./mockdata.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
 
-//const table_data = mockRows; //temporary for mock data until fetch from server is implemented
 const columns = userColumns;
 
 export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
   props:["table_data"],
-  data(){
-    return {
-      tableData :  this.table_data
-    }
-  },
+
 
 
   methods: {
@@ -94,7 +95,9 @@ export default defineComponent({
       localStorage.setItem("userdata", user);
     },
   },
-  setup() {
+  setup(props) {
+    const tableData = ref([]);
+    const userType = ref(2);
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -102,7 +105,7 @@ export default defineComponent({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 7,
+      rowsPerPage: 5,
       rowsNumber: 10,
     });
     const rowCount = ref(10);
@@ -111,14 +114,14 @@ export default defineComponent({
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
-      // console.log(1);
+      tableData.value = props.table_data;
+      //userType.value = getUserType(); // default val is 1 for admin, waiting for data in store in order to implement*/
       const data = filter
-        ?this.tableData.filter((row) => row.name.includes(filter))
-        :this.tableData.slice();
+        ?tableData.value.filter((row) => row.name.includes(filter))
+        :tableData.value.slice();
 
       // handle sortBy
       if (sortBy) {
-        // console.log(2);
 
         const sortFn =
           sortBy === "desc"
@@ -133,23 +136,18 @@ export default defineComponent({
 
       return data.slice(startRow, startRow + count);
     }
+    async function getUserType(){
+        //implement with api or get from store
+    }
 
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
-      // console.log(3);
-
       if (!filter) {
-        // console.log(4);
-
-        return this.tableData.length;
+        return tableData.value.length;
       }
       let count = 0;
-      // console.log(5);
-
-      this.tableData.forEach((treat) => {
+      tableData.value.forEach((treat) => {
         if (treat.name.includes(filter)) {
-          // console.log(6);
-
           ++count;
         }
       });
@@ -159,8 +157,6 @@ export default defineComponent({
     function onRequest(props) {
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const filter = props.filter;
-      // console.log(7);
-
       loading.value = true;
 
       // emulate server
@@ -199,7 +195,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      // console.log(8);
 
       // get initial data from server (1st page)
       onRequest({
@@ -215,7 +210,9 @@ export default defineComponent({
       columns,
       rows,
       rowCount,
+      tableData,
       onRequest,
+      userType,
     };
   },
 });

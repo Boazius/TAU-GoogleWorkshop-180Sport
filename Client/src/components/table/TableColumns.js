@@ -16,9 +16,9 @@ export const userColumns = [
     align:'center'
   },
     {
-    name: "groups",
+    name: "group_ids",
     label: "קבוצה",
-    field: "groups",
+    field: "group_ids",
     sortable: true,
     align:'center'
     },
