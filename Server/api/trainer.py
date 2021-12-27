@@ -70,7 +70,7 @@ def get_groups_by_trainer_id(current_user, trainer_id):
 def get_closest_training(current_user, user_id,group_id):
     from main import db
     from api.trainee_volunteer import find_closest_date
-    if current_user.user_type in [3, 4] and current_user.user_id != user_id:
+    if current_user.user_type in [3, 4] and current_user.id != user_id:
         return jsonify({"success": False,"message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
     if not user_from_db:
@@ -100,7 +100,7 @@ def get_closest_training(current_user, user_id,group_id):
 @token_required
 def get_last_training(current_user, user_id, group_id):
     from main import db
-    if current_user.user_type in [3, 4] and current_user.user_id != user_id:
+    if current_user.user_type in [3, 4] and current_user.id != user_id:
         return jsonify({"success": False,
                         "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
     user_from_db = db.session.query(User).filter_by(id=user_id).first()

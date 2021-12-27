@@ -9,7 +9,7 @@ from utils import token_required, login_required
 admin = Blueprint('admin', __name__)
 
 
-@admin.put('/admin/status_user')
+@admin.put('/admin/status_user/')
 @token_required
 def status_user(current_user): #disable or activate user
     from main import db
@@ -33,7 +33,7 @@ def status_user(current_user): #disable or activate user
             {"success": False, "message": "Something went wrong1"}), 400
 
 
-@admin.get('/admin/get_all_groups')
+@admin.get('/admin/get_all_groups/')
 @token_required
 def get_all_groups(current_user):
     from main import db
@@ -54,7 +54,7 @@ def get_all_groups(current_user):
             {"success": False, "message": "Something went wrong"}), 400
 
 
-@admin.get('/admin/get_all_trainers')
+@admin.get('/admin/get_all_trainers/')
 @token_required
 def get_all_trainers(current_user):
     from main import db
@@ -75,7 +75,7 @@ def get_all_trainers(current_user):
             {"success": False, "message": "Something went wrong"}), 400
 
 
-@admin.get('/admin/get_all_users')
+@admin.get('/admin/get_all_users/')
 @token_required
 def get_all_users(current_user):
     from main import db
@@ -109,7 +109,7 @@ def get_all_users(current_user):
         return jsonify(
             {"success": False, "message": "Something went wrong"}), 400
 
-@admin.get('/admin/get_all_trainees')
+@admin.get('/admin/get_all_trainees/')
 @token_required
 def get_all_trainees(current_user):
     from main import db
@@ -131,7 +131,7 @@ def get_all_trainees(current_user):
             {"success": False, "message": "Something went wrong"}), 400
 
 
-@admin.get('/admin/get_all_volunteers')
+@admin.get('/admin/get_all_volunteers/')
 @token_required
 def get_all_volunteers(current_user):
     from main import db
