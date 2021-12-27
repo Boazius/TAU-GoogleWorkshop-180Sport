@@ -22,7 +22,7 @@ def find_closest_date(x):
 def post_message(current_user,user_id,training_id):
     from main import db
     from api.training import id_in_group
-    if current_user.user_type != 1 and current_user.id != user_id:
+    if current_user.id != user_id and current_user.user_type != 1 :
         return jsonify({"success": False,
                         "message": "User cannot send message, unless it is the fit user"}), 401
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
