@@ -28,7 +28,7 @@ days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 
 
 def id_in_group(group_ids, group_id):
-    if group_ids == "":
+    if group_ids == "" or group_ids is None:
         return False
     else:
         groups_list = group_ids.split(",")
