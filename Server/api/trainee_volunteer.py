@@ -47,7 +47,7 @@ def post_message(current_user,user_id,training_id):
 @token_required
 def delete_message(current_user,user_id,training_id):
     from main import db
-    if current_user.user_type != 1 and current_user.user_id != user_id:
+    if current_user.user_type != 1 and current_user.id != user_id:
         return jsonify({"success": False,
                         "message": "User cannot update message, unless it is the fit user"}), 401
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
@@ -64,7 +64,7 @@ def delete_message(current_user,user_id,training_id):
 @token_required
 def get_closest_training(current_user,user_id):
     from main import db
-    if current_user.user_type in [3,4] and current_user.user_id != user_id:
+    if current_user.user_type in [3,4] and current_user.id != user_id:
         return jsonify({"success": False,
                     "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
@@ -101,7 +101,7 @@ def get_closest_training(current_user,user_id):
     if not the_training:
         return jsonify({"success": False, "message": "no training found"}), 401
 
-    return jsonify({'success': True, 'training': the_training.to_dict()})
+    return jsonify({'success': True, 'training': the_training.to_dict()}),200
 
 
 @trainee.get('/trainee/get_closest_training_by_training_id/<user_id>/<training_id>/')
@@ -111,7 +111,7 @@ def get_closest_training_by_training_id(current_user, user_id, training_id):
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
         return jsonify({"success": False,"message": "no training found"}), 401
-    if current_user.user_type in [3,4] and current_user.user_id != user_id:
+    if current_user.user_type in [3,4] and current_user.id != user_id:
         return jsonify({"success": False,
                     "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
     if training_from_db.group_id not in current_user.group_ids:
@@ -125,7 +125,7 @@ def get_closest_training_by_training_id(current_user, user_id, training_id):
 @token_required
 def update_attendance(current_user, user_id):
     from main import db
-    if current_user.user_type not in [1, 2] and current_user.user_id != user_id:
+    if current_user.user_type not in [1, 2] and current_user.id != user_id:
         return jsonify({"success": False,
                         "message": "User cannot update message, unless it is the fit user or admin/trainer"}), 401
 
