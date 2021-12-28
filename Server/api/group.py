@@ -190,7 +190,7 @@ def get_all_users_by_group(current_user, group_id):
             if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
                 list_of_users.append(user.to_dict())
         return jsonify({"success": True,
-                        "users": list_of_users}), 401
+                        "users": list_of_users}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
