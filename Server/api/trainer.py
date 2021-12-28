@@ -17,10 +17,10 @@ def nearest(items, pivot):
 @token_required
 def update_attendance_list_per_training_per_user(current_user, training_id):
     from main import db
-    if int(current_user).user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
-
+    """
     try:
         data = flask.request.json
         user_id = int(data['user_id'])
@@ -32,13 +32,13 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
             return jsonify({'success': False, 'message': 'No training found!'})
         attendance = training_from_db.attendance_users
         if attendance is None:
-            return jsonify({"success": False,
-                            "message": "attendance list is empty"}), 400
+            return jsonify({"success": False,"message": "attendance list is empty"}), 400
         else:
             attendance_dict = json.loads(attendance)
-        if str(user_id) not in attendance_dict.keys():
+        a = str([str(user_id), str(user_from_db.full_name)])
+        if a not in attendance_dict.keys():
             return jsonify({"success": False, "message": "user not in attendance training"}), 401
-        attendance_dict[user_id] = data['attendance']
+        attendance_dict[a] = data['attendance']
         training_from_db.attendance_users = json.dumps(attendance_dict)
         db.session.commit()
         return jsonify({"success": True,
@@ -46,6 +46,30 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
                             user_id) + " successfully"})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
+    """
+    data = flask.request.json
+    user_id = data['user_id']
+    user_from_db = db.session.query(User).filter_by(id=user_id).first()
+    if not user_from_db:
+        return jsonify({'success': False, 'message': 'No user found!'})
+    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({'success': False, 'message': 'No training found!'})
+    attendance = training_from_db.attendance_users
+    if attendance is None:
+        return jsonify({"success": False, "message": "attendance list is empty"}), 400
+    else:
+        attendance_dict = json.loads(attendance)
+    a = str([str(user_id), str(user_from_db.full_name)])
+    if a not in attendance_dict.keys():
+        return jsonify({"success": False, "message": "user not in attendance training"}), 401
+    attendance_dict[a] = data['attendance']
+    training_from_db.attendance_users = json.dumps(attendance_dict)
+    db.session.commit()
+    return jsonify({"success": True,
+                    "message": "update attendance for training: " + training_id + " for user: " + str(
+                        user_id) + " successfully"})
+
 
 
 @trainer.get('/trainer/groups_list/<trainer_id>/')
