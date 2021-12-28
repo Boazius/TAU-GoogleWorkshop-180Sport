@@ -5,7 +5,6 @@ from utils import token_required
 import json
 import datetime
 from datetime import datetime, date
-import api.group
 
 trainer = Blueprint('trainer', __name__)
 
@@ -18,7 +17,7 @@ def nearest(items, pivot):
 @token_required
 def update_attendance_list_per_training_per_user(current_user, training_id):
     from main import db
-    if current_user.user_type in [3, 4]:
+    if int(current_user).user_type in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
 
@@ -34,7 +33,7 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
         attendance = training_from_db.attendance_users
         if attendance is None:
             return jsonify({"success": False,
-                            "message": "attendance list is empty"}), 401
+                            "message": "attendance list is empty"}), 400
         else:
             attendance_dict = json.loads(attendance)
         if str(user_id) not in attendance_dict.keys():
@@ -53,7 +52,7 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
 @token_required
 def get_groups_by_trainer_id(current_user, trainer_id):
     from main import db
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
     list_of_groups = []
@@ -74,62 +73,56 @@ def get_groups_by_trainer_id(current_user, trainer_id):
     return jsonify({"success": True, "trainer groups": list_of_groups}), 200
 
 
-@trainer.get('/trainer/get_closest_training/<group_id>/<user_id>/')
+@trainer.get('/trainer/get_closest_training/<group_id>/')
 @token_required
-def get_closest_training(current_user, user_id, group_id):
+def get_closest_training(current_user, group_id):
     from main import db
     from api.trainee_volunteer import find_closest_date
-    if current_user.user_type in [3, 4] and current_user.id != user_id:
+    if int(current_user.user_type) not in [1, 2]:
         return jsonify({"success": False,
                         "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
-    user_from_db = db.session.query(User).filter_by(id=user_id).first()
-    if not user_from_db:
-        return jsonify({"success": False, "message": "no user found"}), 401
     today_date = date.today()
     b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
     trainings = db.session.query(Training).filter_by(group_id=group_id).all()
     list_date = []
     for training in trainings:
         if not training:
-            return jsonify({"success": False, "message": "no training found"}), 401
+            return jsonify({"success": False, "message": "no training found"}), 400
         training_date = datetime.strptime(str(training.date), "%Y-%m-%d")
         if training_date > b_d:
             list_date.append(training.date)
     if list_date is None or list_date == []:
-        return jsonify({"success": False, "message": "no training found"}), 401
+        return jsonify({"success": False, "message": "no training found"}), 400
     the_date = min(list_date, key=find_closest_date)
     training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=the_date).first()
 
     if not training_from_db:
-        return jsonify({"success": False, "message": "no training found"}), 401
+        return jsonify({"success": False, "message": "no training found"}), 400
 
     return jsonify({"success": True, "training": training_from_db.to_dict()})
 
 
-@trainer.get('/trainer/get_last_training/<group_id>/<user_id>/')
+@trainer.get('/trainer/get_last_training/<group_id>/')
 @token_required
-def get_last_training(current_user, user_id, group_id):
+def get_last_training(current_user, group_id):
     from main import db
-    if current_user.user_type in [3, 4] and current_user.id != user_id:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
-                        "message": "User cannot get training, unless it is the fit user or admin/trainer"}), 401
-    user_from_db = db.session.query(User).filter_by(id=user_id).first()
-    if not user_from_db:
-        return jsonify({"success": False, "message": "no user found"}), 401
+                        "message": "User cannot get last training, unless it is the fit user or admin/trainer"}), 401
     today_date = date.today()
-    b_d = datetime.strptime(str(today_date),  "%Y-%m-%d")
+    b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
     trainings = db.session.query(Training).filter_by(group_id=group_id).all()
     list_date = []
     for training in trainings:
         if not training:
-            return jsonify({"success": False, "message": "no training found"}), 401
+            return jsonify({"success": False, "message": "no training found"}), 400
         training_date = datetime.strptime(str(training.date), "%Y-%m-%d")
         if training_date < b_d:
             list_date.append(training.date)
     if list_date is None or list_date == []:
-        return jsonify({"success": False, "message": "no training found"}), 401
+        return jsonify({"success": False, "message": "no training found"}), 400
     the_date = nearest(list_date, today_date)
     training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=the_date).first()
     if not training_from_db:
-        return jsonify({"success": False, "message": "no training found"}), 401
+        return jsonify({"success": False, "message": "no training found"}), 400
     return jsonify({"success": True, "training": training_from_db.to_dict()})

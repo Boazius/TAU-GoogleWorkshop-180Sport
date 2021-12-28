@@ -13,7 +13,7 @@ admin = Blueprint('admin', __name__)
 @token_required
 def status_user(current_user):  # disable or activate user
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False,
                         "message": "User cannot change user details, unless it is admin"}), 401
 
@@ -36,7 +36,7 @@ def status_user(current_user):  # disable or activate user
 @token_required
 def get_all_groups(current_user):
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
     all_groups = db.session.query(Group).all()
     if not all_groups:
@@ -52,7 +52,7 @@ def get_all_groups(current_user):
 @token_required
 def get_all_trainers(current_user):
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
     all_trainers = db.session.query(User).filter_by(user_type=2).all()
     if not all_trainers:
@@ -68,7 +68,7 @@ def get_all_trainers(current_user):
 @token_required
 def get_all_users(current_user):
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
 
     try:
@@ -101,7 +101,7 @@ def get_all_users(current_user):
 @token_required
 def get_all_trainees(current_user):
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
 
     try:
@@ -122,7 +122,7 @@ def get_all_trainees(current_user):
 @token_required
 def get_all_volunteers(current_user):
     from main import db
-    if current_user.user_type != 1:
+    if int(current_user.user_type) != 1:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
 
     try:

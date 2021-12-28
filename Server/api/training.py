@@ -58,7 +58,7 @@ def check_dict(dct):
 def post_training_by_group_id(current_user):
     from main import db
     from api.group import listToString
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
     try:
@@ -111,7 +111,7 @@ def put_training(current_user, training_id):
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
         return jsonify({'success': False, 'message': 'No training found!'})
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot update training details, unless it is admin/trainer"}), 401
 
@@ -151,7 +151,7 @@ def delete_training(current_user, training_id):
     training_to_delete = db.session.query(Training).filter_by(id=training_id).first()
     if not training_to_delete:
         return jsonify({'success': False, 'message': 'No training found!'})
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False, "message": "User cannot delete training, unless it is "
                                                      "admin or trainer"}), 401
     group_id = int(training_to_delete.group_id)
@@ -190,7 +190,7 @@ def get_training(current_user, training_id):
 @token_required
 def get_attendance_list_by_training(current_user, training_id):
     from main import db
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is "
                                    "admin/trainer"}), 401
@@ -208,7 +208,7 @@ def get_attendance_list_by_training(current_user, training_id):
 @token_required
 def get_messages_by_user_and_training(current_user, training_id):
     from main import db
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view messages list per training, unless it is "
                                    "admin/trainer"}), 401
