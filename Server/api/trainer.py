@@ -70,7 +70,6 @@ def get_groups_by_trainer_id(current_user, trainer_id):
         for group_id in trainer_groups_list:
             for group in groups_from_db:
                 if int(group_id) == int(group.id):
-                    print(group.to_dict())
                     list_of_groups.append(group.to_dict())
     return jsonify({"success": True, "trainer groups": list_of_groups}), 200
 
