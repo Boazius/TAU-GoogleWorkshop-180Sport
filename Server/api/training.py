@@ -91,7 +91,8 @@ def post_training_by_group_id(current_user):
                                 attendance_users=check_dict(users_dict),
                                 is_happened=True,
                                 trainers_id=list_int_to_string(list_of_trainers),
-                                notes=check_dict(notes_dict))
+                                notes=check_dict(notes_dict),
+                                trainer_notes=check_dict(notes_dict))
         db.session.add(new_training)
         training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=training_date).first()
         training_string = group_from_db.trainings_list
@@ -216,6 +217,9 @@ def get_messages_by_user_and_training(current_user, training_id):
                         "message": "User cannot view messages list per training, unless it is "
                                    "admin/trainer"}), 401
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    training_notes = training_from_db.notes
+    if not training_notes:
+        return jsonify({'success': False, 'message': 'No notes for training found!'})
 
     return jsonify(
-        {"success": True, "training_messages": json.loads(training_from_db.notes)})
+        {"success": True, "training_messages": json.loads(training_notes)})

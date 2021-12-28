@@ -20,10 +20,10 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
     if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
-    """
+
     try:
         data = flask.request.json
-        user_id = int(data['user_id'])
+        user_id = data['user_id']
         user_from_db = db.session.query(User).filter_by(id=user_id).first()
         if not user_from_db:
             return jsonify({'success': False, 'message': 'No user found!'})
@@ -32,7 +32,7 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
             return jsonify({'success': False, 'message': 'No training found!'})
         attendance = training_from_db.attendance_users
         if attendance is None:
-            return jsonify({"success": False,"message": "attendance list is empty"}), 400
+            return jsonify({"success": False, "message": "attendance list is empty"}), 400
         else:
             attendance_dict = json.loads(attendance)
         a = str([str(user_id), str(user_from_db.full_name)])
@@ -46,30 +46,6 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
                             user_id) + " successfully"})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
-    """
-    data = flask.request.json
-    user_id = data['user_id']
-    user_from_db = db.session.query(User).filter_by(id=user_id).first()
-    if not user_from_db:
-        return jsonify({'success': False, 'message': 'No user found!'})
-    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
-    if not training_from_db:
-        return jsonify({'success': False, 'message': 'No training found!'})
-    attendance = training_from_db.attendance_users
-    if attendance is None:
-        return jsonify({"success": False, "message": "attendance list is empty"}), 400
-    else:
-        attendance_dict = json.loads(attendance)
-    a = str([str(user_id), str(user_from_db.full_name)])
-    if a not in attendance_dict.keys():
-        return jsonify({"success": False, "message": "user not in attendance training"}), 401
-    attendance_dict[a] = data['attendance']
-    training_from_db.attendance_users = json.dumps(attendance_dict)
-    db.session.commit()
-    return jsonify({"success": True,
-                    "message": "update attendance for training: " + training_id + " for user: " + str(
-                        user_id) + " successfully"})
-
 
 
 @trainer.get('/trainer/groups_list/<trainer_id>/')
@@ -150,3 +126,48 @@ def get_last_training(current_user, group_id):
     if not training_from_db:
         return jsonify({"success": False, "message": "no training found"}), 400
     return jsonify({"success": True, "training": training_from_db.to_dict()})
+
+
+@trainer.post('/trainer/message/<user_id>/<training_id>/')
+@token_required
+def trainer_post_message(current_user,user_id,training_id):
+    from main import db
+    if int(current_user.user_type) != 1 and int(current_user.id) != int(user_id):
+        return jsonify({"success": False, "message": "User cannot send message, unless it is the fit user"}), 401
+    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({'success': False, 'message': 'No training found!'})
+
+    try:
+        data = flask.request.json
+        message=data['message']
+        trainee_id = data['trainee_id']
+        trainer_notes=json.loads(training_from_db.trainer_notes)
+        trainer_notes[trainee_id]=message
+        training_from_db.trainer_notes=json.dumps(trainer_notes)
+        db.session.commit()
+        return jsonify({"success": True, "message": "message: " + message + " sent to user: " + trainee_id + " add to training successfully"})
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
+
+
+@trainer.delete('/trainer/message/<user_id>/<training_id>/')
+@token_required
+def trainer_delete_message(current_user,user_id,training_id):
+    from main import db
+    if int(current_user.user_type) != 1 and int(current_user.id) != int(user_id):
+        return jsonify({"success": False,
+                        "message": "User cannot update message, unless it is the fit user"}), 401
+    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({'success': False, 'message': 'No training found!'})
+    try:
+        data = flask.request.json
+        trainee_id=data['trainee_id']
+        trainer_notes = json.loads(training_from_db.trainer_notes)
+        trainer_notes[trainee_id] = ""
+        training_from_db.trainer_notes = json.dumps(trainer_notes)
+        db.session.commit()
+        return jsonify({"success": True, "message": "message was deleted successfully"}), 200
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
