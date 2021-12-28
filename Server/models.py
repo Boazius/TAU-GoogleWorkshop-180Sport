@@ -78,6 +78,7 @@ class Training(Base):
     is_happened = Column(Boolean())
     trainers_id = Column(Integer(), ForeignKey("users.id")) #list
     notes = Column(String()) #dict
+    trainer_notes = Column(String()) #dict
 
 
     def to_dict(self):
@@ -89,7 +90,7 @@ class Training(Base):
                     ret_data[key] = str(getattr(self, key)).split(',')
                 else:
                     ret_data[key] = getattr(self, key)
-            elif key == "attendance_users" or key == "notes":
+            elif key == "attendance_users" or key == "notes" or key == "trainer_notes":
                 if getattr(self, key) is not None:
                     ret_data[key] = json.loads(getattr(self, key))
                 else:

@@ -60,6 +60,22 @@ def delete_message(current_user,user_id,training_id):
     return jsonify({"success": True,
                     "message": "message was deleted successfully"}), 200
 
+@trainee.get('/trainee/get_message_from_trainer/<user_id>/<training_id>/')
+@token_required
+def get_message_from_trainer(current_user,user_id,training_id):
+    from main import db
+    if int(current_user.user_type) not in [1,2] and int(current_user.id) != int(user_id):
+        return jsonify({"success": False, "message": "User cannot send message, unless it is the fit user"}), 401
+    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({'success': False, 'message': 'No training found!'})
+    trainer_notes = json.loads(training_from_db.trainer_notes)
+    if not trainer_notes:
+        return jsonify({'success': False, 'message': 'No notes from trainer for training found!'})
+    message=trainer_notes[str(user_id)]
+    return jsonify( {"success": True, "messages":message})
+
+
 @trainee.get('/trainee/get_closest_training/<user_id>/')
 @token_required
 def get_closest_training(current_user,user_id):
