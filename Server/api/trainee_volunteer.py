@@ -137,6 +137,7 @@ def update_attendance(current_user, user_id):
     user_from_db = db.session.query(User).filter_by(id=user_id).first()
     if not user_from_db:
         return jsonify({"success": False,"message": "no user found"}), 400
+
     try:
         data = flask.request.json
         user_from_db.attendance = data['attendance']
@@ -147,9 +148,10 @@ def update_attendance(current_user, user_id):
         training_id = training["id"]
         if attendance is None:
             return jsonify({"success": False, "message": "attendance list is empty"}), 400
-        if str(user_id) not in attendance.keys():
+        a = str([str(user_id), str(user_from_db.full_name)])
+        if a not in attendance.keys():
             return jsonify({"success": False, "message": "user not in attendance training"}), 400
-        attendance[user_id] = str(data['attendance'])
+        attendance[a] = str(data['attendance'])
         training_from_db = db.session.query(Training).filter_by(id=int(training_id)).first()
         if not training_from_db:
             return jsonify({"success": False, "message": "no training found"}), 400
@@ -158,6 +160,3 @@ def update_attendance(current_user, user_id):
         return jsonify({"success": True, "user": "user update is attendance to:" + str(data['attendance'])})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
-
-
-
