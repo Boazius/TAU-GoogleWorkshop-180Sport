@@ -5,6 +5,7 @@ from utils import token_required
 import json
 import datetime
 from datetime import datetime, date
+import api.group
 
 trainer = Blueprint('trainer', __name__)
 
@@ -55,7 +56,8 @@ def get_groups_by_trainer_id(current_user, trainer_id):
     if current_user.user_type in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
-
+    list_of_groups = []
+    groups_from_db = db.session.query(Group).all()
     trainer_from_db = db.session.query(User).filter_by(id=trainer_id).first()
     if not trainer_from_db:
         return jsonify({'success': False, 'message': 'No trainer found!'})
@@ -63,7 +65,14 @@ def get_groups_by_trainer_id(current_user, trainer_id):
         return jsonify({'success': False, 'message': 'No trainer found!'})
 
     trainer_groups = trainer_from_db.group_ids
-    return jsonify({"success": True, "trainer groups": trainer_groups}), 401
+    if trainer_groups is not None and trainer_groups != "":
+        trainer_groups_list = trainer_groups.split(",")
+        for group_id in trainer_groups_list:
+            for group in groups_from_db:
+                if int(group_id) == int(group.id):
+                    print(group.to_dict())
+                    list_of_groups.append(group.to_dict())
+    return jsonify({"success": True, "trainer groups": list_of_groups}), 200
 
 
 @trainer.get('/trainer/get_closest_training/<group_id>/<user_id>/')

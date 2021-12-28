@@ -56,10 +56,10 @@ class Group(Base):
         ret_data = {}
         for key in columns:
             if key == "trainings_list":
-                if getattr(self, key) is not None:
+                if getattr(self, key) is not None and getattr(self, key) != "":
                     ret_data[key] = str(getattr(self, key)).split(',')
                 else:
-                    ret_data[key] = getattr(self, key)
+                    ret_data[key] = []
             else:
                 ret_data[key] = getattr(self, key)
         return ret_data
