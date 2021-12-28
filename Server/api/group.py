@@ -212,7 +212,7 @@ def get_all_trainers_by_group(current_user, group_id):
             if user.user_type in [2] and id_in_group(user.group_ids, group_id):
                 list_of_users.append(user.to_dict())
         return jsonify({"success": True,
-                        "trainers": list_of_users}), 401
+                        "trainers": list_of_users}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
