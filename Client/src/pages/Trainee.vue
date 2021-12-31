@@ -1,43 +1,43 @@
 <template>
   <q-page padding>
     <dashboard-toolbar v-if="everthingIsReady" :everthingIsReady="everthingIsReady" :trainingData="trainingData"></dashboard-toolbar>
-    <h3 class="text-h5 text-center group_header">{{ $t('app.confirmation.areYouComing') }}</h3>
+    <h3 class="text-h5 text-center group_header" v-if="everthingIsReady">{{ $t('app.confirmation.areYouComing') }}</h3>
     <div class="row justify-center q-gutter-md q-pa-md" v-if="everthingIsReady">
-       <q-btn v-if="attendance!=1"
+       <q-btn v-if="attendance!=2"
       size="22px"
       class="q-px-xl q-py-xs"
       color="green"
       :label="$t('app.confirmation.yes')"
       @click="saveSelection(1)"
     />
-    <q-btn v-if="attendance==1"
+    <q-btn v-if="attendance==2"
       size="22px"
       class="q-px-xl q-py-xs"
-      color="green"
-      color-text="white"
+      color="grey-6"
       :label="$t('app.confirmation.yes')"
       @click="saveSelection(1)"
-      outline 
+       
     />
 
-     <q-btn v-if="attendance!=2"
+     <q-btn v-if="attendance!=1"
       size="22px"
       class="q-px-xl q-py-xs"
       color="red"
+
       :label="$t('app.confirmation.no')"
       @click="saveSelection(2)"
        />
-      <q-btn v-if="attendance==2"
+      <q-btn v-if="attendance==1"
       size="22px"
       class="q-px-xl q-py-xs"
-      color="red"
+      color="grey-6"
       :label="$t('app.confirmation.no')"
       @click="saveSelection(2)"
-      outline
+      
        />
     </div>
     <div class="col">
-      <h6 class="row group_header justify-center wrap q-mb-none">{{$t('app.confirmation.post')}}</h6>
+      <h6 class="row group_header justify-center wrap q-mb-none" v-if="everthingIsReady">{{$t('app.confirmation.post')}}</h6>
     <editor-posticks :trainingData="trainingData" :user="user" v-if="everthingIsReady"></editor-posticks>
     </div>
 
@@ -66,8 +66,6 @@ export default defineComponent({
   methods:{
     async saveSelection(num){
       this.attendance = num
-      console.log(num);
-      console.log(id_token);
     var data = JSON.stringify({
       "attendance": num
     });
@@ -134,7 +132,6 @@ export default defineComponent({
         return error;
     });
     this.user =  JSON.parse(JSON.stringify(response1["user"]));
-    //const userId = JSON.parse(JSON.stringify(response1["user"]["id"]));
 
   //get next training data from server
     const response = await axios.get(`${serverUrl}/trainee/get_closest_training/${this.user.id}/`,{
@@ -157,8 +154,7 @@ export default defineComponent({
     }
     this.attendance = this.user.attendance;
     this.everthingIsReady = true;
-    console.log(JSON.stringify(response));
-    console.log(this.trainingData.notes[4]);
+
 
   },
   components: {

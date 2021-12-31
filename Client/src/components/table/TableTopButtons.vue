@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { exportFile, useQuasar } from "quasar";
+// import { exportFile, useQuasar } from "quasar";
 import { defineComponent, ref } from "vue";
 
 // function wrapCsvValue (val, formatFn) {
