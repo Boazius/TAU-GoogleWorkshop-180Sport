@@ -22,18 +22,19 @@
           @click="goToUserPage(props.row)"
           clickable
           v-ripple 
-          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+          style="display: table-cell; vertical-align: end"> 
             {{ props.row.full_name }}
           </q-item>
 
           <q-item 
           v-if="userType == 2" 
-          style="display: table-cell; vertical-align: end"> <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+          style="display: table-cell; vertical-align: end"> 
             {{ props.row.full_name }}
           </q-item>
         </q-td>
-
-        <q-td key="phone_number" :props="props">
+        <q-td key="user_type" :props="props" v-text="props.row.user_type == 3 ? $t('table.trainee') : $t('table.volunteer')" >
+        </q-td>
+        <q-td key="phone_number" :props="props" >
           {{ props.row.phone_number }}
         </q-td>
         <q-td key="group_ids" :props="props"
@@ -72,15 +73,15 @@
 <script>
 import { ref ,onMounted, defineComponent } from "vue";
 import { useQuasar } from "quasar";
-import { userColumns } from "components/table/TableColumns.js";
+import { userColumns , groupColumns} from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
 
-const columns = userColumns;
+;
 
 export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
-  props:["table_data"],
+  props:["table_data", "byUser"],
 
 
 
@@ -97,7 +98,7 @@ export default defineComponent({
   },
   setup(props) {
     const tableData = ref([]);
-    const userType = ref(2);
+    const userType = ref(1);
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -110,6 +111,7 @@ export default defineComponent({
     });
     const rowCount = ref(10);
     const $q = useQuasar();
+    const columns = ref(props.byUser ? groupColumns : userColumns);
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -117,7 +119,7 @@ export default defineComponent({
       tableData.value = props.table_data;
       //userType.value = getUserType(); // default val is 1 for admin, waiting for data in store in order to implement*/
       const data = filter
-        ?tableData.value.filter((row) => row.name.includes(filter))
+        ?tableData.value.filter((row) => row.full_name.includes(filter))
         :tableData.value.slice();
 
       // handle sortBy
@@ -147,7 +149,7 @@ export default defineComponent({
       }
       let count = 0;
       tableData.value.forEach((treat) => {
-        if (treat.name.includes(filter)) {
+        if (treat.full_name.includes(filter)) {
           ++count;
         }
       });
@@ -158,7 +160,6 @@ export default defineComponent({
       const { page, rowsPerPage, sortBy, descending } = props.pagination;
       const filter = props.filter;
       loading.value = true;
-
       // emulate server
       setTimeout(() => {
         // update rowsCount with appropriate value
@@ -195,7 +196,6 @@ export default defineComponent({
     }
 
     onMounted(() => {
-
       // get initial data from server (1st page)
       onRequest({
         pagination: pagination.value,

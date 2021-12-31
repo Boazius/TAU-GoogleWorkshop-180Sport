@@ -1,60 +1,75 @@
 <template>
-<q-page>
-  <div class="q-pa-md" style="max-width: 355px">
+  <div class="q-pa-md max-width" >
+    <div class="row justify-between items-baseline">
     <h3 class="group_header  q-mb-none">{{$t('app.groups')}}</h3>
-    <q-list bordered separator class="list-items">
-      <q-item v-for="group in groups" v-bind:key='group'  class="column">
+    <add-group v-if="!fromTrainer" class="q-mb-sm"></add-group>
+    </div>
+    <q-list bordered separator class="list-items ">
+      <q-item v-for="group in groups" v-bind:key='group'  class="column col-md-7">
+        <div class="row  justify-between">
         <q-btn 
+        align="left"
         class="list-items"
         v-ripple
         unelevated 
-         :label="$t('groups.name')+group.number+' - '+group.location"
          style="font-size:30px" 
         @click="goToGroupPage(group)"
-        />
-        
+        >
+        {{group.day+' - '+' '+group.meeting_place}}<br>{{$t('dashboard.time')+': '+ group.time}}
+        </q-btn>
+        <q-btn
+        align="right"
+        icon="edit"
+        v-ripple
+        unelevated 
+         
+        @click="goToGroupDataPage(group)"
+        >
+        </q-btn>
+        </div>
 
-            <q-expansion-item
+      <q-expansion-item
       class="item"
       expand-separator
       switch-toggle-side
       :label="$t('group.closest')"
     >
-    <closest-training-list></closest-training-list>
+    <closest-training-list :group="group" :user="caller"></closest-training-list>
     </q-expansion-item>
       </q-item>
     </q-list>
   </div>
-  </q-page>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import closestTrainingList from 'components/list/closestTrainingList.vue'
+import AddGroup from '../../components/groups/AddGroup.vue';
+
+
 
 export default defineComponent({
   name: "groupList",
-   components: { closestTrainingList},
-data(){
-  return {
-    groups: [
-    {number: 1, location: "תל אביב"},
-    {number: 2, location: "הרצליה"},
-    {number: 3, location: "רמת גן"},        
-    ]
-  }
-},
+   components: { closestTrainingList, AddGroup},
+   props:["groups", "user", "fromTrainer"],
+   data(){
+     return{
+       caller:this.user
+     }
+   },
   methods:{
     goToGroupPage(group){
       const groupdata = JSON.stringify(group);
       localStorage.setItem('groupdata', groupdata);      
       this.$router.push('/groups/:id'); 
     },  
-    saveUser(group){
-      groupdata = JSON.stringify(group);
-      localStorage.setItem('groupdata', groupdata);
+    goToGroupDataPage(group){
+      localStorage.setItem('groupId', JSON.stringify({id: group.id}));      
+      this.$router.push('/groups/:id/details'); 
     },
   },
+  
+  
 });
 </script>
 

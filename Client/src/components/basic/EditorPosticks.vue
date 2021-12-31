@@ -80,7 +80,7 @@ setup (props) {
     .catch(function (error) {
       console.log(error);
     });
-      editor.value = "";
+      //editor.value = "";
       alert("ההודעה נשלחה")
     }
     
