@@ -20,7 +20,6 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
     if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
-
     try:
         data = flask.request.json
         user_id = data['user_id']
@@ -35,10 +34,9 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
             return jsonify({"success": False, "message": "attendance list is empty"}), 400
         else:
             attendance_dict = json.loads(attendance)
-        a = str([str(user_id), str(user_from_db.full_name)])
-        if a not in attendance_dict.keys():
+        if str(user_from_db.id) not in attendance_dict.keys():
             return jsonify({"success": False, "message": "user not in attendance training"}), 401
-        attendance_dict[a] = data['attendance']
+        attendance_dict[str(user_from_db.id)][0] = data['attendance']
         training_from_db.attendance_users = json.dumps(attendance_dict)
         db.session.commit()
         return jsonify({"success": True,
@@ -46,6 +44,7 @@ def update_attendance_list_per_training_per_user(current_user, training_id):
                             user_id) + " successfully"})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
+
 
 
 @trainer.get('/trainer/groups_list/<trainer_id>/')

@@ -83,7 +83,7 @@ def post_training_by_group_id(current_user):
                 list_of_tuple.append([str(user.id),str(user.full_name)])
 
         notes_dict = dict((str(el), "") for el in list_of_users)
-        users_dict = dict((str(el), "0") for el in list_of_tuple)
+        users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
         new_training = Training(group_id=group_id,
                                 date=training_date, day=group_from_db.day,
                                 time=group_from_db.time,
@@ -195,9 +195,7 @@ def get_training(current_user, training_id):
 def get_attendance_list_by_training(current_user, training_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False,
-                        "message": "User cannot view attendance list per training, unless it is "
-                                   "admin/trainer"}), 401
+        return jsonify({"success": False,"message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
 
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:

@@ -164,10 +164,9 @@ def update_attendance(current_user, user_id):
         training_id = training["id"]
         if attendance is None:
             return jsonify({"success": False, "message": "attendance list is empty"}), 400
-        a = str([str(user_id), str(user_from_db.full_name)])
-        if a not in attendance.keys():
+        if str(user_from_db.id) not in attendance.keys():
             return jsonify({"success": False, "message": "user not in attendance training"}), 400
-        attendance[a] = str(data['attendance'])
+        attendance[str(user_from_db.id)][0] = str(data['attendance'])
         training_from_db = db.session.query(Training).filter_by(id=int(training_id)).first()
         if not training_from_db:
             return jsonify({"success": False, "message": "no training found"}), 400
