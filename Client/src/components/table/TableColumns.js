@@ -4,56 +4,76 @@ export const userColumns = [
     required: true,
     label: "שם",
     align: 'left',
-    field: row => row.name,
+    field: row => row.full_name,
     format: val => `${val}`,
     sortable: true
   },
     {
     name: "phone_number",
+    required: true,
     label: "טלפון",
     field: "phone_number",
     sortable: true,
-    align:'center'
+    align:'left'
   },
     {
     name: "group_ids",
+    required: true,
     label: "קבוצה",
     field: "group_ids",
     sortable: true,
-    align:'center'
+    align:'left'
     },
     {
       name: "email",
+      required: true,
       label: "מייל",
       field: "email",
       sortable: false,
-      align:'center'
+      align:'left'
       },
 
 
 ];
-export const trainerColumns = [
-  { name: 'name',
+export const groupColumns = [
+  { 
+    name: 'full_name',
     required: true,
     label: "שם",
     align: 'left',
-    field: row => row.name,
+    field: row => row.full_name,
     format: val => `${val}`,
     sortable: true
   },
   {
-    name: "phone",
-    label: "טלפון",
-    field: "phone",
-    sortable: false,
-    align:'center'
-
-  },
-    {
-    name: "groups",
-    label: "קבוצות",
-    field: "groups",
+    name: "user_type",
+    label: "מתאמן/מתנדב",
+    field: "user_type",
     sortable: false,
     align:'left'
+    },
+    {
+    name: "phone_number",
+    required: true,
+    label: "טלפון",
+    field: "phone_number",
+    sortable: true,
+    align:'left'
   },
+    {
+    name: "group_ids",
+    required: true,
+    label: "קבוצה",
+    field: "group_ids",
+    sortable: true,
+    align:'left'
+    },
+    {
+      name: "email",
+      required: true,
+      label: "מייל",
+      field: "email",
+      sortable: false,
+      align:'left'
+      },
 ];

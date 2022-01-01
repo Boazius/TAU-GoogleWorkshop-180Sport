@@ -47,6 +47,7 @@ export default {
     day: "ביום",
     time: "בשעה",
     location: "במיקום",
+    trainer:"מאמן",
   },
   trainee: {
     days: {
@@ -61,9 +62,20 @@ export default {
   },
   groups: {
     name: "קבוצה ", //make number and description from api
+    add:"הוסף קבוצה",
+    edit:"ערוך פרטי קבוצה",
+    delete: "מחק קבוצה",
+    deleteMessagePart1:"את/ה בטוח/ה שברצונך למחוק את הקבוצה הזו?",
+    deleteMessagePart2: "פעולה זו אינה הפיכה.",
+    cancle:"ביטול",
+    delete:"מחיקה",
+    chooseDay:"יום האימון",
+    chooseTime:"זמן האימון",
+    chooseLocation:"מיקום האימון",
   },
   group: {
     groupDetails: "פרטי הקבוצה",
+    groupParticipants: "משתתפי הקבוצה",
     closest: "פרטי האימון הקרוב",
     prior: "פרטי האימון האחרון",
     markPresent: "סמן שנכח",
@@ -95,6 +107,8 @@ export default {
     hintGroups: "ניתן להוסיף כמה קבוצות",
     livingArea: "אזור",
     posticks: "פתקים חדשים",
+    trainee:"מתאמן",
+    volunteer:"מתנדב",
   },
   user: {
     userPageHeader: "פרטי משתמש",

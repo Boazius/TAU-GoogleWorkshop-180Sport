@@ -83,9 +83,8 @@ export default defineComponent({
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
       tableData.value = props.table_data;
-      console.log(tableData.value);
       const data = filter
-        ? tableData.value.filter((row) => row.name.includes(filter))
+        ? tableData.value.filter((row) => row.full_name.includes(filter))
         : tableData.value.slice();
 
       // handle sortBy
@@ -111,7 +110,7 @@ export default defineComponent({
       }
       let count = 0;
       tableData.value.forEach((treat) => {
-        if (treat.name.includes(filter)) {
+        if (treat.full_name.includes(filter)) {
           ++count;
         }
       });

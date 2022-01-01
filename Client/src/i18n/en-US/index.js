@@ -48,6 +48,8 @@ export default {
     day: "on day",
     time: "on",
     location: "at",
+    trainer:"Trainer",
+
   },
   trainee: {
     days: {
@@ -62,9 +64,20 @@ export default {
   },
   groups: {
     name: "Group ", //make number and description from api
+    add:"Add group",
+    edit:"Edit group",
+    delete: "Delete group",
+    deleteMessagePart1:"Do you realy want to delete this group?",
+    deleteMessagePart2:"This process cannot be undone.",
+    cancle:"Cancle",
+    delete:"Delete",
+    chooseDay:"The day of the trainings",
+    chooseTime:"The time of the trainings",
+    chooseLocation:"The location of the trainings",
   },
   group: {
     groupDetails: "Group details",
+    groupParticipants: "Group participants",
     closest: "Closest training",
     prior: "Last training",
     markPresent: "mark present",
@@ -98,6 +111,8 @@ export default {
     editLivingArea: "Edit living area",
     invalidLivingArea: "Invalid living area",
     posticks: "New notes",
+    trainee:"Trainee",
+    volunteer:"Volunteer",
   },
   user: {
     userPageHeader: "User details",
