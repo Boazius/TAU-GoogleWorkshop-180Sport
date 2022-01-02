@@ -1,19 +1,22 @@
 <template>
-  <div class="row justify-center q-gutter-x-md items-center  q-pa-lg item" >
-    <p class="q-ma-none">{{ $t("dashboard.closest")+":" }}</p>
-   
+  <div >
+  <div class="row justify-left q-gutter-x-md items-center  q-pa-sm item" >
     <p class="q-ma-none">{{ $t("dashboard.date") }}</p>
     <q-input  class="item" v-model="date" type="date" dense/>
-   
+
     <p class="q-ma-none">{{ $t("dashboard.day") }}</p>
     <q-input class="item" v-model="editedTraining.day" type="day" dense/>
-    
+  </div>
+  
+  <div class="row justify-left q-gutter-x-md items-center  q-pa-sm item" >
     <p class="q-ma-none">{{ $t("dashboard.time") }}</p>
     <q-input class="item" v-model="editedTraining.time" type="time" dense/>
-   
+
     <p class="q-ma-none">{{ $t("dashboard.location") }}</p>
     <q-input class="item" v-model="editedTraining.meeting_place" type="text" dense/>
-    
+  </div>
+
+  <div class="row justify-left q-gutter-x-md items-center  q-pa-sm item" >
     <p class="q-ma-none">{{ $t("dashboard.trainer") }}</p>
     <q-select v-model="trainer" :options="trainers" :option-label="(item)=>item.full_name" emit-value 
      class="q-pb-md" />
@@ -29,6 +32,7 @@
         ripple 
         >{{ $t("table.save") }}</black-button
       >
+  </div>
   </div>
 </template>
 
@@ -95,11 +99,10 @@ export default defineComponent({
   methods:{
     //put traning info in database (update)
    async saveTraining(){
-      console.log("trainer", this.trainers_id);
       var data = this.editedTraining;
       data = Object.assign({date:this.date});
       data = Object.assign({trainers_id : this.trainer.id});
-            console.log(JSON.stringify(data))
+            
       const response = await axios.put(`${serverUrl}/training/${this.training.id}/`,
       JSON.stringify(data),
       {

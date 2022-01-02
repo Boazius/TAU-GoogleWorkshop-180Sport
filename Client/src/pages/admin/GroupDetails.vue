@@ -4,14 +4,15 @@
       <div>
         <q-btn
           size="sm"
-          class="q-ml-md"
+        class="q-mr-md q-mt-sm"
           padding="sm"
-          round
+          
           glossy
           ripple="center"
           color="primary"
           icon="arrow_forward"
-          to="/groups"
+          @click="onGoBack"
+
         />
       </div>
       <q-item-section v-if="isNew"
@@ -44,6 +45,9 @@ export default {
     // handler() {
     //   window.localStorage.removeItem('userdata');
     // },
+    onGoBack() {
+      this.$router.go(-1);
+    }
   },
   components: {
     GroupCredentialsList,

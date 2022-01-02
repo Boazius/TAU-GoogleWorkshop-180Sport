@@ -2,7 +2,7 @@
   <q-page>
     <div class="q-pa-md">
       <h3 class="table_header wrap q-mb-none">{{$t('table.title.trainers')}}</h3>
-      <trainer-table  v-if="everthingIsReady" :table_data='trainers'></trainer-table>
+      <trainer-table  v-if="everthingIsReady" fromGroupPage="false" :table_data='trainers'></trainer-table>
     </div>
   </q-page>
 </template>

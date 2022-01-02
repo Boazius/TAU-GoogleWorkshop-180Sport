@@ -47,8 +47,22 @@
         ]"
         label-color="text-grey-1"
       />
+        </div>
+       <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
+        <p class="q-ma-none q-pb-none">{{ $t("table.title.trainers")+":" }}</p>
+    <q-select v-model="trainers" 
+      map-options  
+      use-chips
+     :options="allTrainers" multiple :option-label="(item)=>item.full_name" emit-value 
+      lazy-rules clearable clear-icon="close"
+      no-error-icon           
+      :rules="[
+      (val) => (val && val.length > 0) || $t('authentication.field'),
+      ]"
+     class="q-pb-md" />
       </div>
-      <div class="row">
+
+      <div class="row q-mt-lg">
       <black-button
         class="q-mt-sm q-mr-md"
         :type="'submit'"
@@ -105,31 +119,60 @@ export default {
       isNew:false,
       everthingIsReady:false,
       confirm:false,
+      allTrainers:[],
+      originalTrainers:[],
+      trainers:[],
     };
   },
+
+
+
+  async created() {
+    console.log((JSON.parse(localStorage.getItem("groupId")).id));
+    console.log((JSON.parse(localStorage.getItem("groupId")).id) != 0);
+    if ((JSON.parse(localStorage.getItem("groupId")).id) != 0) {
+      await this.getGroup()
+      await this.getTrainersForGroup()
+      this.editedGroup.day = this.groupdata.day;
+      this.editedGroup.time = this.groupdata.time;
+      this.editedGroup.meeting_place = this.groupdata.meeting_place;
+    }
+    else this.isNew=true;
+    await this.getAllTrainers()
+    this.everthingIsReady = true;
+    
+  },
+
 
   methods: {
     onGoBack() {
       this.$router.go(-1);
     },
+
+
+
     formHandler() {},
     
+
+
     async deleteGroup(){
-        localStorage.setItem('groupId', JSON.stringify({id:0}));
-        this.editedGroup = {};      
-        const response1 = await axios.delete(`${serverUrl}/group/${this.groupdata.id}/`,{
-        headers: { 
-            'x-access-token': id_token,
-        },
-        })
-        .then((res)=> res.data)
-        .catch((error)=>{
-            console.log(error);
-            return error;
-        });
+      localStorage.setItem('groupId', JSON.stringify({id:0}));
+      this.editedGroup = {};      
+      const response1 = await axios.delete(`${serverUrl}/group/${this.groupdata.id}/`,{
+      headers: { 
+          'x-access-token': id_token,
+      },
+      })
+      .then((res)=> res.data)
+      .catch((error)=>{
+          console.log(error);
+          return error;
+      });
       alert("הקבוצה נמחקה");
       this.$router.go(-1);
     },
+
+
 
     //if !isNew - get group info using get, else return {}
     async getGroup(){
@@ -150,11 +193,46 @@ export default {
       else this.groupdata =  {};
     },
 
-    //post group info in database (create new)
-    async saveNewGroup(){
-      console.log("new");
-      const response = await axios.post(`${serverUrl}/group`,
-      JSON.stringify(this.editedGroup),
+
+
+    //get group's trainers
+    async getTrainersForGroup(){
+      const id = (JSON.parse(localStorage.getItem("groupId"))).id ;
+      const response = await axios.get(`${serverUrl}/get_all_trainers_by_group/${id}/`,{
+        headers: { 
+            'x-access-token': id_token,
+        },
+      })
+      .then((res)=> res.data)
+      .catch((error)=>{
+          console.log(error);
+          return error;
+      });
+      this.trainers = JSON.parse(JSON.stringify(response["trainers"]));
+      this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
+      },
+
+
+
+      async getAllTrainers(){
+        const response = await axios.get(`${serverUrl}/admin/get_all_trainers/`,{
+        headers: { 
+            'x-access-token': id_token,
+        },
+        })
+        .then((res)=> res.data)
+        .catch((error)=>{
+            console.log(error);
+            return error;
+        });
+        this.allTrainers =JSON.parse(JSON.stringify(response["list of trainers"]));
+      },
+
+    
+
+    async addTrainerToGroup(trainerid,groupid){
+      const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
+      JSON.stringify({user_id:trainerid}),
       {
           headers: { 
               'x-access-token': id_token,
@@ -166,15 +244,63 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-        alert("הקבוצה החדשה נשמרה");
+    },
+
+
+
+    async removeTrainerFromGroup(id){
+      const response = await axios.put(`${serverUrl}/delete_user_from_group/${this.groupdata.id}/`,
+      JSON.stringify({user_id:id}),
+      {
+          headers: { 
+              'x-access-token': id_token,
+              'Content-Type': 'application/json',
+          },
+      })    .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    
+
+
+    //post group info in database (create new)
+    async saveNewGroup(){
+      console.log("new");
+      if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
+        const response = await axios.post(`${serverUrl}/group`,
+        JSON.stringify(this.editedGroup),
+      {
+          headers: { 
+              'x-access-token': id_token,
+              'Content-Type': 'application/json',
+          },
+      }).then((res)=> res.data)   
+      .catch(function (error) {
+        console.log(error);
+      });
+      const newgroupid = (JSON.parse(JSON.stringify(response["group"]))).id;
+      // add trainers to group
+      for (let i = 0; i <  this.trainers.length; i++){
+        var trainer = this.trainers[i];
+        await this.addTrainerToGroup(trainer.id, newgroupid);
+      }
+
+      alert("הקבוצה החדשה נשמרה");
       this.$router.go(-1);
+      }
+      else alert("לא ניתן לשמור את הקבוצה מכיוון שיש פרטים חסרים");
       },
     
+
+
   //put group info in database (update)
    async saveExistingGroup(){
       console.log("exist");
-            console.log(JSON.stringify(this.editedGroup))
 
+    if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
       const response = await axios.put(`${serverUrl}/group/${this.groupdata.id}/`,
       JSON.stringify(this.editedGroup),
       {
@@ -188,13 +314,33 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
-        alert("השינויים נשמרו");
+
+      // add trainers to group 
+      for (let i = 0; i <  this.trainers.length; i++){
+        var trainer = this.trainers[i];
+        if (! this.originalTrainers.some(el=> el.id == trainer.id )){
+          await this.addTrainerToGroup(trainer.id, this.groupdata.id);
+        }
+      }
+      // remove trainers from group 
+      for (let i = 0; i <  this.originalTrainers.length; i++){
+        var trainer = this.originalTrainers[i];
+        if (!  this.trainers.some(el=> el.id == trainer.id )){
+          await this.removeTrainerFromGroup(trainer.id);
+        }
+      }
+     alert("השינויים נשמרו");
       this.$router.go(-1);
+      }
+      else alert("לא ניתן לעדכן את השינויים מכיוון שיש פרטים חסרים");
       },
+
+
 
 //set group's new/updated info using post/put determined by isNew, set to true if came to page using "add group" button
     async setGroupInfo(){
       console.log("set");
+      console.log("is new",this.isNew);
       if(this.isNew) {
         this.saveNewGroup();
       }
@@ -204,16 +350,7 @@ export default {
   },
 
 
-  async created() {
-    if ((JSON.parse(localStorage.getItem("groupId")).id) != 0) {
-      await this.getGroup()
-      this.editedGroup.day = this.groupdata.day;
-      this.editedGroup.time = this.groupdata.time;
-      this.editedGroup.meeting_place = this.groupdata.meeting_place;
-    }
-    else this.isNew=true;
-    this.everthingIsReady = true;
-  },
+
   // unmounted() {
   //   this.$store.dispatch("authentication/setEditedUser", {});
   // },
