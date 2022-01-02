@@ -27,15 +27,6 @@
       expand-separator
       :label="$t('group.groupDetails')"
     >
-      <!-- <q-expansion-item
-        class="item"
-        switch-toggle-side
-        :header-inset-level="1"
-        expand-separator
-        :label="$t('table.title.trainees')"
-      >
-        <user-table v-if="everthingIsReady" :table_data='group'></user-table>
-        </q-expansion-item> -->
       <q-expansion-item
         class="item"
         switch-toggle-side

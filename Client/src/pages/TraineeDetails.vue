@@ -4,9 +4,8 @@
       <div>
       <q-btn 
         size="sm"
-        class="q-ml-md"
+        class="q-mr-md q-mt-sm"
         padding="sm"
-        round
         glossy
         ripple="center"
         color="primary"

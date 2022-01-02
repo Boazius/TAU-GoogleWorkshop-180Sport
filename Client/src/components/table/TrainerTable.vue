@@ -44,7 +44,6 @@
 
 <script>
 import { ref, onMounted,defineComponent } from "vue";
-import { mockTrainers  } from "./mockdata.js";
 import { userColumns  } from "components/table/TableColumns.js";
 import TableTopButtons from 'components/table/TableTopButtons.vue';
 
