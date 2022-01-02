@@ -80,7 +80,6 @@ export default defineComponent({
     });
 
     onBeforeUnmount( async () => {
-      console.log("unmount",JSON.stringify({attendance_users: editedAttendance.value}));
       const response = await axios.put(`${serverUrl}/trainer/update_attendance_list/${props.training.id}/`,
       JSON.stringify({attendance_users: editedAttendance.value}),
       {

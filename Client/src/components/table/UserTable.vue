@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { ref ,onMounted, defineComponent } from "vue";
+import { ref ,onMounted, defineComponent ,onUpdated} from "vue";
 import { useQuasar } from "quasar";
 import { userColumns , groupColumns} from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
@@ -98,7 +98,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const tableData = ref([]);
     const userType = ref(1);
     const rows = ref([]);
     const filter = ref("");
@@ -108,20 +107,19 @@ export default defineComponent({
       descending: false,
       page: 1,
       rowsPerPage: 5,
-      rowsNumber: 10,
+      rowsNumber: props.table_data.length,
     });
-    const rowCount = ref(10);
+    const rowCount = ref(props.table_data.length);
     const $q = useQuasar();
     const columns = ref(props.fromGroupPage ? groupColumns : userColumns);
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
-      tableData.value = props.table_data;
       //userType.value = getUserType(); // default val is 1 for admin, waiting for data in store in order to implement*/
       const data = filter
-        ?tableData.value.filter((row) => row.full_name.includes(filter))
-        :tableData.value.slice();
+        ?props.table_data.filter((row) => row.full_name.includes(filter))
+        :props.table_data.slice();
 
       // handle sortBy
       if (sortBy) {
@@ -144,17 +142,17 @@ export default defineComponent({
     }
 
     // emulate 'SELECT count(*) FROM ...WHERE...'
-    function getRowsNumberCount(filter) {
+     function getRowsNumberCount(filter) {
       if (!filter) {
-        return tableData.value.length;
+        return props.table_data.length;
       }
       let count = 0;
-      tableData.value.forEach((treat) => {
+      props.table_data.forEach((treat) => {
         if (treat.full_name.includes(filter)) {
           ++count;
         }
       });
-      return count;
+     return count;
     }
 
     function onRequest(props) {
@@ -165,6 +163,7 @@ export default defineComponent({
       setTimeout(() => {
         // update rowsCount with appropriate value
         pagination.value.rowsNumber = getRowsNumberCount(filter);
+        
 
         // get all rows if "All" (0) is selected
         const fetchCount =
@@ -204,6 +203,8 @@ export default defineComponent({
       });
     });
 
+
+
     return {
       filter,
       loading,
@@ -211,7 +212,6 @@ export default defineComponent({
       columns,
       rows,
       rowCount,
-      tableData,
       onRequest,
       userType,
     };

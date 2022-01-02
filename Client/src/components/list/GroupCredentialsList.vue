@@ -128,8 +128,6 @@ export default {
 
 
   async created() {
-    console.log((JSON.parse(localStorage.getItem("groupId")).id));
-    console.log((JSON.parse(localStorage.getItem("groupId")).id) != 0);
     if ((JSON.parse(localStorage.getItem("groupId")).id) != 0) {
       await this.getGroup()
       await this.getTrainersForGroup()
@@ -268,7 +266,6 @@ export default {
 
     //post group info in database (create new)
     async saveNewGroup(){
-      console.log("new");
       if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
         const response = await axios.post(`${serverUrl}/group`,
         JSON.stringify(this.editedGroup),
@@ -298,8 +295,6 @@ export default {
 
   //put group info in database (update)
    async saveExistingGroup(){
-      console.log("exist");
-
     if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
       const response = await axios.put(`${serverUrl}/group/${this.groupdata.id}/`,
       JSON.stringify(this.editedGroup),
@@ -339,8 +334,6 @@ export default {
 
 //set group's new/updated info using post/put determined by isNew, set to true if came to page using "add group" button
     async setGroupInfo(){
-      console.log("set");
-      console.log("is new",this.isNew);
       if(this.isNew) {
         this.saveNewGroup();
       }

@@ -55,8 +55,6 @@ export default {
 
 
     function onRequest(){
-      console.log("training",props.training);
-      console.log("userId",props.userId);
       editor.value = props.training.trainer_notes[props.userId];
     }
 
@@ -66,7 +64,8 @@ export default {
       "trainee_id": props.userId
      });
 
-      const response = await axios.post(`${serverUrl}/trainer/message/${props.training.trainers_id[0]}/${props.training.id}/`,
+//******************** change to current user********************//
+      const response = await axios.post(`${serverUrl}/trainer/message/4/${props.training.id}/`,
       message,
       {
         headers: { 
