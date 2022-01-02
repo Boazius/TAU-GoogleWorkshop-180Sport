@@ -48,6 +48,7 @@
     </template>
     <template v-slot:top>
       <table-top-buttons
+        v-if="!fromGroupPage"
         :rows="rows"
         :rowCount="rowCount"
         :loading="loading"
@@ -81,7 +82,7 @@ import TableTopButtons from "components/table/TableTopButtons.vue";
 export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
-  props:["table_data", "byUser"],
+  props:["table_data", "fromGroupPage"],
 
 
 
@@ -111,7 +112,7 @@ export default defineComponent({
     });
     const rowCount = ref(10);
     const $q = useQuasar();
-    const columns = ref(props.byUser ? groupColumns : userColumns);
+    const columns = ref(props.fromGroupPage ? groupColumns : userColumns);
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...

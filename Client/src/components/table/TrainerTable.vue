@@ -29,6 +29,7 @@
       </template>
       <template v-slot:top>
         <table-top-buttons 
+        v-if="!fromGroupPage"
       :rows="rows"
       :rowCount="rowCount"
       :loading="loading"></table-top-buttons>
@@ -54,7 +55,7 @@ const columns = userColumns;
 export default defineComponent({
   name:'TrainerTable',
   components: { TableTopButtons },
-  props:["table_data"],
+  props:["table_data","fromGroupPage"],
 
    methods:{
     goToUserPage(row){

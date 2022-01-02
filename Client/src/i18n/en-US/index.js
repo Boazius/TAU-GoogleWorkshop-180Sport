@@ -24,9 +24,10 @@ export default {
       savedSelection: "Thank You, Your selection has been saved!",
       post: "Do you want to leave a note for the trainer?",
       noNewPosts: "The are no messages",
+      newPostFrom:"Recieved a new message from",
       close: "Close",
       send: "Send message",
-
+      reply: "Reply",
     },
   },
   authentication: {

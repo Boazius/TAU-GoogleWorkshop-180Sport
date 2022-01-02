@@ -1,17 +1,17 @@
 <template>
   <div class="q-pa-md">
     <div class="row">
-      <div v-if="everthingIsReady">
+      <div >
       <q-btn
         size="sm"
-        class="q-ml-md"
+        class="q-mr-md q-mt-md"
         padding="sm"
-        round
+        
         glossy
         ripple="center"
         color="primary"
         icon="arrow_forward"
-        to="/groups"
+        @click="onGoBack"
       />
       </div>
       <q-item-section
@@ -43,7 +43,7 @@
         :header-inset-level="1"
         :label="$t('group.groupParticipants')"
       >
-      <user-table v-if="groupIsReady" :byUser="true" :table_data='group'></user-table>
+      <user-table v-if="groupIsReady" :fromGroupPage="true" :table_data='group'></user-table>
       </q-expansion-item>
 
       <q-expansion-item
@@ -53,7 +53,7 @@
         :header-inset-level="1"
         :label="$t('table.title.trainers')"
       >
-        <trainer-table v-if="trainersIsReady" :table_data='trainers'></trainer-table>
+        <trainer-table v-if="trainersIsReady" fromGroupPage="true" :table_data='trainers'></trainer-table>
         </q-expansion-item>
     </q-expansion-item>
 
@@ -71,7 +71,7 @@
       expand-separator
       :label="$t('group.prior')"
     >
-    <last-training-list></last-training-list>
+    <last-training-list :group="groupdata" :user="user" v-if="everthingIsReady"></last-training-list>
     </q-expansion-item>
   </div>
 </template>
@@ -89,6 +89,12 @@ const id_token = localStorage.getItem("id_token");
 
 export default {
   components: { UserTable, TrainerTable,closestTrainingList, lastTrainingList},
+
+  methods:{
+    onGoBack() {
+      this.$router.go(-1);
+    }
+  },
 
   setup() {
     const loading = ref(false);
@@ -115,6 +121,7 @@ export default {
       }
 
 
+
     async function onRequest() {
       const email = "rotholtz@mail.tau.ac.il";
         if(localStorage.getItem("groupdata")){
@@ -136,7 +143,6 @@ export default {
       const response3 = await getContent(`${serverUrl}/user/email/${email}`);
       user.value = JSON.parse(JSON.stringify(response3["user"]));
       everthingIsReady.value=true;
-      console.log("user", user.value)
 
   }
 

@@ -24,8 +24,10 @@ export default {
       savedSelection: "תודה רבה, בחירתך נשמרה!",
       post: "רוצה להשאיר הודעה קצרה למאמן?",
       noNewPosts: "לא התקבלה הודעה",
+      newPostFrom:"התקבלה הודעה מ-",
       close: "סגור",
       send: "שלח את ההודעה",
+      reply: "השב",
     },
   },
   authentication: {

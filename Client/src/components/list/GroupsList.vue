@@ -22,7 +22,7 @@
         icon="edit"
         v-ripple
         unelevated 
-         
+         v-if="!fromTrainer"
         @click="goToGroupDataPage(group)"
         >
         </q-btn>
