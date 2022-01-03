@@ -44,7 +44,7 @@
         :header-inset-level="1"
         :label="$t('table.title.trainers')"
       >
-        <trainer-table v-if="trainersIsReady" fromGroupPage="true" :table_data='trainers'></trainer-table>
+        <trainer-table v-if="trainersIsReady" :fromGroupPage="true" :table_data='trainers'></trainer-table>
         </q-expansion-item>
     </q-expansion-item>
 

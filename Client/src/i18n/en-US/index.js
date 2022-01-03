@@ -63,6 +63,9 @@ export default {
       saturday: "Saturday",
     }
   },
+  userPage:{
+    userType: "User type",
+  },
   groups: {
     name: "Group ", //make number and description from api
     add:"Add group",
@@ -111,7 +114,7 @@ export default {
     livingArea: "Living area",
     editLivingArea: "Edit living area",
     invalidLivingArea: "Invalid living area",
-    posticks: "New notes",
+    posticks: "Notes from trainer",
     trainee:"Trainee",
     volunteer:"Volunteer",
   },

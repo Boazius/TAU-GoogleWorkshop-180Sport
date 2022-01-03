@@ -1,5 +1,5 @@
 <template>
-<groups-list v-if="everthingIsReady" fromTrainer="true" :groups="groups" :user="trainer"></groups-list>
+<groups-list v-if="everthingIsReady"  :groups="groups" :user="trainer"></groups-list>
 </template>
 
 <script>
