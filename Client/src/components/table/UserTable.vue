@@ -8,6 +8,7 @@
     :filter="filter"
     @request="onRequest"
     binary-state-sort
+    v-if="everthingIsReady"
   >
     <template v-slot:body="props">
       <q-tr :props="props">
@@ -37,8 +38,8 @@
         <q-td key="phone_number" :props="props" >
           {{ props.row.phone_number }}
         </q-td>
-        <q-td key="group_ids" :props="props"
-          >{{ props.row.group_ids }}
+        <q-td key="group_ids" style="white-space: pre;" :props="props"
+          >{{ getNames(props.row.group_ids) }}
         </q-td>
         <q-td key="email" :props="props"
           >{{ props.row.email }}
@@ -77,8 +78,10 @@ import { ref ,onMounted, defineComponent ,onUpdated} from "vue";
 import { useQuasar } from "quasar";
 import { userColumns , groupColumns} from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
+import axios from "axios";
+const serverUrl = "http://127.0.0.1:5000";
+const id_token = localStorage.getItem("id_token");
 
-;
 
 export default defineComponent({
   name: "userTable",
@@ -116,6 +119,8 @@ export default defineComponent({
     const rowCount = ref(props.table_data.length);
     const $q = useQuasar();
     const columns = ref(props.fromGroupPage ? groupColumns : userColumns);
+    const groupNames=ref();
+    const everthingIsReady = ref(false);
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -198,8 +203,44 @@ export default defineComponent({
         loading.value = false;
       }, 500);
     }
+    async function getGroupsNames(){
+          //get groups data from server
+      const response = await axios.get(`${serverUrl}/admin/get_all_groups/`,{
+          headers: { 
+              'x-access-token': id_token,
+          },
+        })
+        .then((res)=> res.data)
+        .catch((error)=>{
+            console.log(error);
+            return error;
+        });
+      
+      const groups =JSON.parse(JSON.stringify(response["list of group"]));
+      groupNames.value = [groups.length+1]
+      for (let i=0; i<groups.length; i++){
+        groupNames.value[groups[i].id] = groups[i].day+"- "+groups[i].meeting_place+" "+groups[i].time
+      }
+      everthingIsReady.value=true;
+    }
+
+
+
+  function getNames(group_ids){
+    const id_array = (group_ids+"").split(/,/)
+    var str = "";
+    for (let i=0; i<id_array.length; i++){
+      str +=groupNames.value[parseInt(id_array[i])]+"";
+      if(i!=id_array.length -1){
+        str +="\n" 
+      }
+    }
+    return str;
+  }
+
 
     onMounted(() => {
+      getGroupsNames();
       // get initial data from server (1st page)
       onRequest({
         pagination: pagination.value,
@@ -218,6 +259,9 @@ export default defineComponent({
       rowCount,
       onRequest,
       userType,
+      getGroupsNames,
+      getNames,
+      everthingIsReady,
     };
   },
 });

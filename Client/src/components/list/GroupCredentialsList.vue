@@ -1,23 +1,32 @@
 <template>
   <section class=" item col q-gutter-x-md bg-grey-2  q-pa-md">
     <!-- Edited data: {{ editedGroup }} <br />
-    Group data: {{ groupdata }} -->
-    <!-- trainers: {{trainers.length ==0}} -->
+    Group data: {{ groupdata }}
+    trainers: {{trainers}} -->
     <q-form @submit.prevent="formHandler" autofocus v-if="everthingIsReady" class="max-width">
       <div class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
         <p class="q-ma-none q-pb-none">{{ $t('groups.chooseDay')+":" }}</p>
-        <q-input
+        <q-select
+        v-model="editedGroup.day"
+        :options="days"
+        emit-value
+        name="day"
+          :rules="[
+            (val) => (val && val.length > 0) || $t('authentication.field'),
+          ]"
+        class="q-pb-md"
+      />  
+        
+        <!-- <q-input
           no-error-icon
           v-model="editedGroup.day"
           name="day"
           clearable
           lazy-rules
           clear-icon="close"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
+
           label-color="text-grey-1"
-        />
+        /> -->
       </div>
       <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
         <p class="q-ma-none q-pb-none">{{ $t('groups.chooseTime')+":" }}</p>
@@ -123,6 +132,15 @@ export default {
       allTrainers:[],
       originalTrainers:[],
       trainers:[],
+      days:[
+        "ראשון",
+        "שני",
+        "שלישי",
+        "רביעי",
+        "חמישי",
+        "שישי",
+        "שבת",
+      ],
     };
   },
 
@@ -132,6 +150,7 @@ export default {
     if ((JSON.parse(localStorage.getItem("groupId")).id) != 0) {
       await this.getGroup()
       await this.getTrainersForGroup()
+      this.trainers=this.originalTrainers;
       this.editedGroup.day = this.groupdata.day;
       this.editedGroup.time = this.groupdata.time;
       this.editedGroup.meeting_place = this.groupdata.meeting_place;
@@ -155,8 +174,12 @@ export default {
 
 
     async deleteGroup(){
-      localStorage.setItem('groupId', JSON.stringify({id:0}));
       this.editedGroup = {};      
+      this.trainers = [];
+      await this.getTrainersForGroup();
+      for(let i=0; i<this.originalTrainers.length; i++){
+        this.removeTrainerFromGroup(this.originalTrainers[i].id)
+      }
       const response1 = await axios.delete(`${serverUrl}/group/${this.groupdata.id}/`,{
       headers: { 
           'x-access-token': id_token,
@@ -167,6 +190,7 @@ export default {
           console.log(error);
           return error;
       });
+      localStorage.setItem('groupId', JSON.stringify({id:0}));
       alert("הקבוצה נמחקה");
       this.$router.go(-1);
     },
@@ -207,7 +231,6 @@ export default {
           console.log(error);
           return error;
       });
-      this.trainers = JSON.parse(JSON.stringify(response["trainers"]));
       this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
       },
 
@@ -284,11 +307,12 @@ export default {
       // add trainers to group
       for (let i = 0; i <  this.trainers.length; i++){
         var trainer = this.trainers[i];
+        console.log(trainer.id)
         await this.addTrainerToGroup(trainer.id, newgroupid);
       }
 
       alert("הקבוצה החדשה נשמרה");
-      //this.$router.go(-1);
+      this.$router.go(-1);
       }
       else alert("לא ניתן לשמור את הקבוצה מכיוון שיש פרטים חסרים");
       },
@@ -339,7 +363,9 @@ export default {
       if(this.isNew) {
         this.saveNewGroup();
       }
-      else  this.saveExistingGroup();
+      else {
+        this.saveExistingGroup()
+      };
     },
   },
 
