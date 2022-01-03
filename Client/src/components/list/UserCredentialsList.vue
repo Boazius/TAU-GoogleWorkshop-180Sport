@@ -53,6 +53,7 @@
         class="q-pb-md"
       />
 
+
       <q-select
         v-if="fromAdmin"
         v-model="editedUserType"
@@ -151,8 +152,6 @@ export default {
       console.log(typeof(this.userData.group_ids));
       console.log(this.userData.group_ids);
       this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
-      // console.log((this.userData.group_ids.String.prototype.split(',')));
-    // const userGroupIds = String.prototype.split(this.userData.group_ids,',');
       console.log(this.userOriginalGroupIds)
       for (let i = 0; i <  this.userOriginalGroupIds.length; i++){
         var groupid = parseInt(this.userOriginalGroupIds[i]);
