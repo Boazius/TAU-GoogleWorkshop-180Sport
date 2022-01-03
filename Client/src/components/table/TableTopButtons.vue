@@ -38,7 +38,7 @@ import { defineComponent, ref } from "vue";
 // }
 export default defineComponent({
   name: "TableTopButtons",
-  props: ["type"],
+  props: ["type", "tableType"],
   data() {
     return {
       loading: false,
@@ -50,10 +50,13 @@ export default defineComponent({
       this.loading = true;
       setTimeout(() => {
         this.loading = false;
-        this.$router.push({
-          path: "/user/123",
-        });
       }, 500);
+      const user = {
+        id: 0,
+        type: this.tableType
+        };
+      localStorage.setItem('user', JSON.stringify(user));      
+      this.$router.push(`/user/${user.id}`);
     },
 
     // removeRow () {

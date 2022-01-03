@@ -62,6 +62,9 @@ export default {
       saturday: "שבת",
     }
   },
+  userPage:{
+    userType: "סוג המשתמש",
+  },
   groups: {
     name: "קבוצה ", //make number and description from api
     add:"הוסף קבוצה",
@@ -108,7 +111,7 @@ export default {
     invalidGroups: "קבוצות לא תקינות",
     hintGroups: "ניתן להוסיף כמה קבוצות",
     livingArea: "אזור",
-    posticks: "פתקים חדשים",
+    posticks: "הודעות מהמאמן",
     trainee:"מתאמן",
     volunteer:"מתנדב",
   },

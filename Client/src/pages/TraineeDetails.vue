@@ -1,19 +1,6 @@
 <template>
     <q-page padding>
     <div class="row">
-      <div>
-      <q-btn 
-        size="sm"
-        class="q-mr-md q-mt-sm"
-        padding="sm"
-        glossy
-        ripple="center"
-        color="primary"
-        icon="arrow_forward"
-        to="/trainees/:id"
-      />
-      
-      </div>
       <q-item-section
         class="table_header wrap q-mb-sm"
         style="font-size: xx-large"
@@ -21,7 +8,7 @@
       </q-item-section>
       <q-space />
     </div>
-         <user-credentials-list :userData="userData"></user-credentials-list> 
+         <user-credentials-list :fromAdmin="false" ></user-credentials-list> 
 
     </q-page>
 </template>
@@ -29,18 +16,23 @@
 <script>
 import { defineComponent } from "vue";
 import UserCredentialsList from "components/list/UserCredentialsList.vue";
-
+const myUserid = 4;
 
 export default defineComponent({
-  name: "userPage",
+  name: "TraineeDetails",
 created() {
-    if(localStorage.getItem("userdata")){
-        this.userData = JSON.parse(localStorage.getItem("userdata"));
-   }
-   else{
-     this.userData ={id: 4, name: "נינט לוי", phone: "0526831999", groups: 1, postick: "היי,לצערי לא אוכל להגיע", "attendance":1,"userType":3}
-   }
-  window.addEventListener('beforeunload', this.handler)
+      const user ={id: myUserid};
+      localStorage.setItem('user', JSON.stringify(user));      
+      // this.$router.push(`/user/${user.id}`);
+
+
+  //   if(localStorage.getItem("userdata")){
+  //       this.userData = JSON.parse(localStorage.getItem("userdata"));
+  //  }
+  //  else{
+  //    this.userData ={id: 4, name: "נינט לוי", phone: "0526831999", groups: 1, postick: "היי,לצערי לא אוכל להגיע", "attendance":1,"userType":3}
+  //  }
+  // window.addEventListener('beforeunload', this.handler)
 
 },
 
@@ -61,3 +53,4 @@ data() {
 <style scoped>
 @import "assets/tableStyle.css";
 </style>
+
