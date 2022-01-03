@@ -56,9 +56,9 @@ def get_group(current_user, group_id):
     group_from_db = db.session.query(Group).filter_by(id=group_id).first()
     if not group_from_db:
         return jsonify({'success': False, 'message': 'No group found!'})
-    if current_user.user_type in [3, 4]:
-        return jsonify({"success": False,
-                        "message": "User cannot view group details, unless it is admin/trainer"}), 401
+    # if current_user.user_type in [3, 4]:
+        # return jsonify({"success": False,
+                        # "message": "User cannot view group details, unless it is admin/trainer"}), 401
     return jsonify({'success': True, 'Group': group_from_db.to_dict()})
 
 
