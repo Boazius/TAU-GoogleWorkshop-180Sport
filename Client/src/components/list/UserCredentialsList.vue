@@ -40,6 +40,21 @@
         ]"
         label-color="text-grey-1"
       />
+
+      <q-list
+      class="q-ma-none q-pa-none"
+        v-if="!fromAdmin"
+      >
+      <q-item-label header>{{$t('table.groups')}}</q-item-label>
+            <q-separator />
+      <q-item v-for="item in editedUserGroups" :key="item" >
+        <q-item-section>
+        {{item.day+'- '+item.meeting_place+' '+item.time}}
+                <q-separator  />
+
+        </q-item-section>
+      </q-item>
+      </q-list>
       <q-select
       v-if="fromAdmin"
         v-model="editedUserGroups"
@@ -173,16 +188,16 @@ export default {
   else{
     await this.getUser();
     this.editedUser = this.userData;
-  }
+    const group_id_array = this.editedUser.group_ids.split(/,/);
+    for (let i = 0; i <  group_id_array.length; i++){
+      this.editedUserGroups.push(await this.getGroup(group_id_array[i]));      
+      }
+    }
+    console.log(this.editedUserGroups)
+
   this.everthingIsReady = true;
   },
 
-//  for (let i = 0; i <  this.trainers.length; i++){
-//         var trainer = this.trainers[i];
-//         if (! this.originalTrainers.some(el=> el.id == trainer.id )){
-//           await this.addTrainerToGroup(trainer.id, this.groupdata.id);
-//         }
-//       }
   methods: {
     onGoBack() {
       this.$router.go(-1);
@@ -222,13 +237,6 @@ export default {
   },
 
 
-  userDataToSend(){
-    const data = this.editedUser;
-    data["user_type"] = this.editedUserType.type;
-    return data;
-  },
-
-
 async addUserToGroup(userid, groupid){
       console.log("add");
       const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
@@ -246,20 +254,29 @@ async addUserToGroup(userid, groupid){
       });
     },
 
-  // dataToSend(){
-  //   const data = editedUser;
-  //   var groupIdsStr = "";
-  //   for (let i=0 ; i< this.editedUserGroups.length ; i++){
-  //     groupIdsStr += toString(this.editedUserGroups[i].id);
-  //     if(i !=  this.editedUserGroups.length -1){
-  //       groupIdsStr +=',';
-  //     }
-  //   }
-  //   console.log(groupIdsStr);
-  //   data[group_ids] = groupIdsStr;
-  //   console.log(data);
-  //   return data
-  // },
+
+
+  async getGroup(groupid){
+    const response = await axios.get(`${serverUrl}/group/${groupid}/`,{
+      headers: { 
+          'x-access-token': id_token,
+      },
+    })
+    .then((res)=> res.data)
+    .catch((error)=>{
+        console.log(error);
+        return error;
+    });    
+    return JSON.parse(JSON.stringify(response["Group"]));
+  },
+
+
+
+  userDataToSend(){
+    const data = this.editedUser;
+    data["user_type"] = this.editedUserType.type;
+    return data;
+  },
   
   
   
