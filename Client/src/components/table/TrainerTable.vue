@@ -29,6 +29,7 @@
       </template>
       <template v-slot:top>
         <table-top-buttons 
+        v-if="!fromGroupPage"
       :rows="rows"
       :rowCount="rowCount"
       :loading="loading"></table-top-buttons>
@@ -43,7 +44,6 @@
 
 <script>
 import { ref, onMounted,defineComponent } from "vue";
-import { mockTrainers  } from "./mockdata.js";
 import { userColumns  } from "components/table/TableColumns.js";
 import TableTopButtons from 'components/table/TableTopButtons.vue';
 
@@ -54,7 +54,7 @@ const columns = userColumns;
 export default defineComponent({
   name:'TrainerTable',
   components: { TableTopButtons },
-  props:["table_data"],
+  props:["table_data","fromGroupPage"],
 
    methods:{
     goToUserPage(row){
@@ -83,9 +83,8 @@ export default defineComponent({
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
       tableData.value = props.table_data;
-      console.log(tableData.value);
       const data = filter
-        ? tableData.value.filter((row) => row.name.includes(filter))
+        ? tableData.value.filter((row) => row.full_name.includes(filter))
         : tableData.value.slice();
 
       // handle sortBy
@@ -111,7 +110,7 @@ export default defineComponent({
       }
       let count = 0;
       tableData.value.forEach((treat) => {
-        if (treat.name.includes(filter)) {
+        if (treat.full_name.includes(filter)) {
           ++count;
         }
       });

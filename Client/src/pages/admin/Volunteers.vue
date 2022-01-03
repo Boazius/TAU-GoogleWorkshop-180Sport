@@ -2,7 +2,7 @@
   <q-page>
     <div class="q-pa-md">
       <h3 class="table_header wrap q-mb-none">{{$t('table.title.volunteers')}}</h3>
-      <user-table v-if="everthingIsReady" :table_data='volunteers'></user-table>
+      <user-table v-if="everthingIsReady" :byUser="false" :table_data='volunteers'></user-table>
     </div>
   </q-page>
 </template>
@@ -39,7 +39,6 @@ export default {
     
       this.volunteers =JSON.parse(JSON.stringify(response["list of volunteers"]));
       this.everthingIsReady=true;
-      console.log(this.everthingIsReady);
   },
  };
 </script>

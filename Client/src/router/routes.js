@@ -7,6 +7,7 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/groups', component: () => import('pages/admin/AllGroups.vue') },
       { path: '/groups/:id', component: () => import('pages/admin/Group.vue') },
+      { path: '/groups/:id/details', component: () => import('pages/admin/GroupDetails.vue') },
       { path: '/trainers', component: () => import('pages/admin/Trainers.vue') },
       { path: '/trainers/:id', component: () => import('pages/Trainer.vue'), },
       { path: '/volunteers', component: () => import('pages/admin/Volunteers.vue') },

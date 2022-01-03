@@ -58,7 +58,7 @@ def check_dict(dct):
 def post_training_by_group_id(current_user):
     from main import db
     from api.group import listToString
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
     try:
@@ -74,13 +74,16 @@ def post_training_by_group_id(current_user):
         users_from_db = db.session.query(User).all()
         list_of_trainers = []
         list_of_users = []
+        list_of_tuple=[]
         for user in users_from_db:
             if user.user_type in [2] and id_in_group(user.group_ids, group_id):
                 list_of_trainers.append(user.id)
             if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
                 list_of_users.append(user.id)
+                list_of_tuple.append([str(user.id),str(user.full_name)])
+
         notes_dict = dict((str(el), "") for el in list_of_users)
-        users_dict = dict((str(el), "0") for el in list_of_users)
+        users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
         new_training = Training(group_id=group_id,
                                 date=training_date, day=group_from_db.day,
                                 time=group_from_db.time,
@@ -88,7 +91,8 @@ def post_training_by_group_id(current_user):
                                 attendance_users=check_dict(users_dict),
                                 is_happened=True,
                                 trainers_id=list_int_to_string(list_of_trainers),
-                                notes=check_dict(notes_dict))
+                                notes=check_dict(notes_dict),
+                                trainer_notes=check_dict(notes_dict))
         db.session.add(new_training)
         training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=training_date).first()
         training_string = group_from_db.trainings_list
@@ -111,7 +115,7 @@ def put_training(current_user, training_id):
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
         return jsonify({'success': False, 'message': 'No training found!'})
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot update training details, unless it is admin/trainer"}), 401
 
@@ -151,7 +155,7 @@ def delete_training(current_user, training_id):
     training_to_delete = db.session.query(Training).filter_by(id=training_id).first()
     if not training_to_delete:
         return jsonify({'success': False, 'message': 'No training found!'})
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False, "message": "User cannot delete training, unless it is "
                                                      "admin or trainer"}), 401
     group_id = int(training_to_delete.group_id)
@@ -190,10 +194,8 @@ def get_training(current_user, training_id):
 @token_required
 def get_attendance_list_by_training(current_user, training_id):
     from main import db
-    if current_user.user_type in [3, 4]:
-        return jsonify({"success": False,
-                        "message": "User cannot view attendance list per training, unless it is "
-                                   "admin/trainer"}), 401
+    if int(current_user.user_type) in [3, 4]:
+        return jsonify({"success": False,"message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
 
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
@@ -208,11 +210,14 @@ def get_attendance_list_by_training(current_user, training_id):
 @token_required
 def get_messages_by_user_and_training(current_user, training_id):
     from main import db
-    if current_user.user_type in [3, 4]:
+    if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
                         "message": "User cannot view messages list per training, unless it is "
                                    "admin/trainer"}), 401
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    training_notes = training_from_db.notes
+    if not training_notes:
+        return jsonify({'success': False, 'message': 'No notes for training found!'})
 
     return jsonify(
-        {"success": True, "training_messages": json.loads(training_from_db.notes)})
+        {"success": True, "training_messages": json.loads(training_notes)})

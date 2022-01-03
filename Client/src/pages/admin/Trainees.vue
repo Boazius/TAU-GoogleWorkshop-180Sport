@@ -2,7 +2,7 @@
   <q-page>
     <div class="q-pa-md">
       <h3 class="table_header wrap q-mb-none">{{$t('table.title.trainees')}}</h3>
-      <user-table v-if="everthingIsReady" :table_data='trainees'></user-table>
+      <user-table v-if="everthingIsReady" :fromGroupPage="false" :table_data='trainees'></user-table>
     </div>
   </q-page>
 </template>
@@ -35,7 +35,6 @@ export default {
         console.log(error);
         return error;
     });
-    
     this.trainees =JSON.parse(JSON.stringify(response["list of trainees"]));
     this.everthingIsReady=true;
   },
