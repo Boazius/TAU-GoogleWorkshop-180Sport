@@ -50,7 +50,7 @@ def signup():
         if user_exists:
             return jsonify({'success': False, 'message': 'User with current email is already exists'}), 400
         new_user = User(user_type=int(data['user_type']), email=data['email'], full_name=data['full_name'],
-                        phone_number=str(data['phone_number']), active_or_not=True, attendance=int(1))
+                        phone_number=str(data['phone_number']), active_or_not=True, attendance=int(0))
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"success": True, "user": new_user.to_dict()})
