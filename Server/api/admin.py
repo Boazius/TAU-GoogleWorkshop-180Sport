@@ -36,8 +36,8 @@ def status_user(current_user):  # disable or activate user
 @token_required
 def get_all_groups(current_user):
     from main import db
-    if int(current_user.user_type) != 1:
-        return jsonify({"success": False, "message": "User cannot see all group, unless it is admin"}), 401
+    if int(current_user.user_type) not in [1, 2]:
+        return jsonify({"success": False, "message": "User cannot see all group, unless it is admin/trainer"}), 401
     all_groups = db.session.query(Group).all()
     if not all_groups:
         return jsonify({'success': False, 'message': 'No groups found!'})
