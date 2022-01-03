@@ -48,6 +48,7 @@
     </template>
     <template v-slot:top>
       <table-top-buttons
+        :tableType="this.tableType"
         v-if="!fromGroupPage"
         :rows="rows"
         :rowCount="rowCount"
@@ -82,15 +83,18 @@ import TableTopButtons from "components/table/TableTopButtons.vue";
 export default defineComponent({
   name: "userTable",
   components: { TableTopButtons },
-  props:["table_data", "fromGroupPage"],
+  props:["table_data", "fromGroupPage", "tableType"],
 
 
 
   methods: {
     goToUserPage(row) {
-      const user = JSON.parse(JSON.stringify(row));
-      this.$store.dispatch("authentication/setEditedUser", user);
+      const user ={id: row.id};
+      localStorage.setItem('user', JSON.stringify(user));      
       this.$router.push(`/user/${user.id}`);
+
+      // const user = JSON.parse(JSON.stringify(row));
+      // this.$store.dispatch("authentication/setEditedUser", user);
     },
     saveUser(row) {
       user = JSON.stringify(row);
@@ -106,7 +110,7 @@ export default defineComponent({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       rowsNumber: props.table_data.length,
     });
     const rowCount = ref(props.table_data.length);

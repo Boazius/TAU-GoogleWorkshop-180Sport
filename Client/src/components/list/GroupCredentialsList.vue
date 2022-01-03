@@ -2,6 +2,7 @@
   <section class=" item col q-gutter-x-md bg-grey-2  q-pa-md">
     <!-- Edited data: {{ editedGroup }} <br />
     Group data: {{ groupdata }} -->
+    <!-- trainers: {{trainers.length ==0}} -->
     <q-form @submit.prevent="formHandler" autofocus v-if="everthingIsReady" class="max-width">
       <div class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
         <p class="q-ma-none q-pb-none">{{ $t('groups.chooseDay')+":" }}</p>
@@ -229,6 +230,7 @@ export default {
     
 
     async addTrainerToGroup(trainerid,groupid){
+      console.log("add");
       const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
       JSON.stringify({user_id:trainerid}),
       {
@@ -266,7 +268,7 @@ export default {
 
     //post group info in database (create new)
     async saveNewGroup(){
-      if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
+      if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){
         const response = await axios.post(`${serverUrl}/group`,
         JSON.stringify(this.editedGroup),
       {
@@ -286,7 +288,7 @@ export default {
       }
 
       alert("הקבוצה החדשה נשמרה");
-      this.$router.go(-1);
+      //this.$router.go(-1);
       }
       else alert("לא ניתן לשמור את הקבוצה מכיוון שיש פרטים חסרים");
       },
@@ -295,7 +297,7 @@ export default {
 
   //put group info in database (update)
    async saveExistingGroup(){
-    if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers != []){
+    if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){ //*** check */
       const response = await axios.put(`${serverUrl}/group/${this.groupdata.id}/`,
       JSON.stringify(this.editedGroup),
       {
@@ -339,7 +341,6 @@ export default {
       }
       else  this.saveExistingGroup();
     },
-
   },
 
 

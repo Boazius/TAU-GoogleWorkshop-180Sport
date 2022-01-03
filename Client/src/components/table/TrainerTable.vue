@@ -29,6 +29,7 @@
       </template>
       <template v-slot:top>
         <table-top-buttons 
+        :tableType="2"
         v-if="!fromGroupPage"
       :rows="rows"
       :rowCount="rowCount"
@@ -47,7 +48,6 @@ import { ref, onMounted,defineComponent } from "vue";
 import { userColumns  } from "components/table/TableColumns.js";
 import TableTopButtons from 'components/table/TableTopButtons.vue';
 
-
 const columns = userColumns;
 //const originalRows = mockTrainers; //temporary for mock data until fetch from server is implemented
 
@@ -65,7 +65,6 @@ export default defineComponent({
 
   },
   setup(props) {
-    const tableData = ref([])
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -75,17 +74,16 @@ export default defineComponent({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       rowsNumber: 10,
     });
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
-      tableData.value = props.table_data;
       const data = filter
-        ? tableData.value.filter((row) => row.full_name.includes(filter))
-        : tableData.value.slice();
+        ? props.table_data.filter((row) => row.full_name.includes(filter))
+        :props.table_data.slice();
 
       // handle sortBy
       if (sortBy) {
@@ -106,10 +104,10 @@ export default defineComponent({
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
       if (!filter) {
-        return tableData.value.length;
+        return props.table_data.length;
       }
       let count = 0;
-      tableData.value.forEach((treat) => {
+      props.table_data.forEach((treat) => {
         if (treat.full_name.includes(filter)) {
           ++count;
         }
@@ -172,7 +170,6 @@ export default defineComponent({
       pagination,
       columns,
       rows,
-      tableData,
       onRequest,
      
     };

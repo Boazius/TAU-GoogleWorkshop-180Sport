@@ -10,7 +10,7 @@
           ripple="center"
           color="primary"
           icon="arrow_forward"
-          to="/trainees"
+          @click="onGoBack()"
         />
       </div>
       <q-item-section
@@ -20,7 +20,7 @@
       </q-item-section>
       <q-space />
     </div>
-    <user-credentials-list></user-credentials-list>
+    <user-credentials-list :fromAdmin="true"></user-credentials-list>
   </q-page>
 </template>
 
@@ -33,8 +33,11 @@ export default {
     return {};
   },
   methods: {
-    handler() {
-      window.localStorage.removeItem('userdata');
+    // handler() {
+    //   window.localStorage.removeItem('userdata');
+    // },
+    onGoBack() {
+      this.$router.go(-1);
     },
   },
   components: {

@@ -5,7 +5,7 @@
     <q-input  class="item" v-model="date" type="date" dense/>
 
     <p class="q-ma-none">{{ $t("dashboard.day") }}</p>
-    <q-input class="item" v-model="editedTraining.day" type="day" dense/>
+    <q-input readonly class="item" v-model="editedTraining.day" type="day" dense/>
   </div>
   
   <div class="row justify-left q-gutter-x-md items-center  q-pa-sm item" >
