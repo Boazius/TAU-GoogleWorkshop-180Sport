@@ -97,6 +97,7 @@ export async function setLanguage({ commit }, payload) {
   const iso = await import("quasar/lang/" + lang);
 
   Quasar.lang.set(iso.default);
+  
 }
 
 //

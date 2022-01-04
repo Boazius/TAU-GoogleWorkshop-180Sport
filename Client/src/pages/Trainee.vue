@@ -92,7 +92,7 @@ export default defineComponent({
       });
 
       const response = await axios
-        .put(`${serverUrl}/user/${this.currentUser.id}/`, data, {
+        .put(`${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`, data, {
           headers: {
             "x-access-token": id_token,
             "Content-Type": "application/json",
