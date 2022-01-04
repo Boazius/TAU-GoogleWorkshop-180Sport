@@ -53,7 +53,7 @@
 import EssentialLink from "components/EssentialLink.vue";
 import SwitchLanguage from "components/basic/SwitchLanguage.vue";
 
-import { computed } from "vue";
+import { computed , onBeforeMount} from "vue";
 import { useStore } from "vuex";
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -70,9 +70,16 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const store = useStore();
     const { locale } = useI18n({ useScope: "global" });
+   
+     onBeforeMount(()=>{
+      locale.value = "he";
+      store.dispatch("authentication/setLanguage", 'he');
+     });
 
     return {
       locale,
+      onBeforeMount,
+      store,
       localeOptions: [
         { value: "en-US", label: "English" },
         { value: "he", label: "עברית" },
@@ -84,9 +91,9 @@ export default defineComponent({
       },
     };
   },
-  created() {
-    //TODO: fix locale => how to use it in vue3?
-    this.$store.dispatch("authentication/setLanguage");
-  },
+  // created() {
+  //   //TODO: fix locale => how to use it in vue3?
+  //   this.$store.dispatch("authentication/setLanguage");
+  // },
 });
 </script>

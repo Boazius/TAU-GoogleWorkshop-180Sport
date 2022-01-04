@@ -16,7 +16,7 @@
       />
       <q-input
       v-if="!isNew"
-      readonly
+        disable
         no-error-icon
         v-model="editedUser.email"
         ref="email"
