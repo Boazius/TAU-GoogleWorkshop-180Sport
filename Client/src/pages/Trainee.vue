@@ -79,7 +79,7 @@ export default defineComponent({
   },
   computed: {
     currentUser() {
-      console.log(this.$store.getters["authentication/getCurrentUser"])
+      console.log(this.$store.getters["authentication/getCurrentUser"]);
       return this.$store.getters["authentication/getCurrentUser"];
     },
   },
@@ -92,12 +92,16 @@ export default defineComponent({
       });
 
       const response = await axios
-        .put(`${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`, data, {
-          headers: {
-            "x-access-token": id_token,
-            "Content-Type": "application/json",
-          },
-        })
+        .put(
+          `${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`,
+          data,
+          {
+            headers: {
+              "x-access-token": id_token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then(function (response) {
           console.log(JSON.stringify(response.data));
         })

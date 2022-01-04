@@ -14,7 +14,7 @@ export default {
       volunteers: "Volunteers",
       logout: "Logout",
       trainee: "Next training",
-      traineeDetails: "My details",
+      details: "My details",
       trainer: "My groups",
     },
     confirmation: {

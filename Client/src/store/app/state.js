@@ -2,7 +2,7 @@ export default function () {
   return {
     mainMenu: [
       {
-        access: 4,
+        access: 0,
         title: "login",
         icon: "login",
         link: "/login",

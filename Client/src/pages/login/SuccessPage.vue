@@ -14,14 +14,21 @@ export default {
       this.$router.push("/login");
       //TODO: add local storage error to avoid infinite loop
     } else {
-      const pageToRedirectTo = await this.$store.dispatch(
+      const result = await this.$store.dispatch(
         "authentication/setActiveUser",
         {
           id_token,
           user_info,
         }
       );
-      this.$router.push(`/${pageToRedirectTo}`);
+      if (result) {
+        const pageToRedirectTo = await this.$store.dispatch(
+          "authentication/setPageToRedirectTo"
+        );
+        this.$router.push(`/${pageToRedirectTo}`);
+      } else {
+        this.$router.push("/login");
+      }
     }
   },
 };

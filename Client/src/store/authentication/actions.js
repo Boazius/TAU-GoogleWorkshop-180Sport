@@ -44,12 +44,26 @@ export async function setActiveUser(
     if (response && response.success === true) {
       commit("setCurrentUser", response.user);
       localStorage.setItem("user_data", JSON.stringify(response.user));
-      await dispatch("setLanguage", userInfo.locale);
-      return "groups";
+      // await dispatch("setLanguage", userInfo.locale);
+      return true;
     }
   }
 
-  return "login";
+  return false;
+}
+
+export function setPageToRedirectTo({ state }) {
+  const currentUser = state.user.currentUser;
+  const { user_type } = currentUser;
+  switch (user_type) {
+    case 1:
+      return "groups";
+    case 2:
+      return "trainer-groups";
+    case 3:
+    case 4:
+      return "next-training";
+  }
 }
 
 //
@@ -67,37 +81,35 @@ export async function updateUserData({ commit }, payload) {}
 //
 //  Action: Set Language
 //
-export async function setLanguage({ commit }, payload) {
-  let lang = "";
-  if (payload) {
-    lang = payload;
-    if (lang == "en") {
-      lang = "en-US";
-    }
-    if (lang == "he-IL") {
-      lang = "he";
-    }
-    localStorage.setItem("user_lang", lang);
+function languageHelper(lang) {
+  if (lang == "en" || lang == "en-GB") {
+    lang = "en-US";
+  }
+  if (lang == "he-IL") {
+    lang = "he";
+  }
+  localStorage.setItem("user_lang", lang);
+  return lang;
+}
+
+export async function setLanguage({ commit }, lang = "") {
+  if (lang) {
+    lang = languageHelper(lang);
   } else {
     const local = localStorage.getItem("user_lang");
     if (local) {
       lang = local;
     } else {
       lang = Quasar.lang.getLocale();
-      localStorage.setItem("user_lang", lang);
+      lang = languageHelper(lang);
     }
   }
-  if (lang == "en") {
-    lang = "en-US";
-  }
-  if (lang == "he-IL") {
-    lang = "he";
-  }
+
   commit("setLanguage", lang);
   const iso = await import("quasar/lang/" + lang);
 
   Quasar.lang.set(iso.default);
-  
+  return lang;
 }
 
 //
@@ -124,4 +136,13 @@ export async function checkLogin({ state, commit, dispatch }) {
   }
 
   return false;
+}
+
+//
+// Action: logout
+//
+export async function logout({ commit }) {
+  localStorage.clear();
+  commit("resetState");
+  commit("app/resetState", null, { root: true });
 }

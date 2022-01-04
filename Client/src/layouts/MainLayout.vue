@@ -27,21 +27,18 @@
           :key="link.title"
           v-bind="link"
         />
+        <q-item clickable @click="onLogout" v-if="isAuthenticated">
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ $t("app.menu.logout") }}</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
-      <switch-language @onChangeLanguage="locale = $event"></switch-language>
-
-      <!-- <q-select
-          v-model="locale"
-          :options="localeOptions"
-          label="Quasar Language"
-          dense
-          borderless
-          emit-value
-          map-options
-          options-dense
-          style="min-width: 150px"
-          class="q-pa-md"
-        /> -->
+      <switch-language
+        @onChangeLanguage="onChangeLanguage($event)"
+      ></switch-language>
     </q-drawer>
     <q-page-container>
       <router-view />
@@ -53,8 +50,9 @@
 import EssentialLink from "components/EssentialLink.vue";
 import SwitchLanguage from "components/basic/SwitchLanguage.vue";
 
-import { computed , onBeforeMount} from "vue";
+import { computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -65,25 +63,38 @@ export default defineComponent({
     EssentialLink,
     SwitchLanguage,
   },
-  //TODO: add watcher for lang (from getter) and set locale with it
   setup() {
     const leftDrawerOpen = ref(false);
     const store = useStore();
+    const router = useRouter();
     const { locale } = useI18n({ useScope: "global" });
-   
-     onBeforeMount(()=>{
-      locale.value = "he";
-      store.dispatch("authentication/setLanguage", 'he');
-     });
+    const isAuthenticated = computed(
+      () => store.getters["authentication/isAuthenticated"]
+    );
+
+    const onLogout = async () => {
+      await store.dispatch("authentication/logout");
+      router.push({
+        path: "/login",
+      });
+    };
+
+    const onChangeLanguage = (lang) => {
+      locale.value = lang;
+      store.dispatch("authentication/setLanguage", lang);
+    };
+
+    onBeforeMount(async () => {
+      locale.value = await store.dispatch("authentication/setLanguage");
+    });
 
     return {
       locale,
       onBeforeMount,
       store,
-      localeOptions: [
-        { value: "en-US", label: "English" },
-        { value: "he", label: "עברית" },
-      ],
+      onLogout,
+      onChangeLanguage,
+      isAuthenticated,
       menuLinks: computed(() => store.getters["app/getMenu"]),
       leftDrawerOpen,
       toggleLeftDrawer() {
@@ -91,9 +102,5 @@ export default defineComponent({
       },
     };
   },
-  // created() {
-  //   //TODO: fix locale => how to use it in vue3?
-  //   this.$store.dispatch("authentication/setLanguage");
-  // },
 });
 </script>

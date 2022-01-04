@@ -8,3 +8,13 @@ export const set = (state, data) => {
 export const setMainMenu = (state, data) => {
   state.mainMenu = data;
 };
+
+export const resetState = (state) => {
+  state.mainMenu = [
+    {
+      title: 'login',
+      icon: "login",
+      link: "/login",
+    },
+  ];
+};

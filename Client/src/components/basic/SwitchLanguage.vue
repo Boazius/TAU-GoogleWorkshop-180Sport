@@ -59,7 +59,7 @@ export default defineComponent({
   methods: {
     onChangeLanguage(lang) {
       this.$emit('onChangeLanguage',lang);
-      this.$store.dispatch("authentication/setLanguage", lang);
+      // this.$store.dispatch("authentication/setLanguage", lang);
     },
   },
 });

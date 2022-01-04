@@ -2,6 +2,11 @@
 //  Action:
 //
 export async function setMainMenu({ commit }, userType) {
+  // userType = 1;
+  if (userType == 4) { //volunteer and trainee is same
+    userType = 3;
+  }
+
   let menu = [
     {
       access: 1,
@@ -31,34 +36,24 @@ export async function setMainMenu({ commit }, userType) {
       access: 2,
       title: "trainer",
       icon: "sports",
-      link: "/trainers/1",
+      link: "/trainer-groups",
     },
     {
       access: 3,
       title: "trainee",
       icon: "sentiment_very_satisfied",
-      link: "/trainees/1",
+      link: "/next-training",
     },
     {
-      access: 4,
-      title: "traineeDetails",
+      access: 0,
+      title: "details",
       icon: "edit",
-      link: "/trainees/1/details",
-    },
-    // {
-    //   access: 4,
-    //   title: "login",
-    //   icon: "login",
-    //   link: "/login",
-    // },
-    {
-      access: 4,
-      title: "logout",
-      icon: "logout",
-      link: "/logout",
+      link: "/details",
     },
   ];
+  let activeMenu = menu.filter(
+    (item) => item.access === userType || item.access === 0
+  );
 
-  const activeMenu = menu.filter((item) => userType <= item.access);
   commit("setMainMenu", activeMenu);
 }

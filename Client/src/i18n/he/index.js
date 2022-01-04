@@ -14,7 +14,7 @@ export default {
       volunteers: "מתנדבים",
       logout: "התנתקות",
       trainee: "האימון הקרוב",
-      traineeDetails: "הפרטים שלי",
+      details: "הפרטים שלי",
       trainer: "הקבוצות שלי",
     },
     confirmation: {

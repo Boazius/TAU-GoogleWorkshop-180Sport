@@ -44,7 +44,6 @@ export default route(function ({ store } /* ssrContext */) {
 
     if (
       to.path === "/login" ||
-      to.path === "/logout" ||
       to.matched.some((match) => match.path.startsWith("/login_success"))
     ) {
       next();
@@ -58,8 +57,18 @@ export default route(function ({ store } /* ssrContext */) {
       next({ path: "/login" });
     } else {
       const currentUser = store.getters["authentication/getCurrentUser"];
-      const { user_type } = currentUser;
+
+      let { user_type } = currentUser;
+      if (user_type == 4) {
+        user_type = 3;
+      }
       await store.dispatch("app/setMainMenu", user_type);
+      const mainMenu = store.getters["app/getMenu"];
+
+      if (to.meta.access !== user_type && to.meta.access !== 0) {
+        next({ path: mainMenu[0].link });
+        return;
+      }
 
       next();
     }

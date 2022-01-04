@@ -19,3 +19,11 @@ export const setCurrentUser = (state, payload) => {
 export const setEditedUser = (state, payload) => {
   state.editedUser = JSON.parse(JSON.stringify(payload));
 };
+
+export const resetState = (state) => {
+  state.user = {
+    authenticated: false,
+    currentUser: {},
+    language: "",
+  };
+};
