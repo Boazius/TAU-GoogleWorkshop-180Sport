@@ -85,6 +85,7 @@ export default defineComponent({
     };
   },
   created() {
+    //TODO: fix locale => how to use it in vue3?
     this.$store.dispatch("authentication/setLanguage");
   },
 });

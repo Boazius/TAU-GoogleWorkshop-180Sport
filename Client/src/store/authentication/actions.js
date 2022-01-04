@@ -43,6 +43,7 @@ export async function setActiveUser(
       });
     if (response && response.success === true) {
       commit("setCurrentUser", response.user);
+      localStorage.setItem("user_data", JSON.stringify(response.user));
       await dispatch("setLanguage", userInfo.locale);
       return "groups";
     }
@@ -103,7 +104,7 @@ export async function setLanguage({ commit }, payload) {
 //
 export async function checkLogin({ state, commit, dispatch }) {
   // Check if user authenticated
-  if (state.user.authenticated) {
+  if (state.user.authenticated === true) {
     return true;
   }
 
@@ -114,5 +115,12 @@ export async function checkLogin({ state, commit, dispatch }) {
   }
 
   //TODO: if not, try to use token & user_info to validate again
+  let userData = localStorage.getItem("user_data");
+
+  if (userData) {
+    commit("setCurrentUser", JSON.parse(userData));
+    return true;
+  }
+
   return false;
 }

@@ -51,17 +51,18 @@ export default route(function ({ store } /* ssrContext */) {
       return;
     }
 
-    // const params = to.params;
-    // sessionStorage.setItem("user_id", params.userId || "");
-
     // Get current user
-    // const isAuthenticated = await store.dispatch("authentication/checkLogin");
+    const isAuthenticated = await store.dispatch("authentication/checkLogin");
 
-    // if (!isAuthenticated) {
-    //   next({ path: "/login" });
-    // }
+    if (!isAuthenticated) {
+      next({ path: "/login" });
+    } else {
+      const currentUser = store.getters["authentication/getCurrentUser"];
+      const { user_type } = currentUser;
+      await store.dispatch("app/setMainMenu", user_type);
 
-    next();
+      next();
+    }
   });
 
   return Router;

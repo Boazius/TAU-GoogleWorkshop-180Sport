@@ -12,7 +12,7 @@ export const setCurrentUser = (state, payload) => {
   state.user = {
     ...state.user,
     authenticated: true,
-    currentUser: payload,
+    currentUser: JSON.parse(JSON.stringify(payload)),
   };
 };
 
