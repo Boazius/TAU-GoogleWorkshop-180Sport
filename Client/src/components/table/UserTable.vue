@@ -15,7 +15,6 @@
         <q-td
           key="full_name"
           :props="props"
-
           class="cursor-pointer"
         >
           <q-item 
@@ -104,8 +103,16 @@ export default defineComponent({
     //   localStorage.setItem("userdata", user);
     // },
   },
+
+    computed: {
+    userType() {
+      console.log(this.$store.getters["authentication/getCurrentUser"].user_type)
+      return this.$store.getters["authentication/getCurrentUser"].user_type;
+    },
+  },
+
   setup(props) {
-    const userType = ref(1);
+    // const userType = ref();
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
@@ -121,6 +128,7 @@ export default defineComponent({
     const columns = ref(props.fromGroupPage ? groupColumns : userColumns);
     const groupNames=ref();
     const everthingIsReady = ref(false);
+
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -258,7 +266,7 @@ export default defineComponent({
       rows,
       rowCount,
       onRequest,
-      userType,
+      // userType,
       getGroupsNames,
       getNames,
       everthingIsReady,

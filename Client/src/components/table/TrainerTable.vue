@@ -12,10 +12,19 @@
       <template v-slot:body="props">
         <q-tr :props="props">
            <q-td key="full_name" :props="props">
-            <q-item @click="goToUserPage(props.row)" clickable v-ripple style="display: table-cell; vertical-align: end;">    <!--   put clickble name in order to go to user pagee and edit from there. now redirected to groups for no reason     -->
+            <q-item 
+            v-if="userType == 1"          
+            @click="goToUserPage(props.row)" 
+            clickable 
+            v-ripple 
+            style="display: table-cell; vertical-align: end;">    
             {{ props.row.full_name }}
             </q-item>
-
+          <q-item 
+          v-if="userType == 2" 
+          style="display: table-cell; vertical-align: end"> 
+            {{ props.row.full_name }}
+          </q-item>
           </q-td>
           <q-td key="phone_number" :props="props">
             {{ props.row.phone_number }}
@@ -68,6 +77,14 @@ export default defineComponent({
     },  
 
   },
+
+    computed: {
+    userType() {
+      console.log(this.$store.getters["authentication/getCurrentUser"].user_type)
+      return this.$store.getters["authentication/getCurrentUser"].user_type;
+    },
+  },
+
   setup(props) {
     const rows = ref([]);
     const filter = ref("");
