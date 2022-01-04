@@ -61,11 +61,11 @@ export default defineComponent({
     goToGroupPage(group){
       const groupdata = JSON.stringify(group);
       localStorage.setItem('groupdata', groupdata);      
-      this.$router.push('/groups/:id'); 
+      this.$router.push('/group'); 
     },  
     goToGroupDataPage(group){
       localStorage.setItem('groupId', JSON.stringify({id: group.id}));      
-      this.$router.push('/groups/:id/details'); 
+      this.$router.push('/group/details'); 
     },
   },
   

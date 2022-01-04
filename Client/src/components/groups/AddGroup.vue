@@ -32,7 +32,7 @@ export default defineComponent({
         this.loading = false;
         localStorage.setItem('groupId', JSON.stringify({id:0}));      
         this.$router.push({
-          path: "/groups/:id/details",
+          path: "/group/details",
         });
       }, 500);
     },

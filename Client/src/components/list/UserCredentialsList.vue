@@ -189,20 +189,19 @@ export default {
       ],
     };
   },
-  computed: {
-    user() {
-      return this.$store.getters["authentication/getCurrentUser"];
-    },
-  },
+  // computed: {
+  //   user() {
+  //     return this.$store.getters["authentication/getCurrentUser"];
+  //   },
+  // },
 
   async created() {
+    this.user = JSON.parse(localStorage.getItem("user"));
     if (this.fromAdmin) {
       await this.getAllGroups();
       if (this.user.id != 0) {
         await this.getUser();
         this.editedUser = this.userData;
-        console.log(typeof this.userData.group_ids);
-        console.log(this.userData.group_ids);
         this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
         console.log(this.userOriginalGroupIds);
         for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
@@ -223,9 +222,11 @@ export default {
     } else {
       await this.getUser();
       this.editedUser = this.userData;
-      const group_id_array = this.editedUser.group_ids.split(/,/);
-      for (let i = 0; i < group_id_array.length; i++) {
-        this.editedUserGroups.push(await this.getGroup(group_id_array[i]));
+      if (this.editedUser.group_ids) {
+        const group_id_array = this.editedUser.group_ids.split(/,/);
+        for (let i = 0; i < group_id_array.length; i++) {
+          this.editedUserGroups.push(await this.getGroup(group_id_array[i]));
+        }
       }
     }
     console.log(this.editedUserGroups);
@@ -235,6 +236,8 @@ export default {
 
   methods: {
     onGoBack() {
+      const storeuser = { id: 0 };
+      localStorage.setItem("user", JSON.stringify(storeuser));
       this.$router.go(-1);
     },
 
@@ -350,6 +353,8 @@ export default {
           console.log(error);
           return error;
         });
+      const storeuser = { id: 0 };
+      localStorage.setItem("user", JSON.stringify(storeuser));
       alert("המשתמש נמחק");
       this.$router.go(-1);
     },
@@ -380,7 +385,8 @@ export default {
           var group = this.editedUserGroups[i];
           await this.addUserToGroup(newUserId, group.id);
         }
-
+        const storeuser = { id: 0 };
+        localStorage.setItem("user", JSON.stringify(storeuser));
         alert("המשתמש החדש נשמר");
         this.$router.go(-1);
       } else alert("לא ניתן לשמור את המשתמש מכיוון שיש פרטים חסרים");
@@ -425,6 +431,8 @@ export default {
             }
           }
         }
+        const storeuser = { id: 0 };
+        localStorage.setItem("user", JSON.stringify(storeuser));
         alert("השינויים נשמרו");
         if (this.fromAdmin) {
           this.$router.go(-1);
