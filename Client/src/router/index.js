@@ -64,6 +64,10 @@ export default route(function ({ store } /* ssrContext */) {
       }
       await store.dispatch("app/setMainMenu", user_type);
       const mainMenu = store.getters["app/getMenu"];
+      if (to.path == "/group" && (user_type === 2 || user_type === 1)) {
+        next();
+        return;
+      }
 
       if (to.meta.access !== user_type && to.meta.access !== 0) {
         next({ path: mainMenu[0].link });
