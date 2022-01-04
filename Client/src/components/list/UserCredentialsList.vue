@@ -15,6 +15,20 @@
         label-color="text-grey-1"
       />
       <q-input
+      v-if="!isNew"
+      readonly
+        no-error-icon
+        v-model="editedUser.email"
+        ref="email"
+        name="email"
+        type="email"
+        lazy-rules
+        :label="$t('authentication.email')"
+        label-color="text-grey-1"
+        :rules="emailRules"
+      />
+      <q-input
+      v-if="isNew"
         no-error-icon
         v-model="editedUser.email"
         ref="email"
