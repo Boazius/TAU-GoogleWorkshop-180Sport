@@ -14,12 +14,12 @@ const routes = [
         meta: { access: 1 },
       },
       {
-        path: "/groups/:id",
-        component: () => import("pages/admin/Group.vue"),
-        meta: { access: 1 },
+        path: "/group",
+        component: () => import("pages/admin/Group.vue"), //TODO
+        meta: { access: 2 },
       },
       {
-        path: "/groups/:id/details",
+        path: "/group/details",
         component: () => import("pages/admin/GroupDetails.vue"),
         meta: { access: 1 },
       },
@@ -40,7 +40,7 @@ const routes = [
       },
       {
         path: "/trainer-groups",
-        component: () => import("pages/TrainerGroups.vue"),
+        component: () => import("pages/Trainer.vue"),
         meta: { access: 2 },
       },
       {
@@ -50,7 +50,7 @@ const routes = [
       },
       {
         path: "/details",
-        component: () => import("pages/Details.vue"),
+        component: () => import("pages/TraineeDetails.vue"),
         meta: { access: 0 },
       },
       { path: "/login", component: () => import("pages/login/UserLogin.vue") },
