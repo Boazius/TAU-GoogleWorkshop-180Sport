@@ -17,6 +17,8 @@ const routes = [
       { path: '/login', component: () => import('pages/login/UserLogin.vue') },
       { path: '/login_success', component: () => import('pages/login/SuccessPage.vue') },
       { path: '/user/:id', component: () => import('pages/admin/UserPage.vue'), },
+      { path: '/logout', component: () => import('pages/login/Logout.vue') },
+
 
     ]
   },

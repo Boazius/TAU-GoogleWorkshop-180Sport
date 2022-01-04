@@ -7,22 +7,21 @@ export default {
   name: "SuccessPage",
   async beforeMount() {
     const urlParams = new URLSearchParams(window.location.search);
-    let id = urlParams.get("id_token");
-    let user_info = urlParams.get("user_info");
-    let id_token = id.split(",").find((x) => x.includes("id_token"));
-    id_token = id_token
-      .replace(/\s/g, "")
-      .replace(/["']/g, "")
-      .replace("id_token:", "");
-    if (id_token !== "") {
-      localStorage.setItem("id_token", id_token);
+    const id_token = urlParams.get("id_token");
+    const user_info = urlParams.get("user_info");
+
+    if (id_token === null || user_info === null) {
+      this.$router.push("/login");
+      //TODO: add local storage error to avoid infinite loop
+    } else {
       const pageToRedirectTo = await this.$store.dispatch(
         "authentication/setActiveUser",
-        id_token
+        {
+          id_token,
+          user_info,
+        }
       );
       this.$router.push(`/${pageToRedirectTo}`);
-    } else {
-      this.$router.push("/login");
     }
   },
 };

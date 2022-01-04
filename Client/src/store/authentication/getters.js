@@ -10,6 +10,16 @@ export function error(state) {
 }
 
 export function getEditedUser(state) {
-  console.log("getters", state.editedUser);
   return state.editedUser;
+}
+
+export function getCurrentUser(state) {
+  return state.user.currentUser;
+}
+
+export function isAuthenticated(state) {
+  if (state.user.currentUser !== {} && state.user.authenticated == true) {
+    return true;
+  }
+  return false;
 }

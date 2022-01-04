@@ -13,8 +13,8 @@
 
         <q-toolbar-title>{{ $t("app.mainHeading") }} </q-toolbar-title>
 
-        <q-avatar style="width:125px; height:88px">
-            <img src="~assets/images/logo-white-big.webp" alt="logo" >
+        <q-avatar style="width: 125px; height: 88px">
+          <img src="~assets/images/logo-white-big.webp" alt="logo" />
         </q-avatar>
       </q-toolbar>
     </q-header>
@@ -30,7 +30,7 @@
       </q-list>
       <switch-language @onChangeLanguage="locale = $event"></switch-language>
 
-        <!-- <q-select
+      <!-- <q-select
           v-model="locale"
           :options="localeOptions"
           label="Quasar Language"
@@ -42,7 +42,6 @@
           style="min-width: 150px"
           class="q-pa-md"
         /> -->
-
     </q-drawer>
     <q-page-container>
       <router-view />
@@ -57,7 +56,7 @@ import SwitchLanguage from "components/basic/SwitchLanguage.vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
 import { defineComponent, ref } from "vue";
-import { useI18n } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MainLayout",
@@ -66,17 +65,17 @@ export default defineComponent({
     EssentialLink,
     SwitchLanguage,
   },
-
+  //TODO: add watcher for lang (from getter) and set locale with it
   setup() {
     const leftDrawerOpen = ref(false);
     const store = useStore();
-    const { locale } = useI18n({ useScope: 'global' })
+    const { locale } = useI18n({ useScope: "global" });
 
     return {
       locale,
       localeOptions: [
-        { value: 'en-US', label: 'English' },
-        { value: 'he', label: 'עברית' }
+        { value: "en-US", label: "English" },
+        { value: "he", label: "עברית" },
       ],
       menuLinks: computed(() => store.getters["app/getMenu"]),
       leftDrawerOpen,
@@ -86,7 +85,7 @@ export default defineComponent({
     };
   },
   created() {
-    this.$store.dispatch('authentication/setLanguage');
-  }
+    this.$store.dispatch("authentication/setLanguage");
+  },
 });
 </script>

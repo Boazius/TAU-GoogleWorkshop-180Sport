@@ -1,4 +1,3 @@
-import i18n from "src/boot/i18n";
 import { Quasar } from "quasar";
 import axios from "axios";
 
@@ -7,19 +6,49 @@ const serverUrl = "http://127.0.0.1:5000";
 //
 //  Action: Set Active User
 //
-export async function setActiveUser({}, id_token) {
-  const response = await axios
-    .get(`${serverUrl}/user/email/garret866@gmail.com`, {
-      headers: {
-        "x-access-token": id_token,
-      },
-    })
-    .then((res) => res.data)
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
-  return "groups";
+export async function setActiveUser(
+  { dispatch, commit },
+  { id_token, user_info }
+) {
+  let idToken = id_token.replace(/'/g, '"');
+  idToken = JSON.parse(idToken);
+  const token = idToken?.id_token;
+
+  if (token === null) {
+    return "login";
+  }
+  localStorage.setItem("id_token", token);
+
+  let userInfo = user_info
+    .replace(/'/g, '"')
+    .replace("True", '"True"')
+    .replace("False", '"False"');
+  userInfo = JSON.parse(userInfo);
+
+  localStorage.setItem("user_info", user_info);
+
+  const userEmail = userInfo.email;
+
+  if (userEmail) {
+    const response = await axios
+      .get(`${serverUrl}/user/email/${userEmail}`, {
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then((res) => res.data)
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+    if (response && response.success === true) {
+      commit("setCurrentUser", response.user);
+      await dispatch("setLanguage", userInfo.locale);
+      return "groups";
+    }
+  }
+
+  return "login";
 }
 
 //
@@ -41,20 +70,49 @@ export async function setLanguage({ commit }, payload) {
   let lang = "";
   if (payload) {
     lang = payload;
+    if (lang == "en") {
+      lang = "en-US";
+    }
+    if (lang == "he-IL") {
+      lang = "he";
+    }
     localStorage.setItem("user_lang", lang);
   } else {
     const local = localStorage.getItem("user_lang");
     if (local) {
       lang = local;
     } else {
+      lang = Quasar.lang.getLocale();
       localStorage.setItem("user_lang", lang);
-      lang = i18n.locale;
     }
   }
+  if (lang == "en") {
+    lang = "en-US";
+  }
+  if (lang == "he-IL") {
+    lang = "he";
+  }
   commit("setLanguage", lang);
-  await import("quasar/lang/" + lang).then((lang) => {
-    Quasar.lang.set(lang.default);
-  });
+  const iso = await import("quasar/lang/" + lang);
 
-  i18n.locale = lang;
+  Quasar.lang.set(iso.default);
+}
+
+//
+//  Action: Check user login
+//
+export async function checkLogin({ state, commit, dispatch }) {
+  // Check if user authenticated
+  if (state.user.authenticated) {
+    return true;
+  }
+
+  // Check if has jwt token
+  const hasToken = localStorage.getItem("id_token");
+  if (!hasToken) {
+    return false;
+  }
+
+  //TODO: if not, try to use token & user_info to validate again
+  return false;
 }
