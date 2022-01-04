@@ -15,25 +15,17 @@ export default {
     return {
       groups: [],
       everthingIsReady: false,
-      trainer:{}
     }
   },
-  async created() {
-    const email = "danielle.rotholtz@gmail.com";
-    
-    //get user id **** check if saved in local storee and if yes take from there and delete
-    const response1 = await axios.get(`${serverUrl}/user/email/${email}`,{
-        headers: { 
-            'x-access-token': id_token,
-        },
-    })
-    .then((res)=> res.data)
-    .catch((error)=>{
-        console.log(error);
-        return error;
-    });
-    this.trainer =  JSON.parse(JSON.stringify(response1["user"]));
 
+  computed: {
+    trainer() {
+      console.log(this.$store.getters["authentication/getCurrentUser"])
+      return this.$store.getters["authentication/getCurrentUser"];
+    },
+  },
+  
+  async created() {
     //get groups data from server
     const response = await axios.get(`${serverUrl}/trainer/groups_list/${this.trainer.id}/`,{
         headers: { 

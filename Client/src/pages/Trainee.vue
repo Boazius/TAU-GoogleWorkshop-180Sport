@@ -52,7 +52,7 @@
       </h6>
       <editor-posticks
         :trainingData="trainingData"
-        :user="user"
+        :user="currentUser"
         v-if="everthingIsReady"
       ></editor-posticks>
     </div>
@@ -73,12 +73,13 @@ export default defineComponent({
     return {
       trainingData: {},
       everthingIsReady: false,
-      user: {},
+      // user: {},
       attendance: 0,
     };
   },
   computed: {
     currentUser() {
+      console.log(this.$store.getters["authentication/getCurrentUser"])
       return this.$store.getters["authentication/getCurrentUser"];
     },
   },
@@ -91,7 +92,7 @@ export default defineComponent({
       });
 
       const response = await axios
-        .put(`${serverUrl}/user/${this.user.id}/`, data, {
+        .put(`${serverUrl}/user/${this.currentUser.id}/`, data, {
           headers: {
             "x-access-token": id_token,
             "Content-Type": "application/json",
@@ -146,7 +147,7 @@ export default defineComponent({
     //get next training data from server
     const response = await axios
       .get(
-        `${serverUrl}/trainee/get_closest_training/${this.currentUser.group_ids}/`,
+        `${serverUrl}/trainee/get_closest_training/${this.currentUser.id}/`,
         {
           headers: {
             "x-access-token": id_token,
@@ -167,7 +168,7 @@ export default defineComponent({
     if (localStorage.getItem("user_lang") == "he") {
       this.trainingData.day = this.setDayToLanguage(this.trainingData.date);
     }
-    this.attendance = this.user.attendance;
+    this.attendance = this.currentUser.attendance;
     this.everthingIsReady = true;
   },
   components: {

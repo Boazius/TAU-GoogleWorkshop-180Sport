@@ -99,10 +99,10 @@ export default defineComponent({
       // const user = JSON.parse(JSON.stringify(row));
       // this.$store.dispatch("authentication/setEditedUser", user);
     },
-    saveUser(row) {
-      user = JSON.stringify(row);
-      localStorage.setItem("userdata", user);
-    },
+    // saveUser(row) {
+    //   user = JSON.stringify(row);
+    //   localStorage.setItem("userdata", user);
+    // },
   },
   setup(props) {
     const userType = ref(1);

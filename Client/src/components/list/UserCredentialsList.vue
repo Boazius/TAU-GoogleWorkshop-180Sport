@@ -1,6 +1,6 @@
 <template>
   <section class="col q-gutter-x-md bg-grey-2 q-pa-md">
-    <q-form @submit.prevent="formHandler" v-if="everthingIsReady" autofocus class="max-width">
+    <q-form @submit.prevent="formHandler" v-if="everthingIsReady" autofocus class="max-width ">
       <q-input
         no-error-icon
         v-model="editedUser.full_name"
@@ -414,4 +414,6 @@ async addUserToGroup(userid, groupid){
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import "assets/tableStyle.css";
+</style>

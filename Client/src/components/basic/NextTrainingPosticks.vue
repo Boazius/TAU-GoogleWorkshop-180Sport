@@ -65,7 +65,7 @@ export default {
      });
 
 //******************** change to current user********************//
-      const response = await axios.post(`${serverUrl}/trainer/message/4/${props.training.id}/`,
+      const response = await axios.post(`${serverUrl}/trainer/message/18/${props.training.id}/`,
       message,
       {
         headers: { 
