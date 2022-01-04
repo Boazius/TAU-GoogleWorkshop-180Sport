@@ -2,7 +2,6 @@
 //  Action:
 //
 export async function setMainMenu({ commit }, userType) {
-  debugger;
   let menu = [
     {
       access: 1,
@@ -46,12 +45,12 @@ export async function setMainMenu({ commit }, userType) {
       icon: "edit",
       link: "/trainees/1/details",
     },
-    {
-      access: 4,
-      title: "login",
-      icon: "login",
-      link: "/login",
-    },
+    // {
+    //   access: 4,
+    //   title: "login",
+    //   icon: "login",
+    //   link: "/login",
+    // },
     {
       access: 4,
       title: "logout",
