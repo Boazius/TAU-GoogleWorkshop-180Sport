@@ -20,8 +20,17 @@ const myUserid = 4;
 
 export default defineComponent({
   name: "TraineeDetails",
+
+  computed: {
+    currentUser() {
+      console.log(this.$store.getters["authentication/getCurrentUser"])
+      return this.$store.getters["authentication/getCurrentUser"];
+    },
+  },
+
+
 created() {
-      const user ={id: myUserid};
+      const user ={id: this.currentUser.id};
       localStorage.setItem('user', JSON.stringify(user));      
       // this.$router.push(`/user/${user.id}`);
 
