@@ -1,4 +1,7 @@
 import json
+
+from flask import jsonify
+
 from api.group import listToString
 from main import db
 import datetime
@@ -50,29 +53,29 @@ def checkdict(dict):
 def create_closest_training_for_each_group():
     groups_from_db = db.session.query(Group).all()
     for group in groups_from_db:
+        if not group:
+            return jsonify({'success': False, 'message': 'No group found!'})
         day = group.day
         trainging_date = datetime.date.today()
         while trainging_date.weekday() != Days_and_numbers[day]:
             trainging_date += datetime.timedelta(1)
-        """
-        time = group.time
-        hour = time.split(':')
-        trainging_date = datetime.datetime(trainging_date.year, trainging_date.month, trainging_date.day,
-                                          int(hour[0]), int(hour[1]), 0)
-        """
+
         trainging_date = datetime(trainging_date.year,
                                            trainging_date.month,
                                            trainging_date.day)
         users_from_db = db.session.query(User).all()
         list_of_trainers = []
         list_of_users = []
+        list_of_tuple=[]
         for user in users_from_db:
             if user.user_type in [2] and id_in_group(user.group_ids, group.id):
                 list_of_trainers.append(user.id)
             if user.user_type in [3, 4] and id_in_group(user.group_ids, group.id):
                 list_of_users.append(user.id)
-        notes_dict = dict((str(el), "") for el in list_of_users)
-        users_dict = dict((str(el), "0") for el in list_of_users)
+                list_of_tuple.append([str(user.id), str(user.full_name)])
+
+        notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
+        users_dict = dict((str(el[0]), ["0"] + el) for el in list_of_tuple)
         new_training = Training(group_id=group.id,
                                 date=trainging_date,
                                 day = group.day,
@@ -81,7 +84,8 @@ def create_closest_training_for_each_group():
                                 attendance_users=checkdict(users_dict),
                                 is_happened=True,
                                 trainers_id=list_intToString(list_of_trainers),
-                                notes=checkdict(notes_dict))
+                                notes=checkdict(notes_dict),
+                                trainer_notes=checkdict(notes_dict))
         db.session.add(new_training)
         training_from_db = db.session.query(Training).filter_by(group_id=group.id,date=trainging_date).first()
         training_string = group.trainings_list
