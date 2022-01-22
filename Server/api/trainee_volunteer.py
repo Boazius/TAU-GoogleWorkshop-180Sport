@@ -35,7 +35,8 @@ def post_message(current_user,user_id,training_id):
         data = flask.request.json
         message=data['message']
         notes=json.loads(training_from_db.notes)
-        notes[user_id]=message
+        notes[user_id][0]="0"
+        notes[user_id][1]=message
         training_from_db.notes=json.dumps(notes)
         db.session.commit()
         return jsonify({"success": True, "message": "message: " + message + " from user: " + user_id + " add to training successfully"})
@@ -54,7 +55,8 @@ def delete_message(current_user,user_id,training_id):
     if not training_from_db:
         return jsonify({'success': False, 'message': 'No training found!'})
     notes = json.loads(training_from_db.notes)
-    notes[user_id] = ""
+    notes[user_id][0] = "0"
+    notes[user_id][1] = ""
     training_from_db.notes = json.dumps(notes)
     db.session.commit()
     return jsonify({"success": True,
@@ -72,7 +74,10 @@ def get_message_from_trainer(current_user,user_id,training_id):
     trainer_notes = json.loads(training_from_db.trainer_notes)
     if not trainer_notes:
         return jsonify({'success': False, 'message': 'No notes from trainer for training found!'})
-    message=trainer_notes[str(user_id)]
+    message=trainer_notes[str(user_id)][1]
+    trainer_notes[str(user_id)][0]="1" #mark as read
+    training_from_db.trainer_notes = json.dumps(trainer_notes)
+    db.session.commit()
     return jsonify( {"success": True, "messages":message})
 
 
