@@ -11,7 +11,6 @@ training = Blueprint('training', __name__)
 Days_and_numbers = {
     "Sunday": 6,
     "ראשון": 6,
-    "Monday": 0,
     "שני": 0,
     "Tuesday": 1,
     "שלישי": 1,
@@ -24,7 +23,7 @@ Days_and_numbers = {
     "Saturday": 5,
     "שבת": 5
 }
-days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+days = ["שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"]
 
 
 def id_in_group(group_ids, group_id):
