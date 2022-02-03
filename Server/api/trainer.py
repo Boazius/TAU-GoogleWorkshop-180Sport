@@ -1,6 +1,6 @@
 import flask
 from flask import Blueprint, jsonify
-from models import User, Group, Training, Attendance_options
+from models import User, Group, Training
 from utils import token_required
 import json
 import datetime
@@ -53,7 +53,7 @@ def get_groups_by_trainer_id(current_user, trainer_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
-                        "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
+                        "message": "User cannot view group list per training, unless it is admin/trainer"}), 401
     list_of_groups = []
     groups_from_db = db.session.query(Group).all()
     trainer_from_db = db.session.query(User).filter_by(id=trainer_id).first()
@@ -203,7 +203,7 @@ def update_notes(current_user, training_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
-                        "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
+                        "message": "User cannot view notes list per training, unless it is admin/trainer"}), 401
     try:
         data = flask.request.json
         training_from_db = db.session.query(Training).filter_by(id=training_id).first()
@@ -226,7 +226,7 @@ def update_notes_per_user(current_user, training_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
         return jsonify({"success": False,
-                        "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
+                        "message": "User cannot view notes list per training, unless it is admin/trainer"}), 401
     try:
         data = flask.request.json
         user_id = data['user_id']
