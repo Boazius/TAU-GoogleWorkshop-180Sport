@@ -216,3 +216,29 @@ def get_messages_by_user_and_training(current_user, training_id):
 
     return jsonify(
         {"success": True, "training_messages": json.loads(training_notes)})
+
+
+@training.get('/training_by_group_by_date/<training_date>/<group_id>/')
+@token_required
+def get_training_by_date(current_user, training_date, group_id):
+    from main import db
+    group_from_db = db.session.query(Group).filter_by(id=group_id).first()
+    if not group_from_db:
+        return jsonify({'success': False, 'message': 'No group found!'})
+    if current_user.user_type in [3, 4]:
+        return jsonify({"success": False,
+                        "message": "User cannot view these details, unless it is admin/trainer"}), 401
+    try:
+        date1 = training_date.split('-')
+        the_date = datetime.date(int(date1[0]), int(date1[1]), int(date1[2]))
+        trainings_from_db = db.session.query(Training).all()
+        chosen_training = None
+        for training in trainings_from_db:
+            if training.date == the_date:
+                chosen_training = training
+        if chosen_training is not None:
+            return jsonify({'success': True, 'Training': chosen_training.to_dict()}), 200
+        else:
+            return jsonify({"success": False, "message": "Training not found"}), 200
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
