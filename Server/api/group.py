@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import flask
 from flask import Blueprint, jsonify
 from utils import token_required
@@ -204,7 +206,7 @@ def get_all_trainers_by_group(current_user, group_id):
         return jsonify({'success': False, 'message': 'No group found!'})
     if current_user.user_type in [3, 4]:
         return jsonify({"success": False,
-                        "message": "User cannot add users to group details, unless it is admin/trainer"}), 401
+                        "message": "User cannot add users to group details, unless it is admin/trainer"}), 200
     try:
         users_from_db = db.session.query(User).all()
         list_of_users = []
@@ -234,6 +236,28 @@ def get_all_trainings_by_group(current_user, group_id):
             if training.group_id == group_id:
                 list_of_trainings.append(training.to_dict())
         return jsonify({"success": True,
-                        "trainings": list_of_trainings}), 401
+                        "trainings": list_of_trainings}), 200
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
+
+
+@group.get('/get_all_dates_by_group/<group_id>/')
+@token_required
+def get_all_dates_by_group(current_user, group_id):
+    from main import db
+    group_from_db = db.session.query(Group).filter_by(id=group_id).first()
+    if not group_from_db:
+        return jsonify({'success': False, 'message': 'No group found!'})
+    if current_user.user_type in [3, 4]:
+        return jsonify({"success": False,
+                        "message": "User cannot view group details, unless it is admin/trainer"}), 401
+    try:
+        trainings_from_db = db.session.query(Training).all()
+        list_of_dates = []
+        for training in trainings_from_db:
+            if training.group_id == int(group_id):
+                list_of_dates.append(training.date)
+        return jsonify({"success": True,
+                        "dates": list_of_dates}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
