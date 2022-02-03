@@ -1,6 +1,6 @@
 import flask
 from flask import Blueprint, jsonify
-from models import User, Group, Training, Attendance_options
+from models import User, Group, Training
 from utils import token_required
 import json
 from sqlalchemy import func
@@ -133,14 +133,10 @@ def put_training(current_user, training_id):
                 training_from_db.day = days[int(datetime.date(int(date1[0]), int(date1[1]), int(date1[2])).weekday())]
             if key == 'meeting_place':
                 training_from_db.meeting_place = data['meeting_place']
-            # if key == 'attendance_users':
-            #     training_from_db.attendance_users = data['attendance_users']
             if key == 'is_happened':
                 training_from_db.is_happened = data['is_happened']
             if key == 'trainers_id':
                 training_from_db.trainers_id = data['trainers_id']
-            # if key == 'notes':
-            #    training_from_db.notes = data['notes']
         db.session.commit()
         return jsonify({"success": True, "training": training_from_db.to_dict()})
     except:

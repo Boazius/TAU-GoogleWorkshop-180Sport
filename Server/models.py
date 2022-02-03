@@ -25,7 +25,7 @@ class User(Base):
     phone_number = Column(String())
     group_ids = Column(String())
     training_ids = Column(String())
-    attendance = Column(Integer(), ForeignKey("attendance_options.id"))
+    #attendance = Column(Integer(), ForeignKey("attendance_options.id"))
     active_or_not = Column(Boolean())
 
     def to_dict(self):
@@ -76,7 +76,7 @@ class Training(Base):
     meeting_place = Column(String(), nullable=False)
     attendance_users = Column(String()) #dict
     is_happened = Column(Boolean())
-    trainers_id = Column(Integer(), ForeignKey("users.id")) #list
+    trainers_id = Column(Integer()) #list
     notes = Column(String()) #dict
     trainer_notes = Column(String()) #dict
 
@@ -103,16 +103,3 @@ class Training(Base):
         return ret_data
 
 
-class Message(Base):
-    __tablename__ = 'messages'
-    id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
-    user_id = Column(Integer(), ForeignKey("users.id"), nullable=False)
-    training_id = Column(Integer(), ForeignKey("trainings.id"), nullable=False)
-    test = Column(String(), nullable=False)
-    date = Column(Date())
-
-
-class Attendance_options(Base):
-    __tablename__ = 'attendance_options'
-    id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
-    name = Column(String())

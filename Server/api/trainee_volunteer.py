@@ -2,7 +2,7 @@
 import flask
 import json
 from flask import Blueprint, abort, jsonify, Response
-from models import User, Group, Training, Attendance_options
+from models import User, Group, Training
 from utils import token_required, login_required
 import datetime
 from datetime import  datetime, timedelta,date
@@ -75,10 +75,9 @@ def get_message_from_trainer(current_user,user_id,training_id):
     if not trainer_notes:
         return jsonify({'success': False, 'message': 'No notes from trainer for training found!'})
     message=trainer_notes[str(user_id)][1]
-    trainer_notes[str(user_id)][0]="1" #mark as read
     training_from_db.trainer_notes = json.dumps(trainer_notes)
     db.session.commit()
-    return jsonify( {"success": True, "messages":message})
+    return jsonify({"success": True, "messages":message})
 
 
 @trainee.get('/trainee/get_closest_training/<user_id>/')
@@ -151,17 +150,13 @@ def get_closest_training_by_training_id(current_user, user_id, training_id):
 @token_required
 def update_attendance(current_user, user_id):
     from main import db
-    if int(current_user.user_type) not in [1, 2] and int(current_user.id) != int(user_id):
+    if int(current_user.id) != int(user_id) and int(current_user.user_type) not in [1, 2] :
         return jsonify({"success": False,
                         "message": "User cannot update message, unless it is the fit user or admin/trainer"}), 401
 
-    user_from_db = db.session.query(User).filter_by(id=user_id).first()
-    if not user_from_db:
-        return jsonify({"success": False,"message": "no user found"}), 400
 
     try:
         data = flask.request.json
-        user_from_db.attendance = data['attendance']
         training = get_closest_training(user_id).json["training"]
         if not training:
             return jsonify({"success": False, "message": "no training found"}), 400
@@ -169,14 +164,36 @@ def update_attendance(current_user, user_id):
         training_id = training["id"]
         if attendance is None:
             return jsonify({"success": False, "message": "attendance list is empty"}), 400
-        if str(user_from_db.id) not in attendance.keys():
+        if str(user_id) not in attendance.keys():
             return jsonify({"success": False, "message": "user not in attendance training"}), 400
-        attendance[str(user_from_db.id)][0] = str(data['attendance'])
+        attendance[str(user_id)][0] = str(data['attendance'])
         training_from_db = db.session.query(Training).filter_by(id=int(training_id)).first()
         if not training_from_db:
             return jsonify({"success": False, "message": "no training found"}), 400
         training_from_db.attendance_users = json.dumps(attendance)
         db.session.commit()
-        return jsonify({"success": True, "user": "user update is attendance to:" + str(data['attendance'])})
+        return jsonify({"success": True, "message": "user update is attendance to:" + str(data['attendance'])})
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
+
+
+@trainee.put('/trainee/mark_message/<user_id>/<training_id>/')
+@token_required
+def mark_message(current_user,user_id,training_id):
+    from main import db
+    if int(current_user.user_type) not in [1,2] and int(current_user.id) != int(user_id):
+        return jsonify({"success": False, "message": "User cannot read message, unless it is the fit user"}), 401
+    training_from_db = db.session.query(Training).filter_by(id=training_id).first()
+    if not training_from_db:
+        return jsonify({'success': False, 'message': 'No training found!'})
+    trainer_notes = json.loads(training_from_db.trainer_notes)
+    if not trainer_notes:
+        return jsonify({'success': False, 'message': 'No notes from trainer for training found!'})
+    try:
+        data = flask.request.json
+        trainer_notes[str(user_id)][0] = str(data['mark'])
+        training_from_db.trainer_notes = json.dumps(trainer_notes)
+        db.session.commit()
+        return jsonify({"success": True, "message": "user mark is message as:" + str(data['mark'])})
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
