@@ -103,16 +103,19 @@ def get_closest_training(current_user,user_id):
         list_date=[]
         for training in trainings:
             if not training:
-                return jsonify({"success": False, "message": "no training found"}), 400
+                continue
+                #return jsonify({"success": False, "message": "no training found"}), 400
             training_date = datetime.strptime(str(training.date), "%Y-%m-%d")
             if training_date>b_d:
                 list_date.append(training.date)
         if list_date is None or list_date==[]:
-            return jsonify({"success": False, "message": "no training found"}), 400
+            continue
+            #return jsonify({"success": False, "message": "no training found"}), 400
         the_date=min(list_date, key=find_closest_date)
         training_from_db =db.session.query(Training).filter_by(group_id=group_id,date=the_date).first()
         if not training_from_db:
-            return jsonify({"success": False, "message": "no training found"}), 400
+            continue
+            #return jsonify({"success": False, "message": "no training found"}), 400
         if int(current_user.user_type) != 1 and not id_in_group(current_user.group_ids,training_from_db.group_id):  # user not in the group fit for training
             return jsonify({"success": False,
                             "message": "User cannot get training, unless the user is in the fit group"}), 401
