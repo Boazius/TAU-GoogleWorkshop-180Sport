@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="login-with-google-btn" @click="onSignIn">
+  <button type="button" size="xl" class="login-with-google-btn" @click="onSignIn">
     <img src="~/assets/images/google.svg" /> {{ $t("authentication.signin") }}
   </button>
 </template>
@@ -19,22 +19,23 @@ export default {
 .login-with-google-btn {
   transition: background-color 0.3s, box-shadow 0.3s;
   cursor: pointer;
-  padding: 12px;
+  padding: 24px;
   border: none;
-  border-radius: 3px;
+  border-radius: 6px;
   box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
 
   color: #757575;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 500;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   background-color: white;
 
   img {
-    height: 18px;
-    width: 18px;
+    height: 22px;
+    width: 22px;
     margin-bottom: -4px;
+    margin-right: 4px;
   }
 
   &:hover {

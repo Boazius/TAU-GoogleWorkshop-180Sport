@@ -1,14 +1,15 @@
-<template>
+<template >
+<div v-if="everthingIsReady">
   <q-table
     :rows="rows"
     :columns="columns"
     row-key="id"
-    :pagination="pagination"
+    v-model:pagination="pagination"
     :loading="loading"
     :filter="filter"
     @request="onRequest"
     binary-state-sort
-    v-if="everthingIsReady"
+    
   >
     <template v-slot:body="props">
       <q-tr :props="props">
@@ -70,6 +71,7 @@
       </q-input>
     </template>
   </q-table>
+</div>
 </template>
 
 <script>
@@ -106,7 +108,6 @@ export default defineComponent({
 
     computed: {
     userType() {
-      console.log(this.$store.getters["authentication/getCurrentUser"].user_type)
       return this.$store.getters["authentication/getCurrentUser"].user_type;
     },
   },
@@ -120,7 +121,7 @@ export default defineComponent({
       sortBy: "desc",
       descending: false,
       page: 1,
-      rowsPerPage: 10,
+      rowsPerPage: 5,
       rowsNumber: props.table_data.length,
     });
     const rowCount = ref(props.table_data.length);
@@ -154,13 +155,12 @@ export default defineComponent({
 
       return data.slice(startRow, startRow + count);
     }
-    async function getUserType(){
-        //implement with api or get from store
-    }
+
 
     // emulate 'SELECT count(*) FROM ...WHERE...'
      function getRowsNumberCount(filter) {
       if (!filter) {
+        console.log("here")
         return props.table_data.length;
       }
       let count = 0;
@@ -169,6 +169,7 @@ export default defineComponent({
           ++count;
         }
       });
+      console.log(count);
      return count;
     }
 
@@ -185,7 +186,7 @@ export default defineComponent({
         // get all rows if "All" (0) is selected
         const fetchCount =
           rowsPerPage === 0 ? pagination.value.rowsNumber : rowsPerPage;
-
+        
         // calculate starting row of data
         const startRow = (page - 1) * rowsPerPage;
 
@@ -259,14 +260,13 @@ export default defineComponent({
 
 
     return {
+      pagination,
       filter,
       loading,
-      pagination,
       columns,
       rows,
       rowCount,
       onRequest,
-      // userType,
       getGroupsNames,
       getNames,
       everthingIsReady,

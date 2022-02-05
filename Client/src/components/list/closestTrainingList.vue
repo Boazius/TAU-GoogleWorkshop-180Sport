@@ -11,13 +11,17 @@
 
           <q-item-section side>
             <div class="column">
-            <q-icon v-if='training.notes[item[1]] != ""' name="message" size="sm" color="primary"/>
-            <q-menu icon="message" anchor="top left" self="top right">
-            <next-training-posticks v-if="everthingIsReady" :training="training" :userId="item[1]" :postick="training.notes[item[1]]"></next-training-posticks>
-            </q-menu >
+            <q-btn dense v-if='(training.notes[item[1]][1] != "") && (training.notes[item[1]][0]==0)' class="bg-white text-primary" flat icon="markunread" size="md" @click=" markAsRead(item[1])"/>
+            <q-btn dense v-if='((training.notes[item[1]][1] != "") && training.notes[item[1]][0]==1)' class="bg-white text-primary" flat icon="drafts" size="md" color="primary" @click=" read=true" />
+           <trainer-recieve-message-popup v-if='training.notes[item[1]][1] != ""' v-model="read" :trainingData="training" :userId="item[1]"/>
            </div>
           </q-item-section>
-                    <q-item-section side>
+
+          <q-item-section side>
+            <trainer-get-message-popup :trainingData="training" :userId="item[1]"/>
+          </q-item-section>
+
+          <q-item-section side>
           <div class="column">
 
             <q-chip
@@ -42,15 +46,16 @@
 <script>
 import { defineComponent } from 'vue'
 import { ref, onMounted } from "vue";
-import NextTrainingPosticks from '../basic/NextTrainingPosticks.vue';
 import axios from "axios";
 import TrainingToolbar from '../groups/TrainingToolbar.vue';
+import TrainerGetMessagePopup from '../basic/popup/TrainerGetMessagePopup.vue';
+import TrainerRecieveMessagePopup from '../basic/popup/TrainerRecieveMessagePopup.vue';
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 
 export default defineComponent({
-    components: { NextTrainingPosticks, TrainingToolbar },
+    components: { TrainingToolbar, TrainerGetMessagePopup, TrainerRecieveMessagePopup },
     name:"closestTrainingList",
     props:["group", "user"],
     
@@ -58,8 +63,10 @@ export default defineComponent({
     const loading = ref(false);
     const training = ref({});
     const everthingIsReady = ref(false);
+    const read = ref(false);
 
     async function onRequest() {
+            console.log(2);
       loading.value = true;
       setTimeout(() => {
           loading.value = false;
@@ -79,11 +86,35 @@ export default defineComponent({
       everthingIsReady.value=true;
       }
     
-  
 
     onMounted(() => {
        onRequest({ });
     });
+
+
+    async function markAsRead(userId){
+      const response = await axios.put(`${serverUrl}/trainer/update_notes_per_user/${training.value.id}/`,
+       JSON.stringify({
+      "user_id": userId,
+      "mark": 1
+     }),
+      {
+        headers: { 
+            'x-access-token': id_token,
+            'Content-Type': 'application/json',
+        },
+      })    
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      training.value.notes[userId][0]=1;
+      read.value=true;
+      }
+  
+
 
     return {
       loading,
@@ -91,7 +122,8 @@ export default defineComponent({
       onRequest,
       everthingIsReady,
       training,
-      // attendanceKeysArray,
+      markAsRead,
+      read,
     };
   },
 });

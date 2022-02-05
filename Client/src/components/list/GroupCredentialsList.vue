@@ -79,13 +79,15 @@
         :loading="loading"
         @click="setGroupInfo"
         color="primary"
-        >{{ $t("table.save") }}</black-button
-      >
+        >{{ $t("table.save") }}
+        <saved-changes-popup v-model="saved_dialog" :goBack="true"/>
+        <missing-details-popup v-model="missing_dialog"/>
+        </black-button>
       <black-button class="q-mt-sm " color="primary" :outline="true" @click="onGoBack">{{
         $t("table.cancel")
       }}</black-button>
       <q-space></q-space>
-      <black-button class="q-mt-sm " v-if="(!isNew)&&everthingIsReady" color="red"  >
+      <black-button class="q-mt-sm " v-if="(!isNew)&&everthingIsReady" color="red">
         {{$t("groups.delete")}}
       <q-popup-proxy>
         <q-card >
@@ -103,14 +105,19 @@
         </q-card-actions>
       </q-card>
       </q-popup-proxy>
+      <deleted-popup v-model="deleted_dialog"/>
         </black-button>
       </div>
     </q-form>
   </section>
 </template>
 
+
 <script>
 import BlackButton from "components/basic/BlackButton";
+import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
+import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
+import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
 import axios from "axios";
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
@@ -141,6 +148,9 @@ export default {
         "שישי",
         "שבת",
       ],
+      saved_dialog: false,
+      missing_dialog: false,
+      deleted_dialog: false,
     };
   },
 
@@ -168,10 +178,8 @@ export default {
     },
 
 
-
     formHandler() {},
     
-
 
     async deleteGroup(){
       this.editedGroup = {};      
@@ -189,10 +197,9 @@ export default {
       .catch((error)=>{
           console.log(error);
           return error;
-      });
+      })
+      .then(this.deleted_dialog = true);
       localStorage.setItem('groupId', JSON.stringify({id:0}));
-      alert("הקבוצה נמחקה");
-      this.$router.go(-1);
     },
 
 
@@ -253,7 +260,7 @@ export default {
     
 
     async addTrainerToGroup(trainerid,groupid){
-      console.log("add");
+      console.log("add",trainerid);
       const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
       JSON.stringify({user_id:trainerid}),
       {
@@ -272,6 +279,7 @@ export default {
 
 
     async removeTrainerFromGroup(id){
+      console.log("remove",id);
       const response = await axios.put(`${serverUrl}/delete_user_from_group/${this.groupdata.id}/`,
       JSON.stringify({user_id:id}),
       {
@@ -289,6 +297,23 @@ export default {
     
 
 
+    async createTraining(groupId){
+    const response = await axios.post(`${serverUrl}/training/by_group_id/`,
+        JSON.stringify({
+          "group_id": groupId
+          }),
+      {
+          headers: { 
+              'x-access-token': id_token,
+              'Content-Type': 'application/json',
+          },
+      }).then((res)=> res.data)   
+      .catch(function (error) {
+        console.log(error);
+      })
+  },
+
+
     //post group info in database (create new)
     async saveNewGroup(){
       if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){
@@ -302,19 +327,18 @@ export default {
       }).then((res)=> res.data)   
       .catch(function (error) {
         console.log(error);
-      });
+      })
       const newgroupid = (JSON.parse(JSON.stringify(response["group"]))).id;
       // add trainers to group
       for (let i = 0; i <  this.trainers.length; i++){
         var trainer = this.trainers[i];
-        console.log(trainer.id)
+        console.log(trainer.id);
         await this.addTrainerToGroup(trainer.id, newgroupid);
       }
-
-      alert("הקבוצה החדשה נשמרה");
-      this.$router.go(-1);
+      await this.createTraining(newgroupid);
+      this.saved_dialog = true
       }
-      else alert("לא ניתן לשמור את הקבוצה מכיוון שיש פרטים חסרים");
+      else this.missing_dialog = true;
       },
     
 
@@ -334,7 +358,8 @@ export default {
       })
       .catch(function (error) {
         console.log(error);
-      });
+      })
+      .then(this.saved_dialog = true);;
 
       // add trainers to group 
       for (let i = 0; i <  this.trainers.length; i++){
@@ -350,10 +375,8 @@ export default {
           await this.removeTrainerFromGroup(trainer.id);
         }
       }
-     alert("השינויים נשמרו");
-      this.$router.go(-1);
       }
-      else alert("לא ניתן לעדכן את השינויים מכיוון שיש פרטים חסרים");
+      else this.missing_dialog = true;
       },
 
 
@@ -371,11 +394,13 @@ export default {
 
 
 
-  // unmounted() {
-  //   this.$store.dispatch("authentication/setEditedUser", {});
-  // },
+
+
   components: {
     BlackButton,
+    SavedChangesPopup,
+    DeletedPopup,
+    MissingDetailsPopup
   },
 };
 </script>

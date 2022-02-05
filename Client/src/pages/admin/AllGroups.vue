@@ -1,5 +1,5 @@
 <template>
-    <groups-list :groups="groups" :user="user"  :everthingIsReady="everthingIsReady" v-if="everthingIsReady"></groups-list>
+    <groups-list :groups="groups" :user="user"  :everthingIsReady="everthingIsReady" v-if="everthingIsReady" :noGroups="noGroups"></groups-list>
 </template>
 
 <script>
@@ -14,6 +14,7 @@ export default {
     return {
       groups: [],
       everthingIsReady: false,
+      noGroups: false,
     }
   },
 
@@ -52,6 +53,7 @@ export default {
     });
     
     this.groups =JSON.parse(JSON.stringify(response["list of group"]));
+    if (this.groups.length == 0) this.noGroups = true;
     this.everthingIsReady=true;
   },
   }

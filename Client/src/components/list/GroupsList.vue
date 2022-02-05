@@ -4,18 +4,20 @@
     <h3 class="group_header  q-mb-none">{{$t('app.groups')}}</h3>
     <add-group v-if="!fromTrainer" class="q-mb-sm"></add-group>
     </div>
+    <h5 v-if="noGroups" class="group_header  q-mb-none">{{$t('groups.noGroups')}}</h5>
     <q-list bordered separator class="list-items ">
-      <q-item v-for="group in groups" v-bind:key='group'  class="column col-md-7">
+      <q-item v-for="group in groups" v-bind:key='group'  class="column col-md-7 ">
         <div class="row  justify-between">
         <q-btn 
         align="left"
         class="list-items"
         v-ripple
         unelevated 
-         style="font-size:30px" 
+         style="font-size:30px " 
         @click="goToGroupPage(group)"
         >
-        {{group.day+' - '+' '+group.meeting_place}}<br>{{$t('dashboard.time')+': '+ group.time}}
+        {{group.day+' - '+' '+group.meeting_place +", "+ $t('dashboard.time')+': '+ group.time}}
+        <!-- {{group.day+' - '+' '+group.meeting_place}}<br>{{$t('dashboard.time')+': '+ group.time}} -->
         </q-btn>
         <q-btn
         align="right"
@@ -51,7 +53,7 @@ import AddGroup from '../../components/groups/AddGroup.vue';
 export default defineComponent({
   name: "groupList",
    components: { closestTrainingList, AddGroup},
-   props:["groups", "user", "fromTrainer"],
+   props:["groups", "user", "fromTrainer", "noGroups"],
    data(){
      return{
        caller:this.user

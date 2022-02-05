@@ -103,8 +103,10 @@
           :loading="loading"
           color="primary"
           @click="setUserInfo"
-          >{{ $t("table.save") }}</black-button
-        >
+          >{{ $t("table.save") }}
+          <saved-changes-popup v-model="saved_dialog" :goBack="fromAdmin"/>
+          <missing-details-popup v-model="missing_dialog"/>
+          </black-button>
         <black-button
           class="q-mt-sm"
           :outline="true"
@@ -146,6 +148,7 @@
               </q-card-actions>
             </q-card>
           </q-popup-proxy>
+          <deleted-popup v-model="deleted_dialog"/>
         </black-button>
       </div>
     </q-form>
@@ -154,6 +157,9 @@
 
 <script>
 import BlackButton from "components/basic/BlackButton";
+import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
+import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
+import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
 import axios from "axios";
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
@@ -187,13 +193,13 @@ export default {
         { type: 3, label: "מתאמן" },
         { type: 4, label: "מתנדב" },
       ],
+      saved_dialog: false,
+      missing_dialog: false,
+      deleted_dialog: false,
+
     };
   },
-  // computed: {
-  //   user() {
-  //     return this.$store.getters["authentication/getCurrentUser"];
-  //   },
-  // },
+
 
   async created() {
     this.user = JSON.parse(localStorage.getItem("user"));
@@ -202,8 +208,8 @@ export default {
       if (this.user.id != 0) {
         await this.getUser();
         this.editedUser = this.userData;
+        if(this.userData.group_ids != null){
         this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
-        console.log(this.userOriginalGroupIds);
         for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
           var groupid = parseInt(this.userOriginalGroupIds[i]);
           console.log(groupid);
@@ -213,6 +219,7 @@ export default {
               this.editedUserGroups.push(group);
             }
           }
+        }
         }
         this.editedUserType = this.allUserTypes[this.editedUser.user_type - 1];
       } else {
@@ -229,10 +236,9 @@ export default {
         }
       }
     }
-    console.log(this.editedUserGroups);
-
     this.everthingIsReady = true;
   },
+
 
   methods: {
     onGoBack() {
@@ -241,7 +247,9 @@ export default {
       this.$router.go(-1);
     },
 
+
     formHandler() {},
+
 
     //get groups data from server
     async getAllGroups() {
@@ -259,6 +267,7 @@ export default {
       this.allGroups = JSON.parse(JSON.stringify(response["list of group"]));
     },
 
+
     async getUser() {
       const response = await axios
         .get(`${serverUrl}/user/${this.user.id}/`, {
@@ -273,6 +282,7 @@ export default {
         });
       this.userData = JSON.parse(JSON.stringify(response["user"]));
     },
+
 
     async addUserToGroup(userid, groupid) {
       console.log("add");
@@ -295,6 +305,7 @@ export default {
         });
     },
 
+
     async getGroup(groupid) {
       const response = await axios
         .get(`${serverUrl}/group/${groupid}/`, {
@@ -310,11 +321,13 @@ export default {
       return JSON.parse(JSON.stringify(response["Group"]));
     },
 
+
     userDataToSend() {
       const data = this.editedUser;
       data["user_type"] = this.editedUserType.type;
       return data;
     },
+
 
     // remove user from group
     async removeUserFromGroup(userId, groupId) {
@@ -337,6 +350,7 @@ export default {
         });
     },
 
+
     async deleteUser() {
       localStorage.setItem("user", {});
       this.editedUser = {};
@@ -352,12 +366,12 @@ export default {
         .catch((error) => {
           console.log(error);
           return error;
-        });
+        })
+        .then(this.deleted_dialog = true);
       const storeuser = { id: 0 };
       localStorage.setItem("user", JSON.stringify(storeuser));
-      alert("המשתמש נמחק");
-      this.$router.go(-1);
     },
+
 
     //post group info in database (create new)
     async saveNewUser(data) {
@@ -377,7 +391,8 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
-          });
+          })
+          .then(this.saved_dialog = true);
         const newUserId = JSON.parse(JSON.stringify(response["user"])).id;
 
         // add user to groups
@@ -387,10 +402,10 @@ export default {
         }
         const storeuser = { id: 0 };
         localStorage.setItem("user", JSON.stringify(storeuser));
-        alert("המשתמש החדש נשמר");
-        this.$router.go(-1);
-      } else alert("לא ניתן לשמור את המשתמש מכיוון שיש פרטים חסרים");
+      } 
+      else this.missing_dialog = true;
     },
+
 
     //put group info in database (update)
     async saveExistingUser(data) {
@@ -410,7 +425,8 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
-          });
+          })
+          .then(this.saved_dialog = true);
 
         const newUserId = JSON.parse(JSON.stringify(response["user"])).id;
 
@@ -433,12 +449,10 @@ export default {
         }
         const storeuser = { id: 0 };
         localStorage.setItem("user", JSON.stringify(storeuser));
-        alert("השינויים נשמרו");
-        if (this.fromAdmin) {
-          this.$router.go(-1);
-        }
-      } else alert("לא ניתן לעדכן את השינויים מכיוון שיש פרטים חסרים");
+      } 
+      else this.missing_dialog = true;
     },
+
 
     //set user's new/updated info using post/put determined by isNew, set to true if came to page from clicking on an existing user
     async setUserInfo() {
@@ -449,11 +463,12 @@ export default {
     },
   },
 
-  // unmounted() {
-  //   this.$store.dispatch("authentication/setEditedUser", {});
-  // },
+
   components: {
     BlackButton,
+    MissingDetailsPopup,
+    SavedChangesPopup,
+    DeletedPopup,
   },
 };
 </script>

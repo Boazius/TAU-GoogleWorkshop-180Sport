@@ -1,5 +1,6 @@
 <template>
-<groups-list v-if="everthingIsReady" :fromTrainer="true" :groups="groups" :user="trainer"></groups-list>
+
+<groups-list v-if="everthingIsReady" :fromTrainer="true" :groups="groups" :user="trainer" :noGroups="noGroups"></groups-list>
 </template>
 
 <script>
@@ -15,12 +16,12 @@ export default {
     return {
       groups: [],
       everthingIsReady: false,
+      noGroups: false,
     }
   },
 
   computed: {
     trainer() {
-      console.log(this.$store.getters["authentication/getCurrentUser"])
       return this.$store.getters["authentication/getCurrentUser"];
     },
   },
@@ -39,7 +40,7 @@ export default {
     });
     
     this.groups =JSON.parse(JSON.stringify(response["trainer groups"]));
-    console.log(this.groups)
+    if (this.groups.length == 0) this.noGroups = true;
     this.everthingIsReady=true;
   },
   }
