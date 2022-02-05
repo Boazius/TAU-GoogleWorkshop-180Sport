@@ -88,6 +88,7 @@ export default {
     chooseDay:"The day of the trainings",
     chooseTime:"The time of the trainings",
     chooseLocation:"The location of the trainings",
+    noGroups:"There are no groups to display",
   },
   group: {
     groupDetails: "Group details",

@@ -11,7 +11,7 @@
 
           <q-item-section side>
             <div class="column">
-            <q-btn dense v-if='(training.notes[item[1]][1] != "") && (training.notes[item[1]][0]==0)' class="bg-white text-primary" flat icon="markunread" size="md" @click=" markAsRead(item[1]); onRequest(); print(5)"/>
+            <q-btn dense v-if='(training.notes[item[1]][1] != "") && (training.notes[item[1]][0]==0)' class="bg-white text-primary" flat icon="markunread" size="md" @click=" markAsRead(item[1])"/>
             <q-btn dense v-if='((training.notes[item[1]][1] != "") && training.notes[item[1]][0]==1)' class="bg-white text-primary" flat icon="drafts" size="md" color="primary" @click=" read=true" />
            <trainer-recieve-message-popup v-if='training.notes[item[1]][1] != ""' v-model="read" :trainingData="training" :userId="item[1]"/>
            </div>
@@ -113,10 +113,7 @@ export default defineComponent({
       training.value.notes[userId][0]=1;
       read.value=true;
       }
-    
-  function print(s){
-    console.log(s);
-  }
+  
 
 
     return {
@@ -127,7 +124,6 @@ export default defineComponent({
       training,
       markAsRead,
       read,
-      print
     };
   },
 });
