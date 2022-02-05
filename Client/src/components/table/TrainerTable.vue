@@ -3,7 +3,7 @@
       :rows="rows"
       :columns="columns"
       row-key="id"
-      v-model:pagination="pagination"
+      v-model="pagination"
       :loading="loading"
       :filter="filter"
       @request="onRequest"

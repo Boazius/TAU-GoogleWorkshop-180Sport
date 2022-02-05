@@ -1,6 +1,13 @@
 <template>
   <q-page>
+  <div class="q-pa-md flex flex-center" >
+    <img
+      src="~assets/images/loginpic.png"
+      style="width: 980px; height: auto"
+    >
+    </div>
     <login />
+
   </q-page>
 </template>
 

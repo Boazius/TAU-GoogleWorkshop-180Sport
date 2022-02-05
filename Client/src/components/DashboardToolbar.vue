@@ -1,18 +1,19 @@
 <template>
-  <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-lg item" >
-    <p class="q-ma-none">{{ $t("dashboard.closest")+":" }}</p>
+  <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-lg " >
+    <p class="q-my-none q-mr-md item">{{ $t("dashboard.closest")+":" }}</p>
    
-    <p class="q-ma-none">{{ $t("dashboard.date") }}</p>
-    <q-input readonly  class="item" v-model="date" type="date" dense/>
+    <p class="q-my-none item">{{ $t("dashboard.date") }}</p>
+    <p class="q-my-none q-ml-sm q-mr-md item2">{{ date }}</p>
    
-    <p class="q-ma-none">{{ $t("dashboard.day") }}</p>
-    <q-input readonly  class="item" v-model="day" type="day" dense/>
+    <p class="q-my-none  item">{{ $t("dashboard.day") }}</p>
+    <p class="q-my-none q-ml-sm q-mr-md item2">{{ day }}</p>
     
-    <p class="q-ma-none">{{ $t("dashboard.time") }}</p>
-    <q-input readonly  class="item" v-model="time" type="time" dense/>
+    <p class="q-my-none  item">{{ $t("dashboard.time") }}</p>
+    <p class="q-my-none q-ml-sm q-mr-md item2">{{ time }}</p>
    
-    <p class="q-ma-none">{{ $t("dashboard.location") }}</p>
-    <q-input readonly  class="item" v-model="meeting_place" type="text" dense/>
+    <p class="q-my-none item">{{ $t("dashboard.location") }}</p>
+    <p class="q-my-none q-ml-sm item2">{{ meeting_place }}</p>
+
   </div>
 </template>
 

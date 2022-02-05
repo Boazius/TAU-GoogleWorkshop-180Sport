@@ -20,18 +20,19 @@
     <p class="q-ma-none">{{ $t("dashboard.trainer") }}</p>
     <q-select v-model="trainer" :options="trainers" :option-label="(item)=>item.full_name" emit-value 
      class="q-pb-md" />
-     <q-space/>
-      <black-button
-        class="q-mt-sm q-mr-md"
-        :loading="loading"
-        v-if="updated"
-        @click="saveTraining"
-        color="primary"
-        text-color="white"
-        outline
-        ripple 
-        >{{ $t("table.save") }}</black-button
-      >
+    <q-space/>
+    <black-button
+      class="q-mt-sm q-mr-md"
+      :loading="loading"
+      v-if="updated"
+      @click="saveTraining"
+      color="primary"
+      text-color="white"
+      outline
+      ripple 
+      >{{ $t("table.save") }}
+      <saved-changes-popup v-model="saved_dialog" :goBack="false"/>
+    </black-button>
   </div>
   </div>
 </template>
@@ -39,14 +40,18 @@
 <script>
 import { defineComponent } from "vue";
 import axios from "axios";
-import BlackButton from "components/basic/BlackButton.vue"
+import BlackButton from "components/basic/BlackButton.vue";
+import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({
   name: "TrainingToolbar",
   props: ["training","everthingIsReady"],
-  components:{BlackButton},
+  components:{
+    BlackButton,
+    SavedChangesPopup,
+  },
   data() {
     return {
       editedTraining: {
@@ -57,6 +62,7 @@ export default defineComponent({
       trainers:{},
       trainer:{},
       updated : false,
+      saved_dialog: false,
     };
   },
 
@@ -115,9 +121,9 @@ export default defineComponent({
       })
       .catch(function (error) {
         console.log(error);
-      });
-        alert("השינויים נשמרו");
+      })
         this.updated=false;
+        this.saved_dialog = true
       },
   },
 });

@@ -11,11 +11,20 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>{{ $t("app.mainHeading") }} </q-toolbar-title>
+        <!-- <q-toolbar-title >{{ $t("app.mainHeading") }} </q-toolbar-title> -->
+        <!-- <q-avatar style="width: 125px; height: 88px">
+          <img src="~assets/images/logo-white-big.webp" alt="logo" clickable/>
+        </q-avatar> -->
+        <q-toolbar-title > </q-toolbar-title>
+        <toolbar-routes-buttons></toolbar-routes-buttons>
+        <!-- <a :href="'http://www.180sport.org'" target="_blank">
+          <q-btn dense unelevated >
+            <q-avatar square style="width: 50px; height: auto">
+              <img src="~assets/images/logo-white-big2.webp" alt="logo" />
+            </q-avatar>
+          </q-btn>
+        </a> -->
 
-        <q-avatar style="width: 125px; height: 88px">
-          <img src="~assets/images/logo-white-big.webp" alt="logo" />
-        </q-avatar>
       </q-toolbar>
     </q-header>
 
@@ -49,7 +58,7 @@
 <script>
 import EssentialLink from "components/EssentialLink.vue";
 import SwitchLanguage from "components/basic/SwitchLanguage.vue";
-
+import toolbarRoutesButtons from "components/header/ToolbarRoutesButtons.vue"
 import { computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -62,6 +71,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     SwitchLanguage,
+    toolbarRoutesButtons,
   },
   setup() {
     const leftDrawerOpen = ref(false);

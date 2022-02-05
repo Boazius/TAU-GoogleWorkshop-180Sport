@@ -1,13 +1,15 @@
 <template>
 <div>
-    <q-list bordered class="rounded-borders" style="max-width: 600px">
+    <q-list bordered v-if="everthingIsReady&&!isEmpty" class="rounded-borders" style="max-width: 600px">
         <q-separator spaced />
         <training-toolbar :training="training" v-if="everthingIsReady"></training-toolbar>
         <attendance-fix-list v-if="everthingIsReady" :training="training" :header="$t('group.notPresent')" :attendance="2"></attendance-fix-list>
         <attendance-fix-list v-if="everthingIsReady" :training="training" :header="$t('group.present')" :attendance="1"></attendance-fix-list>
-        <attendance-fix-list v-if="everthingIsReady" :training="training" :header="$t('group.unknown')" :attendance="0"></attendance-fix-list>
-        
-      </q-list>
+        <attendance-fix-list v-if="everthingIsReady" :training="training" :header="$t('group.unknown')" :attendance="0"></attendance-fix-list>       
+    </q-list>
+    <div class="text-h8 q-ml-xl item2" v-if="everthingIsReady&&isEmpty ">
+      {{ $t('group.noTraining') }}
+    </div>
 </div>
 </template>
 
@@ -29,11 +31,8 @@ export default defineComponent({
     const loading = ref(false);
     const training = ref([]);
     const everthingIsReady = ref(false);
-    const attendanceFixListTitles = ref([
-      {attendance:"2",header:"$t('group.notPresent')"},
-      {attendance:"1",header:"$t('group.present')"},
-      {attendance:"0",header:"$t('group.unknown')"}
-    ])
+    const isEmpty = ref(true);
+
 
 
     async function onRequest() {
@@ -49,9 +48,16 @@ export default defineComponent({
       .then((res)=> res.data)
       .catch((error)=>{
           console.log(error);
+          console.log("sdfsdfsdfsdfsdf");
           return error;
       });
-      training.value =JSON.parse(JSON.stringify(response["training"]));
+      if(response["training"]){
+        training.value =JSON.parse(JSON.stringify(response["training"]));
+        isEmpty.value=false;
+      }
+      else if(response["message"] == "no training found"){
+        console.log("no training found");
+      }
       everthingIsReady.value=true;   
     }
     
@@ -63,7 +69,7 @@ export default defineComponent({
       loading,
       training,
       everthingIsReady,
-      attendanceFixListTitles,
+      isEmpty,
     };
   },
 });
