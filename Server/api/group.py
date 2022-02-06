@@ -36,6 +36,7 @@ def delete_group(current_user, group_id):
     if current_user.user_type != 1:
         return jsonify({"success": False,
                         "message": "User cannot delete groups, unless it is admin"}), 401
+    # delete matching trainings
     groups_trainings = group_to_delete.trainings_list
     print(groups_trainings)
     if groups_trainings != "" and groups_trainings is not None:
@@ -45,6 +46,11 @@ def delete_group(current_user, group_id):
             training_from_db = db.session.query(Training).filter_by(id=int(training)).first()
             db.session.delete(training_from_db)
             db.session.commit()
+    # Delete group from matching users
+    users_from_db = db.session.query(User).all()
+    for user in users_from_db:
+        if id_in_group(user.group_ids, group_id):
+            user.group_ids = remove_group_id_from_user(user.group_ids, group_id)
     db.session.delete(group_to_delete)
     db.session.commit()
     return jsonify({"success": True,
@@ -173,6 +179,12 @@ def id_in_group(group_ids, group_id):
     if group_id in groups_list:
         return True
     return False
+
+
+def remove_group_id_from_user(user_groups, group_id):
+    groups_list = user_groups.split(",")
+    groups_list.remove(group_id)
+    return listToString(groups_list)
 
 
 @group.get('/get_all_users_by_group/<group_id>/')
