@@ -4,10 +4,10 @@
       <div>
         <q-btn
           size="sm"
-        class="q-mr-md q-mt-sm"
+          class="q-mr-md q-mt-sm"
           padding="sm"
           glossy
-          ripple="center"
+          :ripple="{ center: true }"
           color="primary"
           icon="arrow_forward"
           @click="onGoBack()"
@@ -29,13 +29,7 @@ import UserCredentialsList from "components/list/UserCredentialsList.vue";
 
 export default {
   name: "UserPage",
-  data() {
-    return {};
-  },
   methods: {
-    // handler() {
-    //   window.localStorage.removeItem('userdata');
-    // },
     onGoBack() {
       this.$router.go(-1);
     },

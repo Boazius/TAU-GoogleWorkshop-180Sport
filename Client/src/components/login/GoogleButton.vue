@@ -1,5 +1,10 @@
 <template>
-  <button type="button" size="xl" class="login-with-google-btn" @click="onSignIn">
+  <button
+    type="button"
+    size="xl"
+    class="login-with-google-btn"
+    @click="onSignIn"
+  >
     <img src="~/assets/images/google.svg" /> {{ $t("authentication.signin") }}
   </button>
 </template>
@@ -9,7 +14,7 @@ export default {
   name: "Google Signin",
   methods: {
     onSignIn() {
-      window.location.href = "http://127.0.0.1:5000/login";
+      window.location.href = "https://server-idhusddnia-ew.a.run.app/login";
     },
   },
 };

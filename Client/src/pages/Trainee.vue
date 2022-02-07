@@ -1,14 +1,14 @@
 <template>
   <q-page padding>
     <dashboard-toolbar
-      v-if="everthingIsReady"
-      :everthingIsReady="everthingIsReady"
+      v-if="isReady"
+      :isReady="isReady"
       :trainingData="trainingData"
     ></dashboard-toolbar>
-    <h3 class="text-h5 text-center group_header" v-if="everthingIsReady">
+    <h3 class="text-h5 text-center group_header" v-if="isReady">
       {{ $t("app.confirmation.areYouComing") }}
     </h3>
-    <div class="row justify-center q-gutter-md q-pa-md q-mb-xl" v-if="everthingIsReady">
+    <div class="row justify-center q-gutter-md q-pa-md q-mb-xl" v-if="isReady">
       <q-btn
         v-if="attendance != 2"
         size="22px"
@@ -16,7 +16,7 @@
         color="green"
         :label="$t('app.confirmation.yes')"
         @click="saveSelection(1)"
-        >
+      >
         <confirmation-popup v-model="dialog"></confirmation-popup>
       </q-btn>
       <q-btn
@@ -26,7 +26,7 @@
         color="grey-6"
         :label="$t('app.confirmation.yes')"
         @click="saveSelection(1)"
-        >
+      >
         <confirmation-popup v-model="dialog"></confirmation-popup>
       </q-btn>
 
@@ -36,7 +36,8 @@
         class="q-px-xl q-py-xs"
         color="red"
         :label="$t('app.confirmation.no')"
-        @click="saveSelection(2)">
+        @click="saveSelection(2)"
+      >
         <confirmation-popup v-model="dialog"></confirmation-popup>
       </q-btn>
       <q-btn
@@ -46,26 +47,29 @@
         color="grey-6"
         :label="$t('app.confirmation.no')"
         @click="saveSelection(2)"
-         >
+      >
         <confirmation-popup v-model="dialog"></confirmation-popup>
       </q-btn>
     </div>
     <q-separator />
     <div>
-    <editor-buttons v-if="everthingIsReady" :trainingData="trainingData" :user="currentUser">
-    </editor-buttons>
+      <editor-buttons
+        v-if="isReady"
+        :trainingData="trainingData"
+        :user="currentUser"
+      >
+      </editor-buttons>
     </div>
   </q-page>
 </template>
 
 <script>
-import { useI18n } from "vue-i18n";
 import { defineComponent } from "vue";
 import DashboardToolbar from "components/DashboardToolbar.vue";
 import confirmationPopup from "components/basic/popup/ConfirmationPopup.vue";
 import EditorButtons from "components/ClosestTraining/EditorButtons.vue";
 import axios from "axios";
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({
@@ -73,7 +77,7 @@ export default defineComponent({
   data() {
     return {
       trainingData: {},
-      everthingIsReady: false,
+      isReady: false,
       // user: {},
       attendance: 0,
       dialog: false,
@@ -91,8 +95,9 @@ export default defineComponent({
       var data = JSON.stringify({
         attendance: num,
       });
-      this.dialog = true
-      const response = await axios
+      this.dialog = true;
+
+      await axios
         .put(
           `${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`,
           data,
@@ -147,10 +152,20 @@ export default defineComponent({
     );
 
     this.trainingData = JSON.parse(JSON.stringify(response["training"]));
-    const days = ["sunday","monday","tuesday","wednesday", "thursday","friday","saturday"];
-    this.trainingData.day="trainee.days."+days[new Date(this.trainingData.date).getDay()];
-    this.attendance = this.trainingData.attendance_users[this.currentUser.id][0];
-    this.everthingIsReady = true;
+    const days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    this.trainingData.day =
+      "trainee.days." + days[new Date(this.trainingData.date).getDay()];
+    this.attendance =
+      this.trainingData.attendance_users[this.currentUser.id][0];
+    this.isReady = true;
   },
   components: {
     DashboardToolbar,
