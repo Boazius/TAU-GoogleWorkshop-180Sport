@@ -45,7 +45,7 @@ class User_type(Base):
 class Group(Base):
     __tablename__= 'groups'
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
-    day = Column(Integer(), nullable=False)
+    day = Column(String(15), nullable=False)
     time = Column(String(15), nullable=False)
     meeting_place = Column(String(50), nullable=False)
     trainings_list = Column(String(500))
@@ -71,12 +71,12 @@ class Training(Base):
     id = Column(Integer(), primary_key=True, unique=True, autoincrement=True)
     group_id = Column(Integer(), ForeignKey("groups.id"), nullable=False)
     date = Column(Date(), nullable=False)
-    day = Column(Integer(), nullable=False)
+    day = Column(String(15), nullable=False)
     time = Column(String(50), nullable=False)
     meeting_place = Column(String(50), nullable=False)
     attendance_users = Column(String(500)) #dict
     is_happened = Column(Boolean())
-    trainers_id = Column(Integer()) #list
+    trainers_id = Column(String(500)) #list
     notes = Column(String(500)) #dict
     trainer_notes = Column(String(500)) #dict
 
