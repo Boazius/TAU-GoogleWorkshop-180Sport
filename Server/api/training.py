@@ -252,7 +252,7 @@ def get_training_by_date(current_user, training_date, group_id):
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
 
-@training.post('/training/by_group_id/')
+@training.post('/training/by_group_id_sp/')
 @login_required
 def post_training_by_group_id(current_user):
     from main import db

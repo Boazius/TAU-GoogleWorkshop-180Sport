@@ -48,7 +48,7 @@ def get_all_groups(current_user):
     return jsonify({'success': True, 'list of group': list_return}), 200
 
 
-@admin.get('/admin/get_all_groups/')
+@admin.get('/admin/get_all_groups_sp/')
 @login_required
 def get_all_groups(current_user):
     from main import db
