@@ -15,13 +15,13 @@
 
         <q-card-section class="q-pt-none">
           <div class="text-primary text-h4  q-pa-none q-ma-none">
-              {{editor}}
+              {{initialEditor}}
           </div>
 
           </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat color="primary" class="item q-ma-none" :label="$t('app.confirmation.edit')" @click="edit=true; message=false"/>
+          <q-btn flat color="primary" class="item q-ma-none" :label="$t('app.confirmation.edit')" @click="editor=initialEditor; edit=true; message=false"/>
           <q-btn flat color="primary" class="item q-ma-none" :label="$t('app.confirmation.close')" v-close-popup/>
         </q-card-actions>
       </q-card>
@@ -64,12 +64,14 @@ export default defineComponent({
 
 setup (props) {
     const editor= ref("");
+    const initialEditor= ref("");
     const dialog = ref(false);
     const edit = ref(false);
     const message = ref(false);
 
     function onRequest() {
       editor.value = props.trainingData.notes[props.userId][1];
+      initialEditor.value = editor.value;
 
     }
 
@@ -91,6 +93,7 @@ setup (props) {
       .catch(function (error) {
         console.log(error);
       });
+      initialEditor.value = editor.value;
       dialog.value =true;
       }
     
@@ -119,7 +122,7 @@ setup (props) {
 
 
     function openMessages(){
-      if(editor.value != ""){
+      if(initialEditor.value != ""){
         message.value = true;
       }
       else edit.value=true;
@@ -131,6 +134,7 @@ setup (props) {
 
     return {
       editor,
+      initialEditor,
       sendMessage,
       dialog,
       edit,

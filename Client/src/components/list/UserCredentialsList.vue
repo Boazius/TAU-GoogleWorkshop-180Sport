@@ -91,7 +91,7 @@
         :options="allUserTypes"
         emit-value
         map-options
-        :option-label="(item) => item.label"
+        :option-label="(item) => $t(item.label)"
         :label="$t('userPage.userType')"
         class="q-pb-md"
       />
@@ -188,10 +188,10 @@ export default {
       userOriginalGroupIds: [],
       allGroups: [],
       allUserTypes: [
-        { type: 1, label: "מנהל" },
-        { type: 2, label: "מאמן" },
-        { type: 3, label: "מתאמן" },
-        { type: 4, label: "מתנדב" },
+        { type: 1, label: "userPage.types.admin" },
+        { type: 2, label: "userPage.types.trainer" },
+        { type: 3, label: "userPage.types.trainee" },
+        { type: 4, label: "userPage.types.volunteer" },
       ],
       saved_dialog: false,
       missing_dialog: false,

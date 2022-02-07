@@ -11,6 +11,19 @@
     binary-state-sort
     
   >
+
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+            class="item"
+          >
+            {{ $t(col.label) }}
+          </q-th>
+        </q-tr>
+      </template>
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td
@@ -82,7 +95,6 @@ import TableTopButtons from "components/table/TableTopButtons.vue";
 import axios from "axios";
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
-
 
 export default defineComponent({
   name: "userTable",

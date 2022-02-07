@@ -1,32 +1,18 @@
 <template>
   <section class=" item col q-gutter-x-md bg-grey-2  q-pa-md">
-    <!-- Edited data: {{ editedGroup }} <br />
-    Group data: {{ groupdata }}
-    trainers: {{trainers}} -->
+
     <q-form @submit.prevent="formHandler" autofocus v-if="everthingIsReady" class="max-width">
       <div class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
         <p class="q-ma-none q-pb-none">{{ $t('groups.chooseDay')+":" }}</p>
         <q-select
         v-model="editedGroup.day"
-        :options="days"
+        :options="days.map(day=> day=$t(day))"
         emit-value
+        map-options
         name="day"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
         class="q-pb-md"
       />  
-        
-        <!-- <q-input
-          no-error-icon
-          v-model="editedGroup.day"
-          name="day"
-          clearable
-          lazy-rules
-          clear-icon="close"
 
-          label-color="text-grey-1"
-        /> -->
       </div>
       <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
         <p class="q-ma-none q-pb-none">{{ $t('groups.chooseTime')+":" }}</p>
@@ -139,14 +125,31 @@ export default {
       allTrainers:[],
       originalTrainers:[],
       trainers:[],
+      daysHebrew:{
+        "ראשון":"ראשון",
+        "שני":"שני",
+        "שלישי":"שלישי",
+        "רביעי":"רביעי",
+        "חמישי":"חמישי",
+        "שישי":"שישי",
+        "שבת":"שבת",
+        "Sunday":"ראשון",
+        "Monday":"שני",
+        "Tuesday":"שלישי",
+        "Wednesday":"רביעי",
+        "Thursday":"חמישי",
+        "Friday":"שישי",
+        "Saturday":"שבת"        
+        }
+      ,
       days:[
-        "ראשון",
-        "שני",
-        "שלישי",
-        "רביעי",
-        "חמישי",
-        "שישי",
-        "שבת",
+      "trainee.days.sunday",
+      "trainee.days.monday",
+      "trainee.days.tuesday",
+      "trainee.days.wednesday",
+      "trainee.days.thursday",
+      "trainee.days.friday",
+      "trainee.days.saturday"
       ],
       saved_dialog: false,
       missing_dialog: false,
@@ -260,7 +263,7 @@ export default {
     
 
     async addTrainerToGroup(trainerid,groupid){
-      console.log("add",trainerid);
+      console.log("add",trainerid)
       const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
       JSON.stringify({user_id:trainerid}),
       {
@@ -317,7 +320,9 @@ export default {
     //post group info in database (create new)
     async saveNewGroup(){
       if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){
-        const response = await axios.post(`${serverUrl}/group`,
+      const data = this.editedGroup;
+      data.day = this.daysHebrew[this.editedGroup.day];
+      const response = await axios.post(`${serverUrl}/group`,
         JSON.stringify(this.editedGroup),
       {
           headers: { 
@@ -346,6 +351,8 @@ export default {
   //put group info in database (update)
    async saveExistingGroup(){
     if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){ //*** check */
+      const data = this.editedGroup;
+      data.day = this.daysHebrew[this.editedGroup.day];
       const response = await axios.put(`${serverUrl}/group/${this.groupdata.id}/`,
       JSON.stringify(this.editedGroup),
       {
