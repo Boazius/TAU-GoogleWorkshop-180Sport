@@ -66,7 +66,8 @@ def post_training_by_group_id(current_user):
     from main import db
     from api.group import listToString
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
+        return jsonify(
+            {"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
     try:
         data = flask.request.json
@@ -88,10 +89,10 @@ def post_training_by_group_id(current_user):
                     list_of_trainers.append(user.id)
                 if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
                     list_of_users.append(user.id)
-                    list_of_tuple.append([str(user.id),str(user.full_name)])
+                    list_of_tuple.append([str(user.id), str(user.full_name)])
 
             notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
-            users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
+            users_dict = dict((str(el[0]), ["0"] + el) for el in list_of_tuple)
             new_training = Training(group_id=group_id,
                                     date=training_date, day=group_from_db.day,
                                     time=group_from_db.time,
@@ -201,7 +202,8 @@ def get_training(current_user, training_id):
 def get_attendance_list_by_training(current_user, training_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False,"message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
+        return jsonify({"success": False,
+                        "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
 
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
@@ -261,53 +263,54 @@ def post_training_by_group_id_sp(current_user):
     from main import db
     from api.group import listToString
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
+        return jsonify(
+            {"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
-    # try:
-    data = flask.request.json
-    group_id = data['group_id']
-    group_from_db = db.session.query(Group).filter_by(id=group_id).first()
-    if not group_from_db:
-        return jsonify({'success': False, 'message': 'No group found!'})
-    day = group_from_db.day
-    training_date = datetime.date.today()
-    while training_date.weekday() != Days_and_numbers[day]:
-        training_date += datetime.timedelta(1)
-    if not exists_training_date_by_group(int(group_id), training_date):
-        users_from_db = db.session.query(User).all()
-        list_of_trainers = []
-        list_of_users = []
-        list_of_tuple = []
-        for user in users_from_db:
-            if user.user_type in [2] and id_in_group(user.group_ids, group_id):
-                list_of_trainers.append(user.id)
-            if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
-                list_of_users.append(user.id)
-                list_of_tuple.append([str(user.id),str(user.full_name)])
+    try:
+        data = flask.request.json
+        group_id = data['group_id']
+        group_from_db = db.session.query(Group).filter_by(id=group_id).first()
+        if not group_from_db:
+            return jsonify({'success': False, 'message': 'No group found!'})
+        day = group_from_db.day
+        training_date = datetime.date.today()
+        while training_date.weekday() != Days_and_numbers[day]:
+            training_date += datetime.timedelta(1)
+        if not exists_training_date_by_group(int(group_id), training_date):
+            users_from_db = db.session.query(User).all()
+            list_of_trainers = []
+            list_of_users = []
+            list_of_tuple = []
+            for user in users_from_db:
+                if user.user_type in [2] and id_in_group(user.group_ids, group_id):
+                    list_of_trainers.append(user.id)
+                if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
+                    list_of_users.append(user.id)
+                    list_of_tuple.append([str(user.id), str(user.full_name)])
 
-        notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
-        users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
-        new_training = Training(group_id=group_id,
-                                date=training_date, day=group_from_db.day,
-                                time=group_from_db.time,
-                                meeting_place=group_from_db.meeting_place,
-                                attendance_users=check_dict(users_dict),
-                                is_happened=True,
-                                trainers_id=list_int_to_string(list_of_trainers),
-                                notes=check_dict(notes_dict),
-                                trainer_notes=check_dict(notes_dict))
-        db.session.add(new_training)
-        training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=training_date).first()
-        training_string = group_from_db.trainings_list
-        if training_string == "" or training_string is None:
-            training_list = []
+            notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
+            users_dict = dict((str(el[0]), ["0"] + el) for el in list_of_tuple)
+            new_training = Training(group_id=group_id,
+                                    date=training_date, day=group_from_db.day,
+                                    time=group_from_db.time,
+                                    meeting_place=group_from_db.meeting_place,
+                                    attendance_users=check_dict(users_dict),
+                                    is_happened=True,
+                                    trainers_id=list_int_to_string(list_of_trainers),
+                                    notes=check_dict(notes_dict),
+                                    trainer_notes=check_dict(notes_dict))
+            db.session.add(new_training)
+            training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=training_date).first()
+            training_string = group_from_db.trainings_list
+            if training_string == "" or training_string is None:
+                training_list = []
+            else:
+                training_list = training_string.split(",")
+            training_list.append(str(training_from_db.id))
+            group_from_db.trainings_list = listToString(training_list)
+            db.session.commit()
+            return jsonify({"success": True, "training": training_from_db.to_dict()})
         else:
-            training_list = training_string.split(",")
-        training_list.append(str(training_from_db.id))
-        group_from_db.trainings_list = listToString(training_list)
-        db.session.commit()
-        return jsonify({"success": True, "training": training_from_db.to_dict()})
-    else:
-        return jsonify({"success": True, "training": "no training has created"}), 200
-    # except:
-       # return jsonify({"success": False, "message": "Something went wrong"}), 400
+            return jsonify({"success": True, "training": "no training has created"}), 200
+    except:
+        return jsonify({"success": False, "message": "Something went wrong"}), 400
