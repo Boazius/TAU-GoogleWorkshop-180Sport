@@ -50,7 +50,7 @@ def get_all_groups(current_user):
 
 @admin.get('/admin/get_all_groups_sp/')
 @login_required
-def get_all_groups(current_user):
+def get_all_groups_sp(current_user):
     from main import db
     if int(current_user.user_type) not in [1, 2]:
         return jsonify({"success": False, "message": "User cannot see all group, unless it is admin/trainer"}), 401
