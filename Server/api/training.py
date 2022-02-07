@@ -112,6 +112,8 @@ def post_training_by_group_id(current_user):
             group_from_db.trainings_list = listToString(training_list)
             db.session.commit()
             return jsonify({"success": True, "training": training_from_db.to_dict()})
+        else:
+            return jsonify({"success": True, "training": "no training has created"}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
