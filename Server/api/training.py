@@ -53,6 +53,7 @@ def check_dict(dct):
 
 
 def exists_training_date_by_group(group_id, date):
+    from main import db
     training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=date).first()
     if not training_from_db:
         return False
