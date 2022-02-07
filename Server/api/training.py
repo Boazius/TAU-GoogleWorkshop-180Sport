@@ -254,7 +254,7 @@ def get_training_by_date(current_user, training_date, group_id):
 
 @training.post('/training/by_group_id_sp/')
 @login_required
-def post_training_by_group_id(current_user):
+def post_training_by_group_id_sp(current_user):
     from main import db
     from api.group import listToString
     if int(current_user.user_type) in [3, 4]:
