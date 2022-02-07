@@ -53,6 +53,7 @@ def check_dict(dct):
 
 
 def exists_training_date_by_group(group_id, date):
+    from main import db
     training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=date).first()
     if not training_from_db:
         return False
@@ -65,7 +66,8 @@ def post_training_by_group_id(current_user):
     from main import db
     from api.group import listToString
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
+        return jsonify(
+            {"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
     try:
         data = flask.request.json
@@ -87,10 +89,10 @@ def post_training_by_group_id(current_user):
                     list_of_trainers.append(user.id)
                 if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
                     list_of_users.append(user.id)
-                    list_of_tuple.append([str(user.id),str(user.full_name)])
+                    list_of_tuple.append([str(user.id), str(user.full_name)])
 
             notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
-            users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
+            users_dict = dict((str(el[0]), ["0"] + el) for el in list_of_tuple)
             new_training = Training(group_id=group_id,
                                     date=training_date, day=group_from_db.day,
                                     time=group_from_db.time,
@@ -111,6 +113,8 @@ def post_training_by_group_id(current_user):
             group_from_db.trainings_list = listToString(training_list)
             db.session.commit()
             return jsonify({"success": True, "training": training_from_db.to_dict()})
+        else:
+            return jsonify({"success": True, "training": "no training has created"}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
 
@@ -198,7 +202,8 @@ def get_training(current_user, training_id):
 def get_attendance_list_by_training(current_user, training_id):
     from main import db
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False,"message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
+        return jsonify({"success": False,
+                        "message": "User cannot view attendance list per training, unless it is admin/trainer"}), 401
 
     training_from_db = db.session.query(Training).filter_by(id=training_id).first()
     if not training_from_db:
@@ -258,7 +263,8 @@ def post_training_by_group_id_sp(current_user):
     from main import db
     from api.group import listToString
     if int(current_user.user_type) in [3, 4]:
-        return jsonify({"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
+        return jsonify(
+            {"success": False, "message": "User cannot create new training, unless it is admin/trainer"}), 401
 
     try:
         data = flask.request.json
@@ -280,10 +286,10 @@ def post_training_by_group_id_sp(current_user):
                     list_of_trainers.append(user.id)
                 if user.user_type in [3, 4] and id_in_group(user.group_ids, group_id):
                     list_of_users.append(user.id)
-                    list_of_tuple.append([str(user.id),str(user.full_name)])
+                    list_of_tuple.append([str(user.id), str(user.full_name)])
 
             notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
-            users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
+            users_dict = dict((str(el[0]), ["0"] + el) for el in list_of_tuple)
             new_training = Training(group_id=group_id,
                                     date=training_date, day=group_from_db.day,
                                     time=group_from_db.time,
@@ -304,5 +310,7 @@ def post_training_by_group_id_sp(current_user):
             group_from_db.trainings_list = listToString(training_list)
             db.session.commit()
             return jsonify({"success": True, "training": training_from_db.to_dict()})
+        else:
+            return jsonify({"success": True, "training": "no training has created"}), 200
     except:
         return jsonify({"success": False, "message": "Something went wrong"}), 400
