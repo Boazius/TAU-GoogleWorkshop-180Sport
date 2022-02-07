@@ -70,10 +70,26 @@ export default {
       thursday: "חמישי",
       friday: "שישי",
       saturday: "שבת",
-    }
+    },
+    daysArray: [
+      "ראשון",
+      "שני",
+      "שלישי",
+      "רביעי",
+      "חמישי",
+      "שישי",
+      "שבת",
+    ]
+
   },
   userPage:{
     userType: "סוג המשתמש",
+    types:{
+      admin: "מנהל",
+      trainer: "מאמן",
+      trainee: "מתאמן",
+      volunteer: "מתנדב",
+    }
   },
   groups: {
     name: "קבוצה ", //make number and description from api
@@ -99,7 +115,7 @@ export default {
     present: "נכחו",
     notPresent: "לא נכחו",
     unknown: "לא ידוע",
-    noTraining: "לא נמצא אימון",
+    noTraining: "לא קיים אימון",
   },
   table: {
     add: "הוסף",
@@ -122,7 +138,8 @@ export default {
     editGroups: "ערוך קבוצות",
     invalidGroups: "קבוצות לא תקינות",
     hintGroups: "ניתן להוסיף כמה קבוצות",
-    livingArea: "אזור",
+    email:"מייל",
+    traineeVolunteer:"מתאמן/מתנדב",
     posticks: "הודעות מהמאמן",
     trainee:"מתאמן",
     volunteer:"מתנדב",

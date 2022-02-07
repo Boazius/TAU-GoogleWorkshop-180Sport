@@ -1,117 +1,140 @@
 <template>
-  <section class=" item col q-gutter-x-md bg-grey-2  q-pa-md">
-    <!-- Edited data: {{ editedGroup }} <br />
-    Group data: {{ groupdata }}
-    trainers: {{trainers}} -->
-    <q-form @submit.prevent="formHandler" autofocus v-if="everthingIsReady" class="max-width">
-      <div class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
-        <p class="q-ma-none q-pb-none">{{ $t('groups.chooseDay')+":" }}</p>
+  <section class="item col q-gutter-x-md bg-grey-2 q-pa-md">
+    <q-form
+      @submit.prevent="formHandler"
+      autofocus
+      v-if="isReady"
+      class="max-width"
+    >
+      <div
+        class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+      >
+        <p class="q-ma-none q-pb-none">{{ $t("groups.chooseDay") + ":" }}</p>
         <q-select
-        v-model="editedGroup.day"
-        :options="days"
-        emit-value
-        name="day"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
-        class="q-pb-md"
-      />  
-        
-        <!-- <q-input
-          no-error-icon
           v-model="editedGroup.day"
+          :options="days.map((day) => (day = $t(day)))"
+          emit-value
+          map-options
           name="day"
+          class="q-pb-md"
+        />
+      </div>
+      <div
+        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+      >
+        <p class="q-ma-none q-pb-none">{{ $t("groups.chooseTime") + ":" }}</p>
+        <q-input
+          no-error-icon
           clearable
           lazy-rules
           clear-icon="close"
-
           label-color="text-grey-1"
-        /> -->
-      </div>
-      <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
-        <p class="q-ma-none q-pb-none">{{ $t('groups.chooseTime')+":" }}</p>
-        <q-input 
-        no-error-icon
-        clearable  
-        lazy-rules
-        clear-icon="close"
-        label-color="text-grey-1"
-        name="time"
-        v-model="editedGroup.time"         
-        type="time"
-        :rules="[
+          name="time"
+          v-model="editedGroup.time"
+          type="time"
+          :rules="[
             (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"/>
+          ]"
+        />
       </div>
-      <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
-        <p class="q-ma-none q-pb-none">{{ $t('groups.chooseLocation')+":" }}</p>
-      <q-input
-        no-error-icon
-        v-model="editedGroup.meeting_place"
-        name="area"
-        clearable
-        lazy-rules
-        clear-icon="close"
-        :rules="[
-          (val) => (val && val.length > 0) || $t('authentication.field'),
-        ]"
-        label-color="text-grey-1"
-      />
-        </div>
-       <div class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none">
-        <p class="q-ma-none q-pb-none">{{ $t("table.title.trainers")+":" }}</p>
-    <q-select v-model="trainers" 
-      map-options  
-      use-chips
-     :options="allTrainers" multiple :option-label="(item)=>item.full_name" emit-value 
-      lazy-rules clearable clear-icon="close"
-      no-error-icon           
-      :rules="[
-      (val) => (val && val.length > 0) || $t('authentication.field'),
-      ]"
-     class="q-pb-md" />
+      <div
+        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+      >
+        <p class="q-ma-none q-pb-none">
+          {{ $t("groups.chooseLocation") + ":" }}
+        </p>
+        <q-input
+          no-error-icon
+          v-model="editedGroup.meeting_place"
+          name="area"
+          clearable
+          lazy-rules
+          clear-icon="close"
+          :rules="[
+            (val) => (val && val.length > 0) || $t('authentication.field'),
+          ]"
+          label-color="text-grey-1"
+        />
+      </div>
+      <div
+        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+      >
+        <p class="q-ma-none q-pb-none">
+          {{ $t("table.title.trainers") + ":" }}
+        </p>
+        <q-select
+          v-model="trainers"
+          map-options
+          use-chips
+          :options="allTrainers"
+          multiple
+          :option-label="(item) => item.full_name"
+          emit-value
+          lazy-rules
+          clearable
+          clear-icon="close"
+          no-error-icon
+          :rules="[
+            (val) => (val && val.length > 0) || $t('authentication.field'),
+          ]"
+          class="q-pb-md"
+        />
       </div>
 
       <div class="row q-mt-lg">
-      <black-button
-        class="q-mt-sm q-mr-md"
-        :type="'submit'"
-        :loading="loading"
-        @click="setGroupInfo"
-        color="primary"
-        >{{ $t("table.save") }}
-        <saved-changes-popup v-model="saved_dialog" :goBack="true"/>
-        <missing-details-popup v-model="missing_dialog"/>
+        <black-button
+          class="q-mt-sm q-mr-md"
+          :type="'submit'"
+          :loading="loading"
+          @click="setGroupInfo"
+          color="primary"
+          >{{ $t("table.save") }}
+          <saved-changes-popup v-model="saved_dialog" :goBack="true" />
+          <missing-details-popup v-model="missing_dialog" />
         </black-button>
-      <black-button class="q-mt-sm " color="primary" :outline="true" @click="onGoBack">{{
-        $t("table.cancel")
-      }}</black-button>
-      <q-space></q-space>
-      <black-button class="q-mt-sm " v-if="(!isNew)&&everthingIsReady" color="red">
-        {{$t("groups.delete")}}
-      <q-popup-proxy>
-        <q-card >
-          <q-card-section class="row items-center">
-            <q-avatar icon="warning" color="red" text-color="white" />
-            <span class="q-ml-sm">
-              {{$t('groups.deleteMessagePart1')}}
-              <br/>
-              {{$t('groups.deleteMessagePart2')}}
-            </span>
-          </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat :label="$t('groups.cancle')" color="primary" v-close-popup />
-          <q-btn flat :label="$t('groups.delete')" color="red" @click="deleteGroup" v-close-popup />
-        </q-card-actions>
-      </q-card>
-      </q-popup-proxy>
-      <deleted-popup v-model="deleted_dialog"/>
+        <black-button
+          class="q-mt-sm"
+          color="primary"
+          :outline="true"
+          @click="onGoBack"
+          >{{ $t("table.cancel") }}</black-button
+        >
+        <q-space></q-space>
+        <black-button class="q-mt-sm" v-if="!isNew && isReady" color="red">
+          {{ $t("groups.delete") }}
+          <q-popup-proxy>
+            <q-card>
+              <q-card-section class="row items-center">
+                <q-avatar icon="warning" color="red" text-color="white" />
+                <span class="q-ml-sm">
+                  {{ $t("groups.deleteMessagePart1") }}
+                  <br />
+                  {{ $t("groups.deleteMessagePart2") }}
+                </span>
+              </q-card-section>
+              <q-card-actions align="right">
+                <q-btn
+                  flat
+                  :label="$t('groups.cancle')"
+                  color="primary"
+                  v-close-popup
+                />
+                <q-btn
+                  flat
+                  :label="$t('groups.delete')"
+                  color="red"
+                  @click="deleteGroup"
+                  v-close-popup
+                />
+              </q-card-actions>
+            </q-card>
+          </q-popup-proxy>
+          <deleted-popup v-model="deleted_dialog" />
         </black-button>
       </div>
     </q-form>
   </section>
 </template>
-
 
 <script>
 import BlackButton from "components/basic/BlackButton";
@@ -119,34 +142,50 @@ import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
 import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
 import axios from "axios";
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
 export default {
   name: "GroupCredentialsList",
   data() {
     return {
-      groupdata:{},
+      groupdata: {},
       loading: false,
       editedGroup: {
         day: "",
         time: "",
         meeting_place: "",
       },
-      isNew:false,
-      everthingIsReady:false,
-      confirm:false,
-      allTrainers:[],
-      originalTrainers:[],
-      trainers:[],
-      days:[
-        "ראשון",
-        "שני",
-        "שלישי",
-        "רביעי",
-        "חמישי",
-        "שישי",
-        "שבת",
+      isNew: false,
+      isReady: false,
+      confirm: false,
+      allTrainers: [],
+      originalTrainers: [],
+      trainers: [],
+      daysHebrew: {
+        ראשון: "ראשון",
+        שני: "שני",
+        שלישי: "שלישי",
+        רביעי: "רביעי",
+        חמישי: "חמישי",
+        שישי: "שישי",
+        שבת: "שבת",
+        Sunday: "ראשון",
+        Monday: "שני",
+        Tuesday: "שלישי",
+        Wednesday: "רביעי",
+        Thursday: "חמישי",
+        Friday: "שישי",
+        Saturday: "שבת",
+      },
+      days: [
+        "trainee.days.sunday",
+        "trainee.days.monday",
+        "trainee.days.tuesday",
+        "trainee.days.wednesday",
+        "trainee.days.thursday",
+        "trainee.days.friday",
+        "trainee.days.saturday",
       ],
       saved_dialog: false,
       missing_dialog: false,
@@ -154,253 +193,257 @@ export default {
     };
   },
 
-
-
   async created() {
-    if ((JSON.parse(localStorage.getItem("groupId")).id) != 0) {
-      await this.getGroup()
-      await this.getTrainersForGroup()
-      this.trainers=this.originalTrainers;
+    if (JSON.parse(localStorage.getItem("groupId")).id != 0) {
+      await this.getGroup();
+      await this.getTrainersForGroup();
+      this.trainers = this.originalTrainers;
       this.editedGroup.day = this.groupdata.day;
       this.editedGroup.time = this.groupdata.time;
       this.editedGroup.meeting_place = this.groupdata.meeting_place;
-    }
-    else this.isNew=true;
-    await this.getAllTrainers()
-    this.everthingIsReady = true;
-    
+    } else this.isNew = true;
+    await this.getAllTrainers();
+    this.isReady = true;
   },
-
 
   methods: {
     onGoBack() {
       this.$router.go(-1);
     },
 
-
     formHandler() {},
-    
 
-    async deleteGroup(){
-      this.editedGroup = {};      
+    async deleteGroup() {
+      this.editedGroup = {};
       this.trainers = [];
       await this.getTrainersForGroup();
-      for(let i=0; i<this.originalTrainers.length; i++){
-        this.removeTrainerFromGroup(this.originalTrainers[i].id)
+      for (let i = 0; i < this.originalTrainers.length; i++) {
+        this.removeTrainerFromGroup(this.originalTrainers[i].id);
       }
-      const response1 = await axios.delete(`${serverUrl}/group/${this.groupdata.id}/`,{
-      headers: { 
-          'x-access-token': id_token,
-      },
-      })
-      .then((res)=> res.data)
-      .catch((error)=>{
+      const response1 = await axios
+        .delete(`${serverUrl}/group/${this.groupdata.id}/`, {
+          headers: {
+            "x-access-token": id_token,
+          },
+        })
+        .then((res) => res.data)
+        .catch((error) => {
           console.log(error);
           return error;
-      })
-      .then(this.deleted_dialog = true);
-      localStorage.setItem('groupId', JSON.stringify({id:0}));
+        })
+        .then((this.deleted_dialog = true));
+      localStorage.setItem("groupId", JSON.stringify({ id: 0 }));
     },
-
-
 
     //if !isNew - get group info using get, else return {}
-    async getGroup(){
-      const id = (JSON.parse(localStorage.getItem("groupId"))).id ;
-      if(id != 0){
-        const response1 = await axios.get(`${serverUrl}/group/${id}/`,{
-        headers: { 
-            'x-access-token': id_token,
-        },
-        })
-        .then((res)=> res.data)
-        .catch((error)=>{
+    async getGroup() {
+      const id = JSON.parse(localStorage.getItem("groupId")).id;
+      if (id != 0) {
+        const response1 = await axios
+          .get(`${serverUrl}/group/${id}/`, {
+            headers: {
+              "x-access-token": id_token,
+            },
+          })
+          .then((res) => res.data)
+          .catch((error) => {
             console.log(error);
             return error;
-        });
-        this.groupdata =  JSON.parse(JSON.stringify(response1["Group"]));
-      }
-      else this.groupdata =  {};
+          });
+        this.groupdata = JSON.parse(JSON.stringify(response1["Group"]));
+      } else this.groupdata = {};
     },
-
-
 
     //get group's trainers
-    async getTrainersForGroup(){
-      const id = (JSON.parse(localStorage.getItem("groupId"))).id ;
-      const response = await axios.get(`${serverUrl}/get_all_trainers_by_group/${id}/`,{
-        headers: { 
-            'x-access-token': id_token,
-        },
-      })
-      .then((res)=> res.data)
-      .catch((error)=>{
+    async getTrainersForGroup() {
+      const id = JSON.parse(localStorage.getItem("groupId")).id;
+      const response = await axios
+        .get(`${serverUrl}/get_all_trainers_by_group/${id}/`, {
+          headers: {
+            "x-access-token": id_token,
+          },
+        })
+        .then((res) => res.data)
+        .catch((error) => {
           console.log(error);
           return error;
-      });
-      this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
-      },
-
-
-
-      async getAllTrainers(){
-        const response = await axios.get(`${serverUrl}/admin/get_all_trainers/`,{
-        headers: { 
-            'x-access-token': id_token,
-        },
-        })
-        .then((res)=> res.data)
-        .catch((error)=>{
-            console.log(error);
-            return error;
         });
-        this.allTrainers =JSON.parse(JSON.stringify(response["list of trainers"]));
-      },
-
-    
-
-    async addTrainerToGroup(trainerid,groupid){
-      console.log("add",trainerid);
-      const response = await axios.put(`${serverUrl}/add_user_to_group/${groupid}/`,
-      JSON.stringify({user_id:trainerid}),
-      {
-          headers: { 
-              'x-access-token': id_token,
-              'Content-Type': 'application/json',
-          },
-      })    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
     },
 
-
-
-    async removeTrainerFromGroup(id){
-      console.log("remove",id);
-      const response = await axios.put(`${serverUrl}/delete_user_from_group/${this.groupdata.id}/`,
-      JSON.stringify({user_id:id}),
-      {
-          headers: { 
-              'x-access-token': id_token,
-              'Content-Type': 'application/json',
+    async getAllTrainers() {
+      const response = await axios
+        .get(`${serverUrl}/admin/get_all_trainers/`, {
+          headers: {
+            "x-access-token": id_token,
           },
-      })    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        })
+        .then((res) => res.data)
+        .catch((error) => {
+          console.log(error);
+          return error;
+        });
+      this.allTrainers = JSON.parse(
+        JSON.stringify(response["list of trainers"])
+      );
     },
-    
 
+    async addTrainerToGroup(trainerid, groupid) {
+      await axios
+        .put(
+          `${serverUrl}/add_user_to_group/${groupid}/`,
+          JSON.stringify({ user_id: trainerid }),
+          {
+            headers: {
+              "x-access-token": id_token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
 
-    async createTraining(groupId){
-    const response = await axios.post(`${serverUrl}/training/by_group_id/`,
-        JSON.stringify({
-          "group_id": groupId
+    async removeTrainerFromGroup(id) {
+      await axios
+        .put(
+          `${serverUrl}/delete_user_from_group/${this.groupdata.id}/`,
+          JSON.stringify({ user_id: id }),
+          {
+            headers: {
+              "x-access-token": id_token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+
+    async createTraining(groupId) {
+      await axios
+        .post(
+          `${serverUrl}/training/by_group_id/`,
+          JSON.stringify({
+            group_id: groupId,
           }),
-      {
-          headers: { 
-              'x-access-token': id_token,
-              'Content-Type': 'application/json',
-          },
-      }).then((res)=> res.data)   
-      .catch(function (error) {
-        console.log(error);
-      })
-  },
-
+          {
+            headers: {
+              "x-access-token": id_token,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => res.data)
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
 
     //post group info in database (create new)
-    async saveNewGroup(){
-      if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){
-        const response = await axios.post(`${serverUrl}/group`,
-        JSON.stringify(this.editedGroup),
-      {
-          headers: { 
-              'x-access-token': id_token,
-              'Content-Type': 'application/json',
-          },
-      }).then((res)=> res.data)   
-      .catch(function (error) {
-        console.log(error);
-      })
-      const newgroupid = (JSON.parse(JSON.stringify(response["group"]))).id;
-      // add trainers to group
-      for (let i = 0; i <  this.trainers.length; i++){
-        var trainer = this.trainers[i];
-        console.log(trainer.id);
-        await this.addTrainerToGroup(trainer.id, newgroupid);
-      }
-      await this.createTraining(newgroupid);
-      this.saved_dialog = true
-      }
-      else this.missing_dialog = true;
-      },
-    
-
-
-  //put group info in database (update)
-   async saveExistingGroup(){
-    if (this.editedGroup.meeting_place != "" && this.editedGroup.date != "" && this.editedGroup.day != "" && this.trainers.length != 0){ //*** check */
-      const response = await axios.put(`${serverUrl}/group/${this.groupdata.id}/`,
-      JSON.stringify(this.editedGroup),
-      {
-          headers: { 
-              'x-access-token': id_token,
-              'Content-Type': 'application/json',
-          },
-      })    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .then(this.saved_dialog = true);;
-
-      // add trainers to group 
-      for (let i = 0; i <  this.trainers.length; i++){
-        var trainer = this.trainers[i];
-        if (! this.originalTrainers.some(el=> el.id == trainer.id )){
-          await this.addTrainerToGroup(trainer.id, this.groupdata.id);
+    async saveNewGroup() {
+      if (
+        this.editedGroup.meeting_place != "" &&
+        this.editedGroup.date != "" &&
+        this.editedGroup.day != "" &&
+        this.trainers.length != 0
+      ) {
+        const data = this.editedGroup;
+        data.day = this.daysHebrew[this.editedGroup.day];
+        const response = await axios
+          .post(`${serverUrl}/group`, JSON.stringify(this.editedGroup), {
+            headers: {
+              "x-access-token": id_token,
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => res.data)
+          .catch(function (error) {
+            console.log(error);
+          });
+        const newgroupid = JSON.parse(JSON.stringify(response["group"])).id;
+        // add trainers to group
+        for (let i = 0; i < this.trainers.length; i++) {
+          var trainer = this.trainers[i];
+          console.log(trainer.id);
+          await this.addTrainerToGroup(trainer.id, newgroupid);
         }
-      }
-      // remove trainers from group 
-      for (let i = 0; i <  this.originalTrainers.length; i++){
-        var trainer = this.originalTrainers[i];
-        if (!  this.trainers.some(el=> el.id == trainer.id )){
-          await this.removeTrainerFromGroup(trainer.id);
+        await this.createTraining(newgroupid);
+        this.saved_dialog = true;
+      } else this.missing_dialog = true;
+    },
+
+    //put group info in database (update)
+    async saveExistingGroup() {
+      if (
+        this.editedGroup.meeting_place !== "" &&
+        this.editedGroup.date !== "" &&
+        this.editedGroup.day !== "" &&
+        this.trainers.length !== 0
+      ) {
+        //*** check */
+        const data = this.editedGroup;
+        data.day = this.daysHebrew[this.editedGroup.day];
+
+        await axios
+          .put(
+            `${serverUrl}/group/${this.groupdata.id}/`,
+            JSON.stringify(this.editedGroup),
+            {
+              headers: {
+                "x-access-token": id_token,
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then(function (response) {
+            console.log(JSON.stringify(response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+          .then((this.saved_dialog = true));
+
+        // add trainers to group
+        for (let i = 0; i < this.trainers.length; i++) {
+          var trainer = this.trainers[i];
+          if (!this.originalTrainers.some((el) => el.id == trainer.id)) {
+            await this.addTrainerToGroup(trainer.id, this.groupdata.id);
+          }
         }
-      }
-      }
-      else this.missing_dialog = true;
-      },
+        // remove trainers from group
+        for (let i = 0; i < this.originalTrainers.length; i++) {
+          var trainer = this.originalTrainers[i];
+          if (!this.trainers.some((el) => el.id == trainer.id)) {
+            await this.removeTrainerFromGroup(trainer.id);
+          }
+        }
+      } else this.missing_dialog = true;
+    },
 
-
-
-//set group's new/updated info using post/put determined by isNew, set to true if came to page using "add group" button
-    async setGroupInfo(){
-      if(this.isNew) {
+    //set group's new/updated info using post/put determined by isNew, set to true if came to page using "add group" button
+    async setGroupInfo() {
+      if (this.isNew) {
         this.saveNewGroup();
+      } else {
+        this.saveExistingGroup();
       }
-      else {
-        this.saveExistingGroup()
-      };
     },
   },
-
-
-
-
 
   components: {
     BlackButton,
     SavedChangesPopup,
     DeletedPopup,
-    MissingDetailsPopup
+    MissingDetailsPopup,
   },
 };
 </script>

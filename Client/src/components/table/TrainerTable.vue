@@ -1,86 +1,106 @@
 <template>
-    <q-table
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      v-model="pagination"
-      :loading="loading"
-      :filter="filter"
-      @request="onRequest"
-      binary-state-sort
-      >
-      <template v-slot:body="props">
-        <q-tr :props="props">
-           <q-td key="full_name" :props="props">
-            <q-item 
-            v-if="userType == 1"          
-            @click="goToUserPage(props.row)" 
-            clickable 
-            v-ripple 
-            style="display: table-cell; vertical-align: end;">    
-            {{ props.row.full_name }}
-            </q-item>
-          <q-item 
-          v-if="userType == 2" 
-          style="display: table-cell; vertical-align: end"> 
+  <q-table
+    :rows="rows"
+    :columns="columns"
+    row-key="id"
+    v-model="pagination"
+    :loading="loading"
+    :filter="filter"
+    @request="onRequest"
+    binary-state-sort
+  >
+    <template v-slot:header="props">
+      <q-tr :props="props">
+        <q-th
+          v-for="col in props.cols"
+          :key="col.name"
+          :props="props"
+          class="item"
+        >
+          {{ $t(col.label) }}
+        </q-th>
+      </q-tr>
+    </template>
+    <template v-slot:body="props">
+      <q-tr :props="props">
+        <q-td key="full_name" :props="props">
+          <q-item
+            v-if="userType == 1"
+            @click="goToUserPage(props.row)"
+            clickable
+            v-ripple
+            style="display: table-cell; vertical-align: end"
+          >
             {{ props.row.full_name }}
           </q-item>
-          </q-td>
-          <q-td key="phone_number" :props="props">
-            {{ props.row.phone_number }}
-          </q-td>
-           <q-td key="group_ids" style="white-space: pre;" :props="props">
-             {{getNames(props.row.group_ids) }}
-          </q-td>
-          <q-td key="email" :props="props"
-          >{{ props.row.email }}
+          <q-item
+            v-if="userType == 2"
+            style="display: table-cell; vertical-align: end"
+          >
+            {{ props.row.full_name }}
+          </q-item>
         </q-td>
-        </q-tr>
-      </template>
-      <template v-slot:top>
-        <table-top-buttons 
+        <q-td key="phone_number" :props="props">
+          {{ props.row.phone_number }}
+        </q-td>
+        <q-td key="group_ids" style="white-space: pre" :props="props">
+          {{ getNames(props.row.group_ids) }}
+        </q-td>
+        <q-td key="email" :props="props">{{ props.row.email }} </q-td>
+      </q-tr>
+    </template>
+    <template v-slot:top>
+      <table-top-buttons
         :tableType="2"
         v-if="!fromGroupPage"
-      :rows="rows"
-      :rowCount="rowCount"
-      :loading="loading"></table-top-buttons>
-        <q-space />
-    <q-input  borderless dense debounce="300" color="primary" v-model="filter" outlined placeholder="Search">
+        :rows="rows"
+        :rowCount="rowCount"
+        :loading="loading"
+      ></table-top-buttons>
+      <q-space />
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        color="primary"
+        v-model="filter"
+        outlined
+        placeholder="Search"
+      >
         <template v-slot:append>
-            <q-icon name="search" />
+          <q-icon name="search" />
         </template>
-    </q-input>          </template>
-    </q-table>
+      </q-input>
+    </template>
+  </q-table>
 </template>
 
 <script>
-import { ref, onMounted,defineComponent } from "vue";
-import { userColumns  } from "components/table/TableColumns.js";
-import TableTopButtons from 'components/table/TableTopButtons.vue';
+import { ref, onMounted, defineComponent } from "vue";
+import { userColumns } from "components/table/TableColumns.js";
+import TableTopButtons from "components/table/TableTopButtons.vue";
 import axios from "axios";
 
 const id_token = localStorage.getItem("id_token");
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+
 const columns = userColumns;
 
-
 export default defineComponent({
-  name:'TrainerTable',
+  name: "TrainerTable",
   components: { TableTopButtons },
-  props:["table_data","fromGroupPage"],
+  props: ["table_data", "fromGroupPage"],
 
-   methods:{
-    goToUserPage(row){
-      const user ={id: row.id};
-      localStorage.setItem('user', JSON.stringify(user));      
+  methods: {
+    goToUserPage(row) {
+      const user = { id: row.id };
+      localStorage.setItem("user", JSON.stringify(user));
       this.$router.push(`/user/${user.id}`);
-    },  
-
+    },
   },
 
-    computed: {
+  computed: {
     userType() {
-      console.log(this.$store.getters["authentication/getCurrentUser"].user_type)
       return this.$store.getters["authentication/getCurrentUser"].user_type;
     },
   },
@@ -89,8 +109,7 @@ export default defineComponent({
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
-    const rowCount = ref(10)
-
+    const rowCount = ref(10);
     const pagination = ref({
       sortBy: "desc",
       descending: false,
@@ -98,7 +117,7 @@ export default defineComponent({
       rowsPerPage: 10,
       rowsNumber: 10,
     });
-    const everthingIsReady = ref(false);
+    const isReady = ref(false);
     const groupNames = ref();
 
     // emulate ajax call
@@ -106,7 +125,7 @@ export default defineComponent({
     function fetchFromServer(startRow, count, filter, sortBy, descending) {
       const data = filter
         ? props.table_data.filter((row) => row.full_name.includes(filter))
-        :props.table_data.slice();
+        : props.table_data.slice();
 
       // handle sortBy
       if (sortBy) {
@@ -179,46 +198,43 @@ export default defineComponent({
       }, 1500);
     }
 
-
-      async function getGroupsNames(){
-          //get groups data from server
-      const response = await axios.get(`${serverUrl}/admin/get_all_groups/`,{
-          headers: { 
-              'x-access-token': id_token,
+    async function getGroupsNames() {
+      //get groups data from server
+      const response = await axios
+        .get(`${serverUrl}/admin/get_all_groups/`, {
+          headers: {
+            "x-access-token": id_token,
           },
         })
-        .then((res)=> res.data)
-        .catch((error)=>{
-            console.log(error);
-            return error;
+        .then((res) => res.data)
+        .catch((error) => {
+          console.log(error);
+          return error;
         });
-      
-      const groups =JSON.parse(JSON.stringify(response["list of group"]));
-      groupNames.value = [groups.length+1]
-      for (let i=0; i<groups.length; i++){
-        groupNames.value[groups[i].id] = groups[i].day+"- "+groups[i].meeting_place+" "+groups[i].time
+
+      const groups = JSON.parse(JSON.stringify(response["list of group"]));
+      groupNames.value = [groups.length + 1];
+      for (let i = 0; i < groups.length; i++) {
+        groupNames.value[groups[i].id] =
+          groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
       }
-      everthingIsReady.value=true;
+      isReady.value = true;
     }
 
-
-
-  function getNames(group_ids){
-    const id_array = (group_ids+"").split(/,/)
-    var str = "";
-    for (let i=0; i<id_array.length; i++){
-      str += groupNames.value[parseInt(id_array[i])]+"";
-      if(i!=id_array.length -1){
-        str +="\n" 
+    function getNames(group_ids) {
+      const id_array = (group_ids + "").split(/,/);
+      var str = "";
+      for (let i = 0; i < id_array.length; i++) {
+        str += groupNames.value[parseInt(id_array[i])] + "";
+        if (i != id_array.length - 1) {
+          str += "\n";
+        }
       }
+      return str;
     }
-    return str;
-  }
-
-
 
     onMounted(() => {
-      getGroupsNames()
+      getGroupsNames();
       // get initial data from server (1st page)
       onRequest({
         pagination: pagination.value,
@@ -227,6 +243,7 @@ export default defineComponent({
     });
 
     return {
+      rowCount,
       filter,
       loading,
       pagination,
@@ -235,14 +252,12 @@ export default defineComponent({
       onRequest,
       getGroupsNames,
       getNames,
-      everthingIsReady,
+      isReady,
       groupNames,
-     
     };
   },
 });
 </script>
 <style scoped>
 @import "assets/tableStyle.css";
-
 </style>

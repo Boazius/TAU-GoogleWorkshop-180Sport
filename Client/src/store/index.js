@@ -4,7 +4,6 @@ import { createStore } from 'vuex'
 // import example from './module-example'
 import app from './app';
 import authentication from './authentication'
-import table from './table';
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -20,7 +19,6 @@ export default store(function (/* { ssrContext } */) {
       // example
       app,
       authentication,
-      table
     },
 
     // enable strict mode (adds overhead!)

@@ -2,7 +2,7 @@
   <section class="col q-gutter-x-md bg-grey-2 q-pa-md">
     <q-form
       @submit.prevent="formHandler"
-      v-if="everthingIsReady"
+      v-if="isReady"
       autofocus
       class="max-width"
     >
@@ -91,7 +91,7 @@
         :options="allUserTypes"
         emit-value
         map-options
-        :option-label="(item) => item.label"
+        :option-label="(item) => $t(item.label)"
         :label="$t('userPage.userType')"
         class="q-pb-md"
       />
@@ -104,9 +104,9 @@
           color="primary"
           @click="setUserInfo"
           >{{ $t("table.save") }}
-          <saved-changes-popup v-model="saved_dialog" :goBack="fromAdmin"/>
-          <missing-details-popup v-model="missing_dialog"/>
-          </black-button>
+          <saved-changes-popup v-model="saved_dialog" :goBack="fromAdmin" />
+          <missing-details-popup v-model="missing_dialog" />
+        </black-button>
         <black-button
           class="q-mt-sm"
           :outline="true"
@@ -117,7 +117,7 @@
         <q-space></q-space>
         <black-button
           class="q-mt-sm"
-          v-if="!isNew && everthingIsReady && fromAdmin"
+          v-if="!isNew && isReady && fromAdmin"
           color="red"
         >
           {{ $t("groups.delete") }}
@@ -148,7 +148,7 @@
               </q-card-actions>
             </q-card>
           </q-popup-proxy>
-          <deleted-popup v-model="deleted_dialog"/>
+          <deleted-popup v-model="deleted_dialog" />
         </black-button>
       </div>
     </q-form>
@@ -161,7 +161,7 @@ import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
 import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
 import axios from "axios";
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
 export default {
@@ -178,7 +178,7 @@ export default {
         phone_number: "",
         user_type: 0,
       },
-      everthingIsReady: false,
+      isReady: false,
       editedUserGroups: [],
       editedUserType: {},
       emailRules: [
@@ -188,18 +188,16 @@ export default {
       userOriginalGroupIds: [],
       allGroups: [],
       allUserTypes: [
-        { type: 1, label: "מנהל" },
-        { type: 2, label: "מאמן" },
-        { type: 3, label: "מתאמן" },
-        { type: 4, label: "מתנדב" },
+        { type: 1, label: "userPage.types.admin" },
+        { type: 2, label: "userPage.types.trainer" },
+        { type: 3, label: "userPage.types.trainee" },
+        { type: 4, label: "userPage.types.volunteer" },
       ],
       saved_dialog: false,
       missing_dialog: false,
       deleted_dialog: false,
-
     };
   },
-
 
   async created() {
     this.user = JSON.parse(localStorage.getItem("user"));
@@ -208,18 +206,18 @@ export default {
       if (this.user.id != 0) {
         await this.getUser();
         this.editedUser = this.userData;
-        if(this.userData.group_ids != null){
-        this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
-        for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
-          var groupid = parseInt(this.userOriginalGroupIds[i]);
-          console.log(groupid);
-          for (let i = 0; i < this.allGroups.length; i++) {
-            var group = this.allGroups[i];
-            if (group.id == groupid) {
-              this.editedUserGroups.push(group);
+        if (this.userData.group_ids != null) {
+          this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
+          for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
+            var groupid = parseInt(this.userOriginalGroupIds[i]);
+            console.log(groupid);
+            for (let i = 0; i < this.allGroups.length; i++) {
+              var group = this.allGroups[i];
+              if (group.id == groupid) {
+                this.editedUserGroups.push(group);
+              }
             }
           }
-        }
         }
         this.editedUserType = this.allUserTypes[this.editedUser.user_type - 1];
       } else {
@@ -236,9 +234,8 @@ export default {
         }
       }
     }
-    this.everthingIsReady = true;
+    this.isReady = true;
   },
-
 
   methods: {
     onGoBack() {
@@ -247,9 +244,7 @@ export default {
       this.$router.go(-1);
     },
 
-
     formHandler() {},
-
 
     //get groups data from server
     async getAllGroups() {
@@ -267,7 +262,6 @@ export default {
       this.allGroups = JSON.parse(JSON.stringify(response["list of group"]));
     },
 
-
     async getUser() {
       const response = await axios
         .get(`${serverUrl}/user/${this.user.id}/`, {
@@ -280,9 +274,8 @@ export default {
           console.log(error);
           return error;
         });
-      this.userData = JSON.parse(JSON.stringify(response["user"]));
+      this.userData = JSON.parse(JSON.stringify(response.user));
     },
-
 
     async addUserToGroup(userid, groupid) {
       console.log("add");
@@ -305,7 +298,6 @@ export default {
         });
     },
 
-
     async getGroup(groupid) {
       const response = await axios
         .get(`${serverUrl}/group/${groupid}/`, {
@@ -321,17 +313,15 @@ export default {
       return JSON.parse(JSON.stringify(response["Group"]));
     },
 
-
     userDataToSend() {
       const data = this.editedUser;
       data["user_type"] = this.editedUserType.type;
       return data;
     },
 
-
     // remove user from group
     async removeUserFromGroup(userId, groupId) {
-      const response = await axios
+      await axios
         .put(
           `${serverUrl}/delete_user_from_group/${groupId}/`,
           JSON.stringify({ user_id: userId }),
@@ -350,13 +340,13 @@ export default {
         });
     },
 
-
     async deleteUser() {
       localStorage.setItem("user", {});
       this.editedUser = {};
       this.editedUserGroups = [];
       this.editedUserType = {};
-      const response = await axios
+
+      await axios
         .delete(`${serverUrl}/user/${this.userData.id}/`, {
           headers: {
             "x-access-token": id_token,
@@ -367,11 +357,10 @@ export default {
           console.log(error);
           return error;
         })
-        .then(this.deleted_dialog = true);
+        .then((this.deleted_dialog = true));
       const storeuser = { id: 0 };
       localStorage.setItem("user", JSON.stringify(storeuser));
     },
-
 
     //post group info in database (create new)
     async saveNewUser(data) {
@@ -392,8 +381,8 @@ export default {
           .catch(function (error) {
             console.log(error);
           })
-          .then(this.saved_dialog = true);
-        const newUserId = JSON.parse(JSON.stringify(response["user"])).id;
+          .then((this.saved_dialog = true));
+        const newUserId = JSON.parse(JSON.stringify(response.user)).id;
 
         // add user to groups
         for (let i = 0; i < this.editedUserGroups.length; i++) {
@@ -402,10 +391,8 @@ export default {
         }
         const storeuser = { id: 0 };
         localStorage.setItem("user", JSON.stringify(storeuser));
-      } 
-      else this.missing_dialog = true;
+      } else this.missing_dialog = true;
     },
-
 
     //put group info in database (update)
     async saveExistingUser(data) {
@@ -425,10 +412,15 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
-          })
-          .then(this.saved_dialog = true);
+          });
 
-        const newUserId = JSON.parse(JSON.stringify(response["user"])).id;
+        if (!response.success) {
+          return;
+        }
+
+        this.saved_dialog = true;
+
+        const newUserId = JSON.parse(JSON.stringify(response.user)).id;
 
         if (this.fromAdmin) {
           // add user to groups
@@ -449,10 +441,10 @@ export default {
         }
         const storeuser = { id: 0 };
         localStorage.setItem("user", JSON.stringify(storeuser));
-      } 
-      else this.missing_dialog = true;
+      } else {
+        this.missing_dialog = true;
+      }
     },
-
 
     //set user's new/updated info using post/put determined by isNew, set to true if came to page from clicking on an existing user
     async setUserInfo() {
@@ -462,7 +454,6 @@ export default {
       } else this.saveExistingUser(data);
     },
   },
-
 
   components: {
     BlackButton,

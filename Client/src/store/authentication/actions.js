@@ -1,7 +1,7 @@
 import { Quasar } from "quasar";
 import axios from "axios";
 
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 
 //
 //  Action: Set Active User

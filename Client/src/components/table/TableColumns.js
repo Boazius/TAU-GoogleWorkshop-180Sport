@@ -2,7 +2,7 @@ export const userColumns = [
   { 
     name: 'full_name',
     required: true,
-    label: "שם",
+    label: "table.name",
     align: 'left',
     field: row => row.full_name,
     format: val => `${val}`,
@@ -11,7 +11,7 @@ export const userColumns = [
     {
     name: "phone_number",
     required: true,
-    label: "טלפון",
+    label: "table.phone",
     field: "phone_number",
     sortable: true,
     align:'left'
@@ -19,7 +19,7 @@ export const userColumns = [
     {
     name: "group_ids",
     required: true,
-    label: "קבוצה",
+    label: "table.groups",
     field: "group_ids",
     sortable: true,
     align:'left'
@@ -27,7 +27,7 @@ export const userColumns = [
     {
       name: "email",
       required: true,
-      label: "מייל",
+      label: "table.email",
       field: "email",
       sortable: false,
       align:'left'
@@ -39,7 +39,7 @@ export const groupColumns = [
   { 
     name: 'full_name',
     required: true,
-    label: "שם",
+    label: "table.name",
     align: 'left',
     field: row => row.full_name,
     format: val => `${val}`,
@@ -47,7 +47,7 @@ export const groupColumns = [
   },
   {
     name: "user_type",
-    label: "מתאמן/מתנדב",
+    label: "table.traineeVolunteer",
     field: "user_type",
     sortable: false,
     align:'left'
@@ -55,7 +55,7 @@ export const groupColumns = [
     {
     name: "phone_number",
     required: true,
-    label: "טלפון",
+    label: "table.phone",
     field: "phone_number",
     sortable: true,
     align:'left'
@@ -63,7 +63,7 @@ export const groupColumns = [
     {
     name: "group_ids",
     required: true,
-    label: "קבוצה",
+    label: "table.groups",
     field: "group_ids",
     sortable: true,
     align:'left'
@@ -71,7 +71,7 @@ export const groupColumns = [
     {
       name: "email",
       required: true,
-      label: "מייל",
+      label: "table.email",
       field: "email",
       sortable: false,
       align:'left'
