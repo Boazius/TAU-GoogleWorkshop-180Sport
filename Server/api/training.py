@@ -73,7 +73,7 @@ def post_training_by_group_id(current_user):
         users_from_db = db.session.query(User).all()
         list_of_trainers = []
         list_of_users = []
-        list_of_tuple=[]
+        list_of_tuple = []
         for user in users_from_db:
             if user.user_type in [2] and id_in_group(user.group_ids, group_id):
                 list_of_trainers.append(user.id)
@@ -81,7 +81,7 @@ def post_training_by_group_id(current_user):
                 list_of_users.append(user.id)
                 list_of_tuple.append([str(user.id),str(user.full_name)])
 
-        notes_dict = dict((str(el), ["0",""]) for el in list_of_users)
+        notes_dict = dict((str(el), ["0", ""]) for el in list_of_users)
         users_dict = dict((str(el[0]), ["0"]+el) for el in list_of_tuple)
         new_training = Training(group_id=group_id,
                                 date=training_date, day=group_from_db.day,
