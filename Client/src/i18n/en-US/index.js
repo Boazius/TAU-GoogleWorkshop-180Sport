@@ -71,10 +71,25 @@ export default {
       thursday: "Thursday",
       friday: "Friday",
       saturday: "Saturday",
-    }
+    } ,
+    daysArray: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ] 
   },
   userPage:{
     userType: "User type",
+    types:{
+      admin: "Admin",
+      trainer: "Trainer",
+      trainee: "Trainee",
+      volunteer: "Volunteer",
+    }
   },
   groups: {
     name: "Group ", //make number and description from api
@@ -123,9 +138,8 @@ export default {
     editGroups: "Edit groups",
     invalidGroups: "Invalid groups",
     hintGroups: "It is possible to take part of multiple groups",
-    livingArea: "Living area",
-    editLivingArea: "Edit living area",
-    invalidLivingArea: "Invalid living area",
+    email:"Email",
+    traineeVolunteer:"Trainee/Volunteer",
     posticks: "Notes from trainer",
     trainee:"Trainee",
     volunteer:"Volunteer",

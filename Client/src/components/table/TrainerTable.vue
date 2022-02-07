@@ -9,6 +9,18 @@
       @request="onRequest"
       binary-state-sort
       >
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+            class="item"
+          >
+            {{ $t(col.label) }}
+          </q-th>
+        </q-tr>
+      </template>
       <template v-slot:body="props">
         <q-tr :props="props">
            <q-td key="full_name" :props="props">
@@ -61,6 +73,7 @@ import axios from "axios";
 
 const id_token = localStorage.getItem("id_token");
 const serverUrl = "http://127.0.0.1:5000";
+
 const columns = userColumns;
 
 
@@ -80,7 +93,6 @@ export default defineComponent({
 
     computed: {
     userType() {
-      console.log(this.$store.getters["authentication/getCurrentUser"].user_type)
       return this.$store.getters["authentication/getCurrentUser"].user_type;
     },
   },
@@ -89,8 +101,7 @@ export default defineComponent({
     const rows = ref([]);
     const filter = ref("");
     const loading = ref(false);
-    const rowCount = ref(10)
-
+    const rowCount = ref(10);
     const pagination = ref({
       sortBy: "desc",
       descending: false,

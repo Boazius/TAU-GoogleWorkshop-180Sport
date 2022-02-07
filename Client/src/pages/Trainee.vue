@@ -55,24 +55,11 @@
     <editor-buttons v-if="everthingIsReady" :trainingData="trainingData" :user="currentUser">
     </editor-buttons>
     </div>
-      <!-- 
-      <div class="col">
-        <h5
-        class="row group_header justify-center wrap q-mb-none"
-        v-if="everthingIsReady"
-      >
-        {{ $t("app.confirmation.post") }}
-      </h5>
-      <editor-posticks
-        :trainingData="trainingData"
-        :user="currentUser"
-        v-if="everthingIsReady">
-      </editor-posticks>
-    </div> -->
   </q-page>
 </template>
 
 <script>
+import { useI18n } from "vue-i18n";
 import { defineComponent } from "vue";
 import DashboardToolbar from "components/DashboardToolbar.vue";
 import confirmationPopup from "components/basic/popup/ConfirmationPopup.vue";
@@ -137,30 +124,6 @@ export default defineComponent({
       }
       return yyyy + "-" + mm + "-" + dd;
     },
-    setDayToLanguage(date) {
-      const days = [["Sunday","ראשון"],["Monday","שני"],["Tuesday","שלישי"],["Wednesday","רביעי"],["Thursday","חמישי"],["Friday","שישי"],["Saturday","שבת"]];
-      return days[new Date(date).getDay()][0];
-      
-      //***change to use $t insead */
-      // switch (new Date(date).getDay()) {
-      //   case 0:
-      //     return "ראשון";
-      //   case 1:
-      //     return "שני";
-      //   case 2:
-      //     return "שלישי";
-      //   case 3:
-      //     return "רביעי";
-      //   case 4:
-      //     return "חמישי";
-      //   case 5:
-      //     return "שישי";
-      //   case 6:
-      //     return "שבת";
-      //   default:
-      //     return this.trainingData.day;
-      // }
-    },
   },
   async beforeMount() {
     //get next training data from server
@@ -184,9 +147,8 @@ export default defineComponent({
     );
 
     this.trainingData = JSON.parse(JSON.stringify(response["training"]));
-    if (localStorage.getItem("user_lang") == "en-US") {
-      this.trainingData.day = this.setDayToLanguage(this.trainingData.date);
-    }
+    const days = ["sunday","monday","tuesday","wednesday", "thursday","friday","saturday"];
+    this.trainingData.day="trainee.days."+days[new Date(this.trainingData.date).getDay()];
     this.attendance = this.trainingData.attendance_users[this.currentUser.id][0];
     this.everthingIsReady = true;
   },

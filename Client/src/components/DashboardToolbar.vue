@@ -6,7 +6,7 @@
     <p class="q-my-none q-ml-sm q-mr-md item2">{{ date }}</p>
    
     <p class="q-my-none  item">{{ $t("dashboard.day") }}</p>
-    <p class="q-my-none q-ml-sm q-mr-md item2">{{ day }}</p>
+    <p class="q-my-none q-ml-sm q-mr-md item2">{{ $t(day)}}</p>
     
     <p class="q-my-none  item">{{ $t("dashboard.time") }}</p>
     <p class="q-my-none q-ml-sm q-mr-md item2">{{ time }}</p>
