@@ -67,6 +67,26 @@ import EditorButtons from "components/ClosestTraining/EditorButtons.vue";
 import axios from "axios";
 const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
+// import Vue from "vue";
+
+//  axios.interceptors.response.use(
+//     function(response){
+//       return response;
+//     },
+//     async function(err){
+//       console.log(err.response.status);
+//       console.log(err.response.data.message);
+//       if (err.response.status== 401 && err.response.data.message == "Token is invalid!"){
+//       console.log("logout");
+//       await Vue.store.dispatch("authentication/logout");
+//             router.push({
+//               path: "/login",
+//             });
+//       console.log("logout");
+//       }
+//       return err;
+//     }        
+//   );
 
 export default defineComponent({
   name: "Trainee",
@@ -86,12 +106,23 @@ export default defineComponent({
   },
 
   methods: {
+    
+    async onLogout() {
+      console.log("loging out");
+        //     await store.dispatch("authentication/logout");
+        //     router.push({
+        //       path: "/login",
+        //     });
+
+    },
+
     async saveSelection(num) {
       this.attendance = num;
       var data = JSON.stringify({
         attendance: num,
       });
       this.dialog = true
+      
       const response = await axios
         .put(
           `${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`,
@@ -106,10 +137,23 @@ export default defineComponent({
         .then(function (response) {
           console.log(JSON.stringify(response.data));
         })
-        .catch(function (error) {
+        .catch(async function (error) {
           console.log(error);
+          // if (error[response][status]== 401 && error.response.data.message == "Token is invalid!"){
+          //   console.log("logout");
+          //   await store.dispatch("authentication/logout");
+          //   router.push({
+          //     path: "/login",
+          //   });
+          //  console.log("logout");
+          //  }
+
         });
+
     },
+
+
+
 
     formatDate(date) {
       var myDate = new Date(date);
@@ -158,4 +202,7 @@ export default defineComponent({
     confirmationPopup,
   },
 });
+
+
+
 </script>
