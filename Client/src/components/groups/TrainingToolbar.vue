@@ -29,13 +29,13 @@
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
       <p class="q-ma-none">{{ $t("dashboard.trainer") }}</p>
-      <!-- <q-select
+      <q-select
         v-model="trainer"
         :options="trainers"
         :option-label="(item) => item.full_name"
         emit-value
         class="q-pb-md"
-      /> -->
+      />
       <q-space />
       <black-button
         class="q-mt-sm q-mr-md"
