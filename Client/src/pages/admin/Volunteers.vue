@@ -17,7 +17,7 @@
 <script>
 import userTable from "components/table/UserTable.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 export default {
   data() {
     return {

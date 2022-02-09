@@ -11,7 +11,7 @@
 <script>
 import groupsList from "components/list/GroupsList.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default {

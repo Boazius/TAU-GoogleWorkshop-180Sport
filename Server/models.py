@@ -2,6 +2,7 @@
 models.py
 - Data classes for the surveyapi application
 """
+import pymysql
 import json
 from sqlalchemy.orm import declarative_base, sessionmaker, scoped_session
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, \

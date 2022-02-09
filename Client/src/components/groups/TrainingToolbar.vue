@@ -29,13 +29,13 @@
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
       <p class="q-ma-none">{{ $t("dashboard.trainer") }}</p>
-      <!-- <q-select
+      <q-select
         v-model="trainer"
         :options="trainers"
         :option-label="(item) => item.full_name"
         emit-value
         class="q-pb-md"
-      /> -->
+      />
       <q-space />
       <black-button
         class="q-mt-sm q-mr-md"
@@ -58,7 +58,7 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import BlackButton from "components/basic/BlackButton.vue";
 import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({
@@ -84,7 +84,8 @@ export default defineComponent({
 
   computed: {
     date() {
-      var myDate = new Date(this.training.date);
+      console.log(this.editedTraining.date)
+      var myDate = new Date(this.editedTraining.day);
       var dd = myDate.getDate();
       var mm = myDate.getMonth() + 1;
       var yyyy = myDate.getFullYear();

@@ -40,7 +40,7 @@ import { ref, defineComponent, onMounted } from "vue";
 import TraineeGetMessagePopup from "../basic/popup/TraineeGetMessagePopup.vue";
 import TraineeRecieveMessagePopup from "../basic/popup/TraineeRecieveMessagePopup.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({

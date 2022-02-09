@@ -3,7 +3,7 @@ import requests
 
 
 def create_closest_training_for_each_group():
-    url = 'https://server-idhusddnia-ew.a.run.app/admin/get_all_groups_sp/'
+    url = 'http://127.0.0.1:5000/admin/get_all_groups_sp/'
     headers = {
         'secret-code': 'G6kdi6pN0AFxo01x',
         'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ def create_closest_training_for_each_group():
     groups_from_db = requests.get(url, headers=headers1).json()['list of group']
     print(groups_from_db)
     for group in groups_from_db:
-        url2 = 'https://server-idhusddnia-ew.a.run.app/training/by_group_id_sp/'
+        url2 = 'http://127.0.0.1:5000/training/by_group_id_sp/'
         payload = json.dumps({
             "group_id": int(group['id'])
         })

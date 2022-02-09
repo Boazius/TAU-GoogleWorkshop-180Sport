@@ -161,7 +161,7 @@ import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
 import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default {

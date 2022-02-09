@@ -94,7 +94,7 @@ import { useQuasar } from "quasar";
 import { userColumns, groupColumns } from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({

@@ -69,7 +69,7 @@ import DashboardToolbar from "components/DashboardToolbar.vue";
 import confirmationPopup from "components/basic/popup/ConfirmationPopup.vue";
 import EditorButtons from "components/ClosestTraining/EditorButtons.vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 // import Vue from "vue";
 

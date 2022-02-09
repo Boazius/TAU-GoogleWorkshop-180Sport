@@ -88,7 +88,7 @@ import axios from "axios";
 import TrainingToolbar from "../groups/TrainingToolbar.vue";
 import TrainerGetMessagePopup from "../basic/popup/TrainerGetMessagePopup.vue";
 import TrainerRecieveMessagePopup from "../basic/popup/TrainerRecieveMessagePopup.vue";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({

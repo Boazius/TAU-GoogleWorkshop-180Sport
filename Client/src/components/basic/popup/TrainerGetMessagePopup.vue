@@ -98,7 +98,7 @@
 <script>
 import { ref, onMounted, defineComponent } from "vue";
 import axios from "axios";
-const serverUrl = "https://server-idhusddnia-ew.a.run.app";
+const serverUrl = "http://127.0.0.1:5000";
 const id_token = localStorage.getItem("id_token");
 import MessageSentPopup from "components/basic/popup/MessageSentPopup.vue";
 
