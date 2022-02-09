@@ -4,50 +4,47 @@
       <div>
         <q-btn
           size="sm"
-        class="q-mr-md q-mt-sm"
+          class="q-mr-md q-mt-sm"
           padding="sm"
-          
           glossy
-          ripple="center"
+          :ripple="{ center: true }"
           color="primary"
           icon="arrow_forward"
           @click="onGoBack"
-
         />
       </div>
-      <q-item-section v-if="isNew"
+      <q-item-section
+        v-if="isNew"
         class="table_header wrap q-mb-sm"
         style="font-size: xx-large"
         >{{ $t("groups.add") }}
       </q-item-section>
-      <q-item-section v-if="!isNew"
+      <q-item-section
+        v-if="!isNew"
         class="table_header wrap q-mb-sm"
         style="font-size: xx-large"
         >{{ $t("groups.edit") }}
       </q-item-section>
       <q-space />
     </div>
-    <group-credentials-list :isNew="isNew" ></group-credentials-list>
+    <group-credentials-list :isNew="isNew"></group-credentials-list>
   </q-page>
 </template>
 
 <script>
-import GroupCredentialsList from 'components/list/GroupCredentialsList.vue';
+import GroupCredentialsList from "components/list/GroupCredentialsList.vue";
 
 export default {
   name: "NewGroupPage",
-  computed:{
-    isNew(){
-      return (JSON.parse(localStorage.getItem("groupId")).id) == 0;
-    }
+  computed: {
+    isNew() {
+      return JSON.parse(localStorage.getItem("groupId")).id == 0;
+    },
   },
   methods: {
-    // handler() {
-    //   window.localStorage.removeItem('userdata');
-    // },
     onGoBack() {
       this.$router.go(-1);
-    }
+    },
   },
   components: {
     GroupCredentialsList,

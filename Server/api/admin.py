@@ -48,6 +48,22 @@ def get_all_groups(current_user):
     return jsonify({'success': True, 'list of group': list_return}), 200
 
 
+@admin.get('/admin/get_all_groups_sp/')
+@login_required
+def get_all_groups_sp(current_user):
+    from main import db
+    if int(current_user.user_type) not in [1, 2]:
+        return jsonify({"success": False, "message": "User cannot see all group, unless it is admin/trainer"}), 401
+    all_groups = db.session.query(Group).all()
+    if not all_groups:
+        return jsonify({'success': False, 'message': 'No groups found!'})
+    list_return = [group.to_dict() for group in all_groups]
+    if list_return == [] or list_return is None:
+        return jsonify({'success': False, 'message': 'No groups found!'})
+    db.session.commit()
+    return jsonify({'success': True, 'list of group': list_return}), 200
+
+
 @admin.get('/admin/get_all_trainers/')
 @token_required
 def get_all_trainers(current_user):

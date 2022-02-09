@@ -4,6 +4,7 @@ from models import User
 from models import User_type
 from authlib.integrations.flask_client import OAuth
 from flask_cors import CORS
+import os
 
 
 app = create_app()
@@ -42,5 +43,5 @@ def get_all_users_by_group_id(group_id):
 
 
 if __name__ == '__main__':
-    app.run()
-
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    # app.run(debug=True)
