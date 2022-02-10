@@ -2,29 +2,29 @@
   <div class="row justify-center q-gutter-x-md items-center bg-grey-2 q-pa-lg " >
     <p class="q-my-none q-mr-md item">{{ $t("dashboard.closest")+":" }}</p>
    
-   <div class="q-my-none  items-center item row">
+   <div class="q-my-none  items-center row">
     <q-icon name="today"/>
     <p class="q-my-none q-ml-xs items-center item">{{ $t("dashboard.date") }}</p>
-   </div>
     <p class="q-my-none q-ml-sm q-mr-md item2">{{ date }}</p>
+   </div>
    
-  <div class="q-my-none  items-center item row">
+  <div class="q-my-none  items-center  row">
     <q-icon name="light_mode"/>
     <p class="q-my-none  q-ml-xs items-center item">{{ $t("dashboard.day") }}</p>
-  </div>
     <p class="q-my-none q-ml-sm q-mr-md item2">{{ $t(day)}}</p>
+  </div>
     
-  <div class="q-my-none  items-center item row">
+  <div class="q-my-none  items-center  row">
     <q-icon name="schedule"/>
     <p class="q-my-none q-ml-xs items-center item">{{ $t("dashboard.time") }}</p>
-  </div>
     <p class="q-my-none q-ml-sm q-mr-md item2">{{ time }}</p>
+  </div>
    
-  <div class="q-my-none  items-center item row">
+  <div class="q-my-none  items-center row">
     <q-icon name="place"/>
     <p class="q-my-none q-ml-xs items-center item">{{ $t("dashboard.location") }}</p>
-  </div>
     <p class="q-my-none q-ml-sm item2">{{ meeting_place }}</p>
+  </div>
   </div>
 </template>
 

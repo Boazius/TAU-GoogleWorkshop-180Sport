@@ -59,7 +59,6 @@ export default defineComponent({
       is_message_new.value =
         props.trainingData.trainer_notes[props.user.id][1] != "" &&
         props.trainingData.trainer_notes[props.user.id][0] == 0;
-      console.log(props.trainingData.trainer_notes[props.user.id][0]);
     }
 
     async function markAsRead() {

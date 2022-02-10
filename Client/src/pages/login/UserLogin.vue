@@ -3,7 +3,7 @@
   <div class="q-pa-md flex flex-center" >
     <img
       src="~assets/images/loginpic.png"
-      style="width: 980px; height: auto"
+      style="width: 970px; height: auto"
     >
     </div>
     <login />

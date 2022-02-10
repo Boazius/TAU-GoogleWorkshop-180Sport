@@ -32,9 +32,7 @@ export default defineComponent({
     const recievedMessage= ref("");
 
     function onRequest() {
-      console.log(1);
       recievedMessage.value = props.trainingData.notes[props.userId][1];
-      console.log(recievedMessage.value,props.userId );
     }
 
     onMounted(() => {

@@ -38,7 +38,7 @@
             <q-item
               v-if="userType == 2"
               style="display: table-cell; vertical-align: end"
-            >
+           >
               {{ props.row.full_name }}
             </q-item>
           </q-td>
@@ -168,7 +168,6 @@ export default defineComponent({
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
       if (!filter) {
-        console.log("here");
         return props.table_data.length;
       }
       let count = 0;
@@ -177,7 +176,6 @@ export default defineComponent({
           ++count;
         }
       });
-      console.log(count);
       return count;
     }
 
