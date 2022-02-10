@@ -4,7 +4,7 @@
       dense
       flat
       size="lg"
-      class="bg-white text-primary"
+      class="bg-grey-1 text-primary"
       @click="openMessages()"
     >
       <i class="fas fa-pencil-alt"></i>

@@ -1,7 +1,8 @@
 <template>
-  <div class="q-pa-md">
-    <div class="row">
-      <div>
+  <div class="q-pa-md ">
+  <div class="column ">
+    <div class="row items-start">
+      <div >
         <q-btn
           size="sm"
           class="q-mr-md q-mt-md"
@@ -23,13 +24,13 @@
       <q-space />
     </div>
     <q-expansion-item
-      class="item"
+      class="item "
       switch-toggle-side
       expand-separator
       :label="$t('group.groupDetails')"
     >
       <q-expansion-item
-        class="item"
+        class="item "
         switch-toggle-side
         expand-separator
         :header-inset-level="1"
@@ -44,6 +45,7 @@
 
       <q-expansion-item
         class="item"
+
         switch-toggle-side
         expand-separator
         :header-inset-level="1"
@@ -64,24 +66,27 @@
       :label="$t('group.closest')"
     >
       <closest-training-list
+          style="width:85%; max-width:100%"
         :group="groupdata"
         :user="user"
         v-if="isReady"
       ></closest-training-list>
     </q-expansion-item>
     <q-expansion-item
+    
       class="item"
-      switch-toggle-side
       expand-separator
+      switch-toggle-side
       :label="$t('group.prior')"
     >
       <last-training-list
+          style="width:85%; max-width:100%"
         :group="groupdata"
         :user="user"
         v-if="isReady"
       ></last-training-list>
     </q-expansion-item>
-  </div>
+  </div></div>
 </template>
 <script>
 import { ref, onMounted } from "vue";
@@ -136,7 +141,6 @@ export default {
       const email = "rotholtz@mail.tau.ac.il";
       if (localStorage.getItem("groupdata")) {
         groupdata.value = JSON.parse(localStorage.getItem("groupdata"));
-        console.log("groupdata", groupdata.value);
       }
       //get group participants data from server
       const response1 = await getContent(
@@ -179,3 +183,4 @@ export default {
 @import "assets/tableStyle.css";
 @import "assets/groupStyle.css";
 </style>
+

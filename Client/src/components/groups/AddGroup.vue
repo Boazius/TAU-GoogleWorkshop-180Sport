@@ -1,10 +1,11 @@
 <template v-slot:bottom>
   <section class="q-pr-xl">
     <q-btn
-    size="22px"
-      class="q-ml-sm "
-      color="primary"
+    size="20px"
+      class="q-ml-sm"
+      color="primary "
       :loading="loading"
+      dense
       :label="$t('groups.add')"
       no-caps
       @click="addGroup"

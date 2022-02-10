@@ -328,25 +328,26 @@ export default {
         });
     },
 
-    async createTraining(groupId) {
-      await axios
-        .post(
-          `${serverUrl}/training/by_group_id/`,
-          JSON.stringify({
-            group_id: groupId,
-          }),
-          {
-            headers: {
-              "x-access-token": id_token,
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => res.data)
-        .catch(function (error) {
-          console.log(error);
-        });
-    },
+/* create training */
+    // async createTraining(groupId) {
+    //   await axios
+    //     .post(
+    //       `${serverUrl}/training/by_group_id/`,
+    //       JSON.stringify({
+    //         group_id: groupId,
+    //       }),
+    //       {
+    //         headers: {
+    //           "x-access-token": id_token,
+    //           "Content-Type": "application/json",
+    //         },
+    //       }
+    //     )
+    //     .then((res) => res.data)
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // },
 
     //post group info in database (create new)
     async saveNewGroup() {
@@ -373,10 +374,9 @@ export default {
         // add trainers to group
         for (let i = 0; i < this.trainers.length; i++) {
           var trainer = this.trainers[i];
-          console.log(trainer.id);
           await this.addTrainerToGroup(trainer.id, newgroupid);
         }
-        await this.createTraining(newgroupid);
+        // await this.createTraining(newgroupid); /* trainings are created automaticlly by server script
         this.saved_dialog = true;
       } else this.missing_dialog = true;
     },

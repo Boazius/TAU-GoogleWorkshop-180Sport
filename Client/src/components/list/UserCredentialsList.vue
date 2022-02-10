@@ -60,7 +60,7 @@
         label-color="text-grey-1"
       />
 
-      <q-list class="q-ma-none q-pa-none" v-if="!fromAdmin">
+      <q-list class="q-ma-none q-pa-none" v-if="(!fromAdmin) && (editedUser.user_type!=1)">
         <q-item-label header>{{ $t("table.groups") }}</q-item-label>
         <q-separator />
         <q-item v-for="item in editedUserGroups" :key="item">
@@ -71,7 +71,7 @@
         </q-item>
       </q-list>
       <q-select
-        v-if="fromAdmin"
+        v-if="fromAdmin || (editedUser.user_type==1)"
         v-model="editedUserGroups"
         :options="allGroups"
         emit-value
@@ -201,7 +201,8 @@ export default {
 
   async created() {
     this.user = JSON.parse(localStorage.getItem("user"));
-    if (this.fromAdmin) {
+    const myuser = this.$store.getters["authentication/getCurrentUser"];
+    if (this.fromAdmin || myuser.user_type == 1) {
       await this.getAllGroups();
       if (this.user.id != 0) {
         await this.getUser();
@@ -210,7 +211,6 @@ export default {
           this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
           for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
             var groupid = parseInt(this.userOriginalGroupIds[i]);
-            console.log(groupid);
             for (let i = 0; i < this.allGroups.length; i++) {
               var group = this.allGroups[i];
               if (group.id == groupid) {
@@ -278,7 +278,6 @@ export default {
     },
 
     async addUserToGroup(userid, groupid) {
-      console.log("add");
       const response = await axios
         .put(
           `${serverUrl}/add_user_to_group/${groupid}/`,
@@ -421,8 +420,8 @@ export default {
         this.saved_dialog = true;
 
         const newUserId = JSON.parse(JSON.stringify(response.user)).id;
-
-        if (this.fromAdmin) {
+        
+        if (this.fromAdmin || this.editedUser.user_type == 1) {
           // add user to groups
           for (let i = 0; i < this.editedUserGroups.length; i++) {
             var group = this.editedUserGroups[i];

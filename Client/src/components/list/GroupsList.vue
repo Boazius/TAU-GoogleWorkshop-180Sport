@@ -1,8 +1,8 @@
 <template>
-  <div class="q-pa-md max-width">
+  <div class="q-pa-md max-width q-ml-sm">
     <div class="row justify-between items-baseline">
-      <h3 class="group_header q-mb-none">{{ $t("app.groups") }}</h3>
-      <add-group v-if="!fromTrainer" class="q-mb-sm"></add-group>
+      <h3 class="group_header q-mb-none ">{{ $t("app.groups") }}</h3>
+      <add-group v-if="!fromTrainer" class="q-mb-sm "></add-group>
     </div>
     <h5 v-if="noGroups" class="group_header q-mb-none">
       {{ $t("groups.noGroups") }}
@@ -22,16 +22,26 @@
             style="font-size: 30px"
             @click="goToGroupPage(group)"
           >
+          <span>
             {{
               group.day +
               " - " +
-              " " +
+              " " 
+            }}
+          </span>
+          <span>
+            {{
               group.meeting_place +
-              ", " +
+              ", "
+            }}
+          </span>
+          <span>
+            {{
               $t("dashboard.time") +
               ": " +
               group.time
             }}
+          </span>
             <!-- {{group.day+' - '+' '+group.meeting_place}}<br>{{$t('dashboard.time')+': '+ group.time}} -->
           </q-btn>
           <q-btn

@@ -1,31 +1,34 @@
 <template>
   <div>
     <q-list
-      bordered
-      v-if="isReady && !isEmpty"
-      class="rounded-borders"
-      style="max-width: 600px"
-    >
-      <q-separator spaced />
+    bordered
+    class="rounded-borders bg-grey-1"
+      v-if="isReady && !isEmpty">      
       <training-toolbar :training="training" v-if="isReady"></training-toolbar>
+            <q-separator spaced />
+        <div class="column flex">
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.notPresent')"
         :attendance="2"
       ></attendance-fix-list>
+            <q-separator spaced />
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.present')"
         :attendance="1"
       ></attendance-fix-list>
+            <q-separator spaced />
+
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.unknown')"
         :attendance="0"
       ></attendance-fix-list>
+            </div>
     </q-list>
     <div class="text-h8 q-ml-xl item2" v-if="isReady && isEmpty">
       {{ $t("group.noTraining") }}
@@ -67,14 +70,12 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          console.log("sdfsdfsdfsdfsdf");
           return error;
         });
       if (response["training"]) {
         training.value = JSON.parse(JSON.stringify(response["training"]));
         isEmpty.value = false;
       } else if (response["message"] == "no training found") {
-        console.log("no training found");
       }
       isReady.value = true;
     }

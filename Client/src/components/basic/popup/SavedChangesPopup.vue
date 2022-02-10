@@ -1,5 +1,5 @@
 <template>
-  <q-dialog>
+  <q-dialog persistent>
     <q-card>
       <q-card-section class="row items-center" icon="done">
         <span class="q-ml-sm item">
