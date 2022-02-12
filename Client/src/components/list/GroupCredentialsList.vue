@@ -1,4 +1,5 @@
 <template>
+<div>
   <section class="item col q-gutter-x-md bg-grey-2 q-pa-md">
     <q-form
       @submit.prevent="formHandler"
@@ -134,6 +135,8 @@
       </div>
     </q-form>
   </section>
+  <relogin-popup v-model="logout"/>
+</div>
 </template>
 
 <script>
@@ -141,6 +144,7 @@ import BlackButton from "components/basic/BlackButton";
 import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
 import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -159,6 +163,7 @@ export default {
       isNew: false,
       isReady: false,
       confirm: false,
+      logout:false,
       allTrainers: [],
       originalTrainers: [],
       trainers: [],
@@ -229,10 +234,16 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         })
         .then((this.deleted_dialog = true));
-      localStorage.setItem("groupId", JSON.stringify({ id: 0 }));
+      if (response1 == "logout"){
+        this.logout=true;
+      }
+      else localStorage.setItem("groupId", JSON.stringify({ id: 0 }));
     },
 
     //if !isNew - get group info using get, else return {}
@@ -248,10 +259,19 @@ export default {
           .then((res) => res.data)
           .catch((error) => {
             console.log(error);
-            return error;
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
+          return error;
           });
-        this.groupdata = JSON.parse(JSON.stringify(response1["Group"]));
-      } else this.groupdata = {};
+        if (response1 == "logout"){
+          this.logout=true;
+        }
+        else{
+          this.groupdata = JSON.parse(JSON.stringify(response1["Group"]));
+        } 
+      }
+      else this.groupdata = {};
     },
 
     //get group's trainers
@@ -266,9 +286,17 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
-        });
+          });
+        if (response == "logout"){
+          this.logout=true;
+        }
+        else{
       this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
+        }
     },
 
     async getAllTrainers() {
@@ -281,15 +309,24 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
-        });
+          });
+        if (response == "logout"){
+          this.logout=true;
+        }
+        else{
       this.allTrainers = JSON.parse(
         JSON.stringify(response["list of trainers"])
       );
+        }
     },
 
+
     async addTrainerToGroup(trainerid, groupid) {
-      await axios
+      const response = await axios
         .put(
           `${serverUrl}/add_user_to_group/${groupid}/`,
           JSON.stringify({ user_id: trainerid }),
@@ -305,11 +342,18 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+    if (response == "logout"){
+        this.logout=true;
+      }
     },
 
+
     async removeTrainerFromGroup(id) {
-      await axios
+      const response = await axios
         .put(
           `${serverUrl}/delete_user_from_group/${this.groupdata.id}/`,
           JSON.stringify({ user_id: id }),
@@ -325,7 +369,13 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+      if (response == "logout"){
+        this.logout=true;
+      }
     },
 
 /* create training */
@@ -369,7 +419,14 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
+            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+              return "logout";
+           }
           });
+        if (response == "logout"){
+          this.logout=true;
+        }
+        else{
         const newgroupid = JSON.parse(JSON.stringify(response["group"])).id;
         // add trainers to group
         for (let i = 0; i < this.trainers.length; i++) {
@@ -377,7 +434,7 @@ export default {
           await this.addTrainerToGroup(trainer.id, newgroupid);
         }
         // await this.createTraining(newgroupid); /* trainings are created automaticlly by server script
-        this.saved_dialog = true;
+        this.saved_dialog = true;}
       } else this.missing_dialog = true;
     },
 
@@ -393,7 +450,7 @@ export default {
         const data = this.editedGroup;
         data.day = this.daysHebrew[this.editedGroup.day];
 
-        await axios
+        const response = await axios
           .put(
             `${serverUrl}/group/${this.groupdata.id}/`,
             JSON.stringify(this.editedGroup),
@@ -409,9 +466,16 @@ export default {
           })
           .catch(function (error) {
             console.log(error);
+            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+              return "logout";
+            }
           })
           .then((this.saved_dialog = true));
 
+      if (response == "logout"){
+        this.logout=true;
+      }
+      else{
         // add trainers to group
         for (let i = 0; i < this.trainers.length; i++) {
           var trainer = this.trainers[i];
@@ -425,7 +489,7 @@ export default {
           if (!this.trainers.some((el) => el.id == trainer.id)) {
             await this.removeTrainerFromGroup(trainer.id);
           }
-        }
+        }}
       } else this.missing_dialog = true;
     },
 
@@ -443,6 +507,7 @@ export default {
     BlackButton,
     SavedChangesPopup,
     DeletedPopup,
+    ReloginPopup,
     MissingDetailsPopup,
   },
 };

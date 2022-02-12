@@ -52,6 +52,7 @@ export default {
     invalidEmail: "No such email registered, please try again",
     field: "This field is required",
     wrong: "Something's went wrong, please try again",
+    relogin: "Please login again",
   },
   dashboard: {
     closest: "Closest training",

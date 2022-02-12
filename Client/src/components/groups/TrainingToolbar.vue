@@ -72,6 +72,7 @@
       </black-button>
       <saved-changes-popup v-model="saved_dialog" :goBack="false" />
     </div>
+  <relogin-popup v-model="logout"/>
   </div>
 </template>
 
@@ -80,6 +81,7 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import BlackButton from "components/basic/BlackButton.vue";
 import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
@@ -89,6 +91,7 @@ export default defineComponent({
   components: {
     BlackButton,
     SavedChangesPopup,
+    ReloginPopup,
   },
   data() {
     return {
@@ -104,6 +107,7 @@ export default defineComponent({
       saved_changes: true,
       saved_dialog: false,
       everythingIsready: false,
+      logout:false,
       daysHebrew: {
         ראשון: "ראשון",
         שני: "שני",
@@ -157,15 +161,22 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+    if (response == "logout"){
+        this.logout=true;
+      }
+    else{      
       this.updated = false;
       this.saved_changes = true,
-      this.saved_dialog = true;
+      this.saved_dialog = true;}
     },
 
     getday(){
     this.editedTraining.day = this.$t(this.days[new Date(this.editedTraining.date).getDay()]);
-  },
+    },
   },
 
 
@@ -184,32 +195,38 @@ export default defineComponent({
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
         return error;
       });
-
-    if (response.success) {
-      this.trainers = JSON.parse(JSON.stringify(response.trainers));
-      if (
-        this.trainers.find((item) => item.id == this.training.trainers_id[0])
-      ) {
-        this.trainer = this.trainers.find(
-          (item) => item.id == this.training.trainers_id[0]
-        );
-        this.trainers_id = this.trainer.id;
+    if (response == "logout"){
+        this.logout=true;
       }
-    }
-    var myDate = new Date(this.training.date);
-      var dd = myDate.getDate();
-      var mm = myDate.getMonth() + 1;
-      var yyyy = myDate.getFullYear();
-      if (dd < 10) {
-        dd = "0" + dd;
+    else{
+      if (response.success) {
+        this.trainers = JSON.parse(JSON.stringify(response.trainers));
+        if (
+          this.trainers.find((item) => item.id == this.training.trainers_id[0])
+        ) {
+          this.trainer = this.trainers.find(
+            (item) => item.id == this.training.trainers_id[0]
+          );
+          this.trainers_id = this.trainer.id;
+        }
       }
-      if (mm < 10) {
-        mm = "0" + mm;
-      }
-    this.editedTraining.date = yyyy + "-" + mm + "-" + dd;
-
+      var myDate = new Date(this.training.date);
+        var dd = myDate.getDate();
+        var mm = myDate.getMonth() + 1;
+        var yyyy = myDate.getFullYear();
+        if (dd < 10) {
+          dd = "0" + dd;
+        }
+        if (mm < 10) {
+          mm = "0" + mm;
+        }
+      this.editedTraining.date = yyyy + "-" + mm + "-" + dd;
+}
   },
 
   updated() {

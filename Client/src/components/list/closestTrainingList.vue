@@ -83,6 +83,7 @@
   <div class="text-h8 q-ml-xl item2" v-if="isReady && isEmpty">
       {{ $t("group.noTraining") }}
   </div>
+  <relogin-popup v-model="logout"/>
   </div>
 </template>
 
@@ -93,6 +94,7 @@ import axios from "axios";
 import TrainingToolbar from "../groups/TrainingToolbar.vue";
 import TrainerGetMessagePopup from "../basic/popup/TrainerGetMessagePopup.vue";
 import TrainerRecieveMessagePopup from "../basic/popup/TrainerRecieveMessagePopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
@@ -101,6 +103,7 @@ export default defineComponent({
     TrainingToolbar,
     TrainerGetMessagePopup,
     TrainerRecieveMessagePopup,
+    ReloginPopup,
   },
   name: "closestTrainingList",
   props: ["group", "user"],
@@ -111,6 +114,7 @@ export default defineComponent({
     const isReady = ref(false);
     const read = ref(false);
     const isEmpty = ref(true);
+    const logout = ref(false);
 
     async function onRequest() {
       loading.value = true;
@@ -127,14 +131,22 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         });
-
-      if (response.success) {
-        training.value = JSON.parse(JSON.stringify(response.training));
-        isEmpty.value = false;
+      if (response == "logout"){
+        logout.value=true;
       }
-      isReady.value = true;
+      else{
+        if (response.success) {
+          training.value = JSON.parse(JSON.stringify(response.training));
+          isEmpty.value = false;
+        }
+        isReady.value = true;
+      }
+      
     }
 
     onMounted(() => {
@@ -161,9 +173,19 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
-        });
-      training.value.notes[userId][0] = 1;
-      read.value = true;
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+      if (response == "logout"){
+        logout.value=true;
+      }
+      else{
+        training.value.notes[userId][0] = 1;
+        read.value = true;
+      }
+
     }
 
     return {
@@ -175,6 +197,7 @@ export default defineComponent({
       markAsRead,
       read,
       isEmpty,
+      logout,
     };
   },
 });

@@ -1,4 +1,5 @@
 <template>
+<div>
   <groups-list
     v-if="isReady"
     :groups="groups"
@@ -6,21 +7,28 @@
     :isReady="isReady"
     :noGroups="noGroups"
   ></groups-list>
+  <relogin-popup v-model="logout"/>
+</div>
 </template>
 
 <script>
 import groupsList from "components/list/GroupsList.vue";
 import axios from "axios";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const id_token = localStorage.getItem("id_token");
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 
 export default {
-  components: { groupsList },
+  components: { 
+    groupsList,
+    ReloginPopup,
+   },
   data() {
     return {
       groups: [],
       isReady: false,
       noGroups: false,
+      logout:false,
     };
   },
 
@@ -30,20 +38,6 @@ export default {
     },
   },
   async beforeMount() {
-    //   //this.user = localStorage.getItem("user")
-    //       const email = "rotholtz@mail.tau.ac.il";
-
-    // const response1 = await axios.get(`${serverUrl}/user/email/${email}`,{
-    //       headers: {
-    //           'x-access-token ': id_token,
-    //       },
-    //   })
-    //   .then((res)=> res.data)
-    //   .catch((error)=>{
-    //       console.log(error);
-    //       return error;
-    //   });
-    //   this.user =  JSON.parse(JSON.stringify(response1["user"]));
 
     //get groups data from server
     const response = await axios
@@ -55,9 +49,15 @@ export default {
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
         return error;
       });
-
+   if (response == "logout"){
+        this.logout=true;
+      }
+  else{
     if (response.success) {
       this.groups = JSON.parse(JSON.stringify(response["list of group"]));
       if (this.groups.length == 0) this.noGroups = true;
@@ -65,6 +65,8 @@ export default {
     } else {
       this.$router.push("/login");
     }
+  }
+    
   },
 };
 </script>

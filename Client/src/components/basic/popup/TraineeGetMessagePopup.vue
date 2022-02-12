@@ -92,11 +92,13 @@
       </q-dialog>
       <message-sent-popup v-model="dialog" />
     </q-btn>
+  <relogin-popup v-model="logout"/>
   </div>
 </template>
 
 <script>
 import { ref, onMounted, defineComponent } from "vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -105,7 +107,10 @@ import MessageSentPopup from "components/basic/popup/MessageSentPopup.vue";
 export default defineComponent({
   name: "TraineeGetMessagePopup",
   props: ["trainingData", "userId"],
-  components: { MessageSentPopup },
+  components: { 
+    MessageSentPopup, 
+    ReloginPopup ,
+    },
 
   setup(props) {
     const editor = ref("");
@@ -113,6 +118,7 @@ export default defineComponent({
     const dialog = ref(false);
     const edit = ref(false);
     const message = ref(false);
+    const logout = ref(false);
 
     function onRequest() {
       editor.value = props.trainingData.notes[props.userId][1];
@@ -124,7 +130,7 @@ export default defineComponent({
         message: editor.value,
       });
 
-      await axios
+      const response = await axios
         .post(
           `${serverUrl}/trainee/message/${props.userId}/${props.trainingData.id}/`,
           message,
@@ -140,36 +146,19 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
         });
-
+      if (response == "logout"){
+        logout.value=true;
+      }
+      else{
       initialEditor.value = editor.value;
       dialog.value = true;
     }
-
-    async function markAsRead(userId, isRead) {
-      if (!isRead) {
-        await axios
-          .put(
-            `${serverUrl}/trainer/update_notes_per_user/${userId}/`,
-            JSON.stringify({
-              user_id: userId,
-              mark: 1,
-            }),
-            {
-              headers: {
-                "x-access-token": id_token,
-                "Content-Type": "application/json",
-              },
-            }
-          )
-          .then(function (response) {
-            console.log(JSON.stringify(response.data));
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
     }
+
 
     function openMessages() {
       if (initialEditor.value != "") {
@@ -187,9 +176,9 @@ export default defineComponent({
       sendMessage,
       dialog,
       edit,
-      markAsRead,
       message,
       openMessages,
+      logout,
     };
   },
 });

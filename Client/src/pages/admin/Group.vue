@@ -86,7 +86,9 @@
         v-if="isReady"
       ></last-training-list>
     </q-expansion-item>
-  </div></div>
+  </div>
+  <relogin-popup v-model="logout"/>
+  </div>
 </template>
 <script>
 import { ref, onMounted } from "vue";
@@ -94,6 +96,7 @@ import UserTable from "components/table/UserTable.vue";
 import TrainerTable from "components/table/TrainerTable.vue";
 import closestTrainingList from "components/list/closestTrainingList.vue";
 import lastTrainingList from "components/list/lastTrainingList.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -104,6 +107,7 @@ export default {
     TrainerTable,
     closestTrainingList,
     lastTrainingList,
+    ReloginPopup,
   },
 
   methods: {
@@ -121,6 +125,7 @@ export default {
     const isReady = ref(false);
     const groupIsReady = ref(false);
     const trainersIsReady = ref(false);
+    const logout = ref(false);
 
     async function getContent(url) {
       const response = await axios
@@ -132,8 +137,14 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          return error;
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+      if (response == "logout"){
+        logout.value=true;
+      }
       return response;
     }
 
@@ -175,6 +186,7 @@ export default {
       isReady,
       trainersIsReady,
       groupIsReady,
+      logout,
     };
   },
 };

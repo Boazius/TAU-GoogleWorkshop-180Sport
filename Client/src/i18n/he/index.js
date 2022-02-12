@@ -52,6 +52,8 @@ export default {
     invalidEmail: "כתובת המייל אינה קיימת, נסו שנית או הרשמו",
     field: "זהו שדה חובה",
     wrong: "משהו השתבש, אנא נסו שנית",
+    relogin: "התחברו מחדש בבקשה",
+
   },
   dashboard: {
     closest: "האימון הקרוב",

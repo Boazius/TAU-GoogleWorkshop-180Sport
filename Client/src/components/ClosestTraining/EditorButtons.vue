@@ -1,4 +1,5 @@
 <template>
+<div>
   <div class="fit row wrap justify-center items-start content-start q-mt-xl">
     <div class="column">
       <trainee-get-message-popup
@@ -33,12 +34,15 @@
       />
     </div>
   </div>
+  <relogin-popup v-model="logout"/>
+</div>
 </template>
 
 <script>
 import { ref, defineComponent, onMounted } from "vue";
 import TraineeGetMessagePopup from "../basic/popup/TraineeGetMessagePopup.vue";
 import TraineeRecieveMessagePopup from "../basic/popup/TraineeRecieveMessagePopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -47,6 +51,7 @@ export default defineComponent({
   components: {
     TraineeGetMessagePopup,
     TraineeRecieveMessagePopup,
+    ReloginPopup,
   },
   name: "EditorButtons",
   props: ["trainingData", "user"],
@@ -54,6 +59,7 @@ export default defineComponent({
     const get_message = ref(false);
     const recieve_message = ref(false);
     const is_message_new = ref(false);
+    const logout = ref(false);
 
     function onRequest() {
       is_message_new.value =
@@ -62,7 +68,7 @@ export default defineComponent({
     }
 
     async function markAsRead() {
-      await axios
+      const response = await axios
         .put(
           `${serverUrl}/trainee/mark_message/${props.user.id}/${props.trainingData.id}/`,
           JSON.stringify({
@@ -80,10 +86,17 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+      if (response == "logout"){
+        logout.value=true;
+      }
+      else{
       recieve_message.value = true;
       is_message_new.value = false;
-    }
+    }}
 
     onMounted(() => {
       onRequest();
@@ -95,6 +108,7 @@ export default defineComponent({
       is_message_new,
       onRequest,
       markAsRead,
+      logout,
     };
   },
 });
