@@ -60,7 +60,7 @@
       >
       </editor-buttons>
     </div>
-      <relogin-popup v-model="logout"/>
+    <relogin-popup v-model="logout" />
   </q-page>
 </template>
 
@@ -92,15 +92,11 @@ export default defineComponent({
   },
 
   methods: {
-    
-
-
     async saveSelection(num) {
       this.attendance = num;
       var data = JSON.stringify({
         attendance: num,
       });
-
 
       const response = await axios
         .put(
@@ -118,19 +114,17 @@ export default defineComponent({
         })
         .catch(async function (error) {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
-
         });
-        if (response == "logout"){
-          this.logout=true;
-        }
-      else this.dialog = true;
+      if (response == "logout") {
+        this.logout = true;
+      } else this.dialog = true;
     },
-
-
-
 
     formatDate(date) {
       var myDate = new Date(date);
@@ -160,20 +154,21 @@ export default defineComponent({
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-            return "logout";
-          }
-          return error;
-        });
-        if (response == "logout"){
-          console.log("logout");
-          this.logout=true;
+        if (
+          error.response.status == 401 &&
+          error.response.data.message == "Token is invalid!"
+        ) {
+          return "logout";
         }
-
-    else{
-    response["training"]["date"] = this.formatDate(
-      response["training"]["date"]
-    );
+        return error;
+      });
+    if (response == "logout") {
+      console.log("logout");
+      this.logout = true;
+    } else {
+      response["training"]["date"] = this.formatDate(
+        response["training"]["date"]
+      );
     }
 
     this.trainingData = JSON.parse(JSON.stringify(response["training"]));
@@ -199,7 +194,4 @@ export default defineComponent({
     ReloginPopup,
   },
 });
-
-
-
 </script>

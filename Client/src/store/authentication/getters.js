@@ -4,7 +4,7 @@
 export function error(state) {
   const { error } = state;
   return {
-    has: error.show,
+    show: error.show,
     message: error.message,
   };
 }

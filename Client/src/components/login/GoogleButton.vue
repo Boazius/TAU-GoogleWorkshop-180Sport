@@ -27,6 +27,7 @@ export default {
   padding: 24px;
   border: none;
   border-radius: 6px;
+  max-width: 300px;
   box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.25);
 
   color: #757575;

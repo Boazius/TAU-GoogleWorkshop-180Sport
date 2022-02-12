@@ -1,13 +1,22 @@
 <template>
   <div>
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
-      <div class="q-my-none  items-center row">
+      <div class="q-my-none items-center row">
         <p class="q-ma-none q-mr-md">{{ $t("dashboard.date") }}</p>
-      <q-input class="item q-mr-md" type="date" v-model="editedTraining.date" @change="saved_changes=false; getday()" dense />
+        <q-input
+          class="item q-mr-md"
+          type="date"
+          v-model="editedTraining.date"
+          @change="
+            saved_changes = false;
+            getday();
+          "
+          dense
+        />
       </div>
-      <div class="q-my-none  items-center row">
-      <p class="q-ma-none q-mr-md">{{ $t("dashboard.day") }}</p>
-          <!-- <q-select
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.day") }}</p>
+        <!-- <q-select
           v-model="editedTraining.day"
           disable
           :options="days.map((day) => (day = $t(day)))"
@@ -19,33 +28,39 @@
           class="item"
           @change="updated=true"
         /> -->
-      <q-input
-        disable
-        class="item"
-        v-model="editedTraining.day"
-        type="day"
-        dense
-        @change="updated=true"
-      />
-    </div>
+        <q-input
+          disable
+          class="item"
+          v-model="editedTraining.day"
+          type="day"
+          dense
+          @change="updated = true"
+        />
+      </div>
     </div>
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
-      <div class="q-my-none  items-center row">
-      <p class="q-ma-none q-mr-md">{{ $t("dashboard.time") }}</p>
-      <q-input class="item q-mr-md" v-model="editedTraining.time" @change="saved_changes=false" type="time" dense />
-    </div>
-    <div class="q-my-none items-center row">
-      <p class="q-ma-none q-mr-md">{{ $t("dashboard.location") }}</p>
-      <q-input
-        class="item "
-        v-model="editedTraining.meeting_place"
-        type="text"
-        dense
-        item-aligned
-        @change="saved_changes=false"
-      />
-    </div>
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.time") }}</p>
+        <q-input
+          class="item q-mr-md"
+          v-model="editedTraining.time"
+          @change="saved_changes = false"
+          type="time"
+          dense
+        />
+      </div>
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.location") }}</p>
+        <q-input
+          class="item"
+          v-model="editedTraining.meeting_place"
+          type="text"
+          dense
+          item-aligned
+          @change="saved_changes = false"
+        />
+      </div>
     </div>
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
@@ -56,7 +71,7 @@
         :option-label="(item) => item.full_name"
         emit-value
         class="item"
-        @change="saved_changes=false"
+        @change="saved_changes = false"
       />
       <q-space />
       <black-button
@@ -72,7 +87,7 @@
       </black-button>
       <saved-changes-popup v-model="saved_dialog" :goBack="false" />
     </div>
-  <relogin-popup v-model="logout"/>
+    <relogin-popup v-model="logout" />
   </div>
 </template>
 
@@ -99,15 +114,15 @@ export default defineComponent({
         day: this.training.day,
         time: this.training.time,
         meeting_place: this.training.meeting_place,
-        date:"",
+        date: "",
       },
-      trainers: {},
+      trainers: [],
       trainer: {},
       updated: false,
       saved_changes: true,
       saved_dialog: false,
       everythingIsready: false,
-      logout:false,
+      logout: false,
       daysHebrew: {
         ראשון: "ראשון",
         שני: "שני",
@@ -136,9 +151,7 @@ export default defineComponent({
     };
   },
 
-  computed: {
-
-  },
+  computed: {},
 
   methods: {
     //put traning info in database (update)
@@ -161,26 +174,27 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-      });
-    if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+        });
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.updated = false;
+        (this.saved_changes = true), (this.saved_dialog = true);
       }
-    else{      
-      this.updated = false;
-      this.saved_changes = true,
-      this.saved_dialog = true;}
     },
 
-    getday(){
-    this.editedTraining.day = this.$t(this.days[new Date(this.editedTraining.date).getDay()]);
+    getday() {
+      this.editedTraining.day = this.$t(
+        this.days[new Date(this.editedTraining.date).getDay()]
+      );
     },
   },
-
-
-  
 
   async beforeMount() {
     const response = await axios
@@ -195,15 +209,17 @@ export default defineComponent({
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+        if (
+          error.response.status == 401 &&
+          error.response.data.message == "Token is invalid!"
+        ) {
           return "logout";
         }
         return error;
       });
-    if (response == "logout"){
-        this.logout=true;
-      }
-    else{
+    if (response == "logout") {
+      this.logout = true;
+    } else {
       if (response.success) {
         this.trainers = JSON.parse(JSON.stringify(response.trainers));
         if (
@@ -216,27 +232,22 @@ export default defineComponent({
         }
       }
       var myDate = new Date(this.training.date);
-        var dd = myDate.getDate();
-        var mm = myDate.getMonth() + 1;
-        var yyyy = myDate.getFullYear();
-        if (dd < 10) {
-          dd = "0" + dd;
-        }
-        if (mm < 10) {
-          mm = "0" + mm;
-        }
+      var dd = myDate.getDate();
+      var mm = myDate.getMonth() + 1;
+      var yyyy = myDate.getFullYear();
+      if (dd < 10) {
+        dd = "0" + dd;
+      }
+      if (mm < 10) {
+        mm = "0" + mm;
+      }
       this.editedTraining.date = yyyy + "-" + mm + "-" + dd;
-}
+    }
   },
 
   updated() {
-      this.updated = true;
-    },
-
-
-
-
-
+    this.updated = true;
+  },
 });
 </script>
 <style scoped>

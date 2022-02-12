@@ -1,62 +1,57 @@
 <template>
-<section class="row justify-center q-pa-md">
-        <google-button></google-button>
-        <!-- <login-form
-        @loading="loading = $event"
-        :loading="loading"
-        :errorMessage="errorMessage"
-      ></login-form> -->
-</section>
+  <section class="row justify-center q-pa-md">
+    <div class="column items-center">
+      <h2 class="heading q-ma-sm text-primary text-weight-bold text-center">
+        {{ $t("app.greeting") }}
+      </h2>
 
+      <google-button></google-button>
+      <span class="text-subtitle2 text-positive q-py-sm">{{
+        $t("app.clickToLogin")
+      }}</span>
+    </div>
+    <error-message-popup
+      :dialog="error.show"
+      :errorMessage="error.message"
+      @onClose="error = false"
+    />
+  </section>
 </template>
 
 <script>
-// import { mapState, mapActions } from "vuex";
-import LoginForm from "components/login/LoginForm.vue";
 import GoogleButton from "components/login/GoogleButton.vue";
+import ErrorMessagePopup from "components/basic/popup/ErrorMessagePopup.vue";
+
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Login",
   data() {
-    return {
-    };
-  },
-  components: {
-    // LoginForm,
-    GoogleButton,
+    return {};
   },
   computed: {
-    // errorMessage() {
-    //   const error = {}; // Get error from server'// this.$store.getters['authentication/error'];
-    //   if (error.has) {
-    //     switch (error.message) {
-    //       case "Invalid email":
-    //         error.message = this.$t("authentication.email");
-    //         break;
-    //       default:
-    //         error.message = this.$t("authentication.wrong");
-    //     }
-    //   }
-    //   return error;
-    // },
+    error: {
+      get() {
+        return this.$store.getters["authentication/error"];
+      },
+      set(value) {
+        this.$store.dispatch("authentication/setError", {
+          show: value,
+          message: "",
+        });
+      },
+    },
   },
-  methods: {
-    // ...mapActions({
-    //   login: 'authentication/login'
-    // }),
-    // async loginHandler({ email, password }) {
-    //   const response = await this.login({
-    //     email,
-    //     password,
-    //   });
-    //   if (response.data !== false) {
-    //     this.$router.push({ path: "/trainers" });
-    //   }
-    //   this.loading = false;
-    // },
+  components: {
+    GoogleButton,
+    ErrorMessagePopup,
   },
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.heading {
+  font-size: 2em;
+  max-width: 70vw;
+}
+</style>

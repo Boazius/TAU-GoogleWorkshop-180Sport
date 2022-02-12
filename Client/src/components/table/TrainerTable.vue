@@ -1,80 +1,80 @@
 <template>
-<div>
-  <q-table
-    :rows="rows"
-    :columns="columns"
-    row-key="id"
-    v-model="pagination"
-    :loading="loading"
-    :filter="filter"
-    @request="onRequest"
-    binary-state-sort
-  >
-    <template v-slot:header="props">
-      <q-tr :props="props">
-        <q-th
-          v-for="col in props.cols"
-          :key="col.name"
-          :props="props"
-          class="item"
+  <div>
+    <q-table
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      v-model="pagination"
+      :loading="loading"
+      :filter="filter"
+      @request="onRequest"
+      binary-state-sort
+    >
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+            class="item"
+          >
+            {{ $t(col.label) }}
+          </q-th>
+        </q-tr>
+      </template>
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="full_name" :props="props">
+            <q-item
+              v-if="userType == 1"
+              @click="goToUserPage(props.row)"
+              clickable
+              v-ripple
+              style="display: table-cell; vertical-align: end"
+            >
+              {{ props.row.full_name }}
+            </q-item>
+            <q-item
+              v-if="userType == 2"
+              style="display: table-cell; vertical-align: end"
+            >
+              {{ props.row.full_name }}
+            </q-item>
+          </q-td>
+          <q-td key="phone_number" :props="props">
+            {{ props.row.phone_number }}
+          </q-td>
+          <q-td key="group_ids" style="white-space: pre" :props="props">
+            {{ getNames(props.row.group_ids) }}
+          </q-td>
+          <q-td key="email" :props="props">{{ props.row.email }} </q-td>
+        </q-tr>
+      </template>
+      <template v-slot:top>
+        <table-top-buttons
+          :tableType="2"
+          v-if="!fromGroupPage"
+          :rows="rows"
+          :rowCount="rowCount"
+          :loading="loading"
+        ></table-top-buttons>
+        <q-space />
+        <q-input
+          borderless
+          dense
+          debounce="300"
+          color="primary"
+          v-model="filter"
+          outlined
+          placeholder="Search"
         >
-          {{ $t(col.label) }}
-        </q-th>
-      </q-tr>
-    </template>
-    <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td key="full_name" :props="props">
-          <q-item
-            v-if="userType == 1"
-            @click="goToUserPage(props.row)"
-            clickable
-            v-ripple
-            style="display: table-cell; vertical-align: end"
-          >
-            {{ props.row.full_name }}
-          </q-item>
-          <q-item
-            v-if="userType == 2"
-            style="display: table-cell; vertical-align: end"
-          >
-            {{ props.row.full_name }}
-          </q-item>
-        </q-td>
-        <q-td key="phone_number" :props="props">
-          {{ props.row.phone_number }}
-        </q-td>
-        <q-td key="group_ids" style="white-space: pre" :props="props">
-          {{ getNames(props.row.group_ids) }}
-        </q-td>
-        <q-td key="email" :props="props">{{ props.row.email }} </q-td>
-      </q-tr>
-    </template>
-    <template v-slot:top>
-      <table-top-buttons
-        :tableType="2"
-        v-if="!fromGroupPage"
-        :rows="rows"
-        :rowCount="rowCount"
-        :loading="loading"
-      ></table-top-buttons>
-      <q-space />
-      <q-input
-        borderless
-        dense
-        debounce="300"
-        color="primary"
-        v-model="filter"
-        outlined
-        placeholder="Search"
-      >
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-    </template>
-  </q-table>
-  <relogin-popup v-model="logout"/>
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+    </q-table>
+    <relogin-popup v-model="logout" />
   </div>
 </template>
 
@@ -92,10 +92,10 @@ const columns = userColumns;
 
 export default defineComponent({
   name: "TrainerTable",
-  components: { 
+  components: {
     TableTopButtons,
     ReloginPopup,
-   },
+  },
   props: ["table_data", "fromGroupPage"],
 
   methods: {
@@ -217,24 +217,29 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
           return error;
         });
-      if (response == "logout"){
-        logout.value=true;
-      }
-      else{
+      if (response == "logout") {
+        logout.value = true;
+      } else {
         const groups = JSON.parse(JSON.stringify(response["list of group"]));
         groupNames.value = [groups.length + 1];
         for (let i = 0; i < groups.length; i++) {
           groupNames.value[groups[i].id] =
-            groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
+            groups[i].day +
+            "- " +
+            groups[i].meeting_place +
+            " " +
+            groups[i].time;
         }
         isReady.value = true;
       }
-
     }
 
     function getNames(group_ids) {

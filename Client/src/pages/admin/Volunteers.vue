@@ -11,7 +11,7 @@
         :table_data="volunteers"
       ></user-table>
     </div>
-  <relogin-popup v-model="logout"/>
+    <relogin-popup v-model="logout" />
   </q-page>
 </template>
 
@@ -46,21 +46,22 @@ export default {
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-            return "logout";
-          }
+        if (
+          error.response.status == 401 &&
+          error.response.data.message == "Token is invalid!"
+        ) {
+          return "logout";
+        }
         return error;
       });
-    if (response == "logout"){
-        this.logout=true;
-      }
-    else{
+    if (response == "logout") {
+      this.logout = true;
+    } else {
       this.volunteers = JSON.parse(
         JSON.stringify(response["list of volunteers"])
       );
       this.isReady = true;
-      }
-
+    }
   },
 };
 </script>

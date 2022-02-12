@@ -1,142 +1,142 @@
 <template>
-<div>
-  <section class="item col q-gutter-x-md bg-grey-2 q-pa-md">
-    <q-form
-      @submit.prevent="formHandler"
-      autofocus
-      v-if="isReady"
-      class="max-width"
-    >
-      <div
-        class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+  <div>
+    <section class="item col q-gutter-x-md bg-grey-2 q-pa-md">
+      <q-form
+        @submit.prevent="formHandler"
+        autofocus
+        v-if="isReady"
+        class="max-width"
       >
-        <p class="q-ma-none q-pb-none">{{ $t("groups.chooseDay") + ":" }}</p>
-        <q-select
-          v-model="editedGroup.day"
-          :options="days.map((day) => (day = $t(day)))"
-          emit-value
-          map-options
-          name="day"
-          class="q-pb-md"
-        />
-      </div>
-      <div
-        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
-      >
-        <p class="q-ma-none q-pb-none">{{ $t("groups.chooseTime") + ":" }}</p>
-        <q-input
-          no-error-icon
-          clearable
-          lazy-rules
-          clear-icon="close"
-          label-color="text-grey-1"
-          name="time"
-          v-model="editedGroup.time"
-          type="time"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
-        />
-      </div>
-      <div
-        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
-      >
-        <p class="q-ma-none q-pb-none">
-          {{ $t("groups.chooseLocation") + ":" }}
-        </p>
-        <q-input
-          no-error-icon
-          v-model="editedGroup.meeting_place"
-          name="area"
-          clearable
-          lazy-rules
-          clear-icon="close"
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
-          label-color="text-grey-1"
-        />
-      </div>
-      <div
-        class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
-      >
-        <p class="q-ma-none q-pb-none">
-          {{ $t("table.title.trainers") + ":" }}
-        </p>
-        <q-select
-          v-model="trainers"
-          map-options
-          use-chips
-          :options="allTrainers"
-          multiple
-          :option-label="(item) => item.full_name"
-          emit-value
-          lazy-rules
-          clearable
-          clear-icon="close"
-          no-error-icon
-          :rules="[
-            (val) => (val && val.length > 0) || $t('authentication.field'),
-          ]"
-          class="q-pb-md"
-        />
-      </div>
-
-      <div class="row q-mt-lg">
-        <black-button
-          class="q-mt-sm q-mr-md"
-          :type="'submit'"
-          :loading="loading"
-          @click="setGroupInfo"
-          color="primary"
-          >{{ $t("table.save") }}
-          <saved-changes-popup v-model="saved_dialog" :goBack="true" />
-          <missing-details-popup v-model="missing_dialog" />
-        </black-button>
-        <black-button
-          class="q-mt-sm"
-          color="primary"
-          :outline="true"
-          @click="onGoBack"
-          >{{ $t("table.cancel") }}</black-button
+        <div
+          class="row max-width justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
         >
-        <q-space></q-space>
-        <black-button class="q-mt-sm" v-if="!isNew && isReady" color="red">
-          {{ $t("groups.delete") }}
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="row items-center">
-                <q-avatar icon="warning" color="red" text-color="white" />
-                <span class="q-ml-sm">
-                  {{ $t("groups.deleteMessagePart1") }}
-                  <br />
-                  {{ $t("groups.deleteMessagePart2") }}
-                </span>
-              </q-card-section>
-              <q-card-actions align="right">
-                <q-btn
-                  flat
-                  :label="$t('groups.cancle')"
-                  color="primary"
-                  v-close-popup
-                />
-                <q-btn
-                  flat
-                  :label="$t('groups.delete')"
-                  color="red"
-                  @click="deleteGroup"
-                  v-close-popup
-                />
-              </q-card-actions>
-            </q-card>
-          </q-popup-proxy>
-          <deleted-popup v-model="deleted_dialog" />
-        </black-button>
-      </div>
-    </q-form>
-  </section>
-  <relogin-popup v-model="logout"/>
-</div>
+          <p class="q-ma-none q-pb-none">{{ $t("groups.chooseDay") + ":" }}</p>
+          <q-select
+            v-model="editedGroup.day"
+            :options="days.map((day) => (day = $t(day)))"
+            emit-value
+            map-options
+            name="day"
+            class="q-pb-md"
+          />
+        </div>
+        <div
+          class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+        >
+          <p class="q-ma-none q-pb-none">{{ $t("groups.chooseTime") + ":" }}</p>
+          <q-input
+            no-error-icon
+            clearable
+            lazy-rules
+            clear-icon="close"
+            label-color="text-grey-1"
+            name="time"
+            v-model="editedGroup.time"
+            type="time"
+            :rules="[
+              (val) => (val && val.length > 0) || $t('authentication.field'),
+            ]"
+          />
+        </div>
+        <div
+          class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+        >
+          <p class="q-ma-none q-pb-none">
+            {{ $t("groups.chooseLocation") + ":" }}
+          </p>
+          <q-input
+            no-error-icon
+            v-model="editedGroup.meeting_place"
+            name="area"
+            clearable
+            lazy-rules
+            clear-icon="close"
+            :rules="[
+              (val) => (val && val.length > 0) || $t('authentication.field'),
+            ]"
+            label-color="text-grey-1"
+          />
+        </div>
+        <div
+          class="row justify-left q-my-none q-gutter-x-md items-center bg-grey-2 q-pa-none"
+        >
+          <p class="q-ma-none q-pb-none">
+            {{ $t("table.title.trainers") + ":" }}
+          </p>
+          <q-select
+            v-model="trainers"
+            map-options
+            use-chips
+            :options="allTrainers"
+            multiple
+            :option-label="(item) => item.full_name"
+            emit-value
+            lazy-rules
+            clearable
+            clear-icon="close"
+            no-error-icon
+            :rules="[
+              (val) => (val && val.length > 0) || $t('authentication.field'),
+            ]"
+            class="q-pb-md"
+          />
+        </div>
+
+        <div class="row q-mt-lg">
+          <black-button
+            class="q-mt-sm q-mr-md"
+            :type="'submit'"
+            :loading="loading"
+            @click="setGroupInfo"
+            color="primary"
+            >{{ $t("table.save") }}
+            <saved-changes-popup v-model="saved_dialog" :goBack="true" />
+            <missing-details-popup v-model="missing_dialog" />
+          </black-button>
+          <black-button
+            class="q-mt-sm"
+            color="primary"
+            :outline="true"
+            @click="onGoBack"
+            >{{ $t("table.cancel") }}</black-button
+          >
+          <q-space></q-space>
+          <black-button class="q-mt-sm" v-if="!isNew && isReady" color="red">
+            {{ $t("groups.delete") }}
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="row items-center">
+                  <q-avatar icon="warning" color="red" text-color="white" />
+                  <span class="q-ml-sm">
+                    {{ $t("groups.deleteMessagePart1") }}
+                    <br />
+                    {{ $t("groups.deleteMessagePart2") }}
+                  </span>
+                </q-card-section>
+                <q-card-actions align="right">
+                  <q-btn
+                    flat
+                    :label="$t('groups.cancle')"
+                    color="primary"
+                    v-close-popup
+                  />
+                  <q-btn
+                    flat
+                    :label="$t('groups.delete')"
+                    color="red"
+                    @click="deleteGroup"
+                    v-close-popup
+                  />
+                </q-card-actions>
+              </q-card>
+            </q-popup-proxy>
+            <deleted-popup v-model="deleted_dialog" />
+          </black-button>
+        </div>
+      </q-form>
+    </section>
+    <relogin-popup v-model="logout" />
+  </div>
 </template>
 
 <script>
@@ -163,7 +163,7 @@ export default {
       isNew: false,
       isReady: false,
       confirm: false,
-      logout:false,
+      logout: false,
       allTrainers: [],
       originalTrainers: [],
       trainers: [],
@@ -234,16 +234,18 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
           return error;
         })
         .then((this.deleted_dialog = true));
-      if (response1 == "logout"){
-        this.logout=true;
-      }
-      else localStorage.setItem("groupId", JSON.stringify({ id: 0 }));
+      if (response1 == "logout") {
+        this.logout = true;
+      } else localStorage.setItem("groupId", JSON.stringify({ id: 0 }));
     },
 
     //if !isNew - get group info using get, else return {}
@@ -259,19 +261,20 @@ export default {
           .then((res) => res.data)
           .catch((error) => {
             console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-            return "logout";
-          }
-          return error;
+            if (
+              error.response.status == 401 &&
+              error.response.data.message == "Token is invalid!"
+            ) {
+              return "logout";
+            }
+            return error;
           });
-        if (response1 == "logout"){
-          this.logout=true;
-        }
-        else{
+        if (response1 == "logout") {
+          this.logout = true;
+        } else {
           this.groupdata = JSON.parse(JSON.stringify(response1["Group"]));
-        } 
-      }
-      else this.groupdata = {};
+        }
+      } else this.groupdata = {};
     },
 
     //get group's trainers
@@ -286,17 +289,21 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
           return error;
-          });
-        if (response == "logout"){
-          this.logout=true;
-        }
-        else{
-      this.originalTrainers = JSON.parse(JSON.stringify(response["trainers"]));
-        }
+        });
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.originalTrainers = JSON.parse(
+          JSON.stringify(response["trainers"])
+        );
+      }
     },
 
     async getAllTrainers() {
@@ -309,21 +316,22 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
           return error;
-          });
-        if (response == "logout"){
-          this.logout=true;
-        }
-        else{
-      this.allTrainers = JSON.parse(
-        JSON.stringify(response["list of trainers"])
-      );
-        }
+        });
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.allTrainers = JSON.parse(
+          JSON.stringify(response["list of trainers"])
+        );
+      }
     },
-
 
     async addTrainerToGroup(trainerid, groupid) {
       const response = await axios
@@ -342,15 +350,17 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-      });
-    if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+        });
+      if (response == "logout") {
+        this.logout = true;
       }
     },
-
 
     async removeTrainerFromGroup(id) {
       const response = await axios
@@ -369,35 +379,17 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-      });
-      if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+        });
+      if (response == "logout") {
+        this.logout = true;
       }
     },
-
-/* create training */
-    // async createTraining(groupId) {
-    //   await axios
-    //     .post(
-    //       `${serverUrl}/training/by_group_id/`,
-    //       JSON.stringify({
-    //         group_id: groupId,
-    //       }),
-    //       {
-    //         headers: {
-    //           "x-access-token": id_token,
-    //           "Content-Type": "application/json",
-    //         },
-    //       }
-    //     )
-    //     .then((res) => res.data)
-    //     .catch(function (error) {
-    //       console.log(error);
-    //     });
-    // },
 
     //post group info in database (create new)
     async saveNewGroup() {
@@ -419,22 +411,25 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
-            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            if (
+              error.response.status == 401 &&
+              error.response.data.message == "Token is invalid!"
+            ) {
               return "logout";
-           }
+            }
           });
-        if (response == "logout"){
-          this.logout=true;
+        if (response == "logout") {
+          this.logout = true;
+        } else {
+          const newgroupid = JSON.parse(JSON.stringify(response["group"])).id;
+          // add trainers to group
+          for (let i = 0; i < this.trainers.length; i++) {
+            var trainer = this.trainers[i];
+            await this.addTrainerToGroup(trainer.id, newgroupid);
+          }
+          // await this.createTraining(newgroupid); /* trainings are created automaticlly by server script
+          this.saved_dialog = true;
         }
-        else{
-        const newgroupid = JSON.parse(JSON.stringify(response["group"])).id;
-        // add trainers to group
-        for (let i = 0; i < this.trainers.length; i++) {
-          var trainer = this.trainers[i];
-          await this.addTrainerToGroup(trainer.id, newgroupid);
-        }
-        // await this.createTraining(newgroupid); /* trainings are created automaticlly by server script
-        this.saved_dialog = true;}
       } else this.missing_dialog = true;
     },
 
@@ -466,30 +461,33 @@ export default {
           })
           .catch(function (error) {
             console.log(error);
-            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            if (
+              error.response.status == 401 &&
+              error.response.data.message == "Token is invalid!"
+            ) {
               return "logout";
             }
           })
           .then((this.saved_dialog = true));
 
-      if (response == "logout"){
-        this.logout=true;
-      }
-      else{
-        // add trainers to group
-        for (let i = 0; i < this.trainers.length; i++) {
-          var trainer = this.trainers[i];
-          if (!this.originalTrainers.some((el) => el.id == trainer.id)) {
-            await this.addTrainerToGroup(trainer.id, this.groupdata.id);
+        if (response == "logout") {
+          this.logout = true;
+        } else {
+          // add trainers to group
+          for (let i = 0; i < this.trainers.length; i++) {
+            var trainer = this.trainers[i];
+            if (!this.originalTrainers.some((el) => el.id == trainer.id)) {
+              await this.addTrainerToGroup(trainer.id, this.groupdata.id);
+            }
+          }
+          // remove trainers from group
+          for (let i = 0; i < this.originalTrainers.length; i++) {
+            var trainer = this.originalTrainers[i];
+            if (!this.trainers.some((el) => el.id == trainer.id)) {
+              await this.removeTrainerFromGroup(trainer.id);
+            }
           }
         }
-        // remove trainers from group
-        for (let i = 0; i < this.originalTrainers.length; i++) {
-          var trainer = this.originalTrainers[i];
-          if (!this.trainers.some((el) => el.id == trainer.id)) {
-            await this.removeTrainerFromGroup(trainer.id);
-          }
-        }}
       } else this.missing_dialog = true;
     },
 
