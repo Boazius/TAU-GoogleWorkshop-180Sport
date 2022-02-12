@@ -1,4 +1,5 @@
 <template>
+<div>
   <q-list  >
     <div :class="' q-mb-sm q-ml-md text-h6 text-bold text-'+colors[attendance]" header>{{ header }}</div>
     <div  v-for="item in editedAttendance" :key="item">
@@ -36,11 +37,14 @@
       </q-item>
     </div>
   </q-list>
+  <relogin-popup v-model="logout"/>
+  </div>
 </template>
 
 <script>
 import { defineComponent } from "vue";
 import { ref, onMounted, onBeforeUnmount} from "vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -48,10 +52,14 @@ const id_token = localStorage.getItem("id_token");
 export default defineComponent({
   name: "attendanceFixList",
   props: ["header", "attendance", "training"],
+    components: {
+    ReloginPopup,
+  },
   setup(props) {
     const loading = ref(false);
     const editedAttendance = ref({});
     const colors= ref(["grey-7 ", "green", "red"]);
+    const logout = ref(false);
 
     function onRequest() {
       loading.value = true;
@@ -81,7 +89,7 @@ export default defineComponent({
 
 
   async function updateAttendance(){
-    await axios
+    const response = await axios
       .put(
         `${serverUrl}/trainer/update_attendance_list/${props.training.id}/`,
         JSON.stringify({ attendance_users: editedAttendance.value }),
@@ -97,7 +105,13 @@ export default defineComponent({
       })
       .catch(function (error) {
         console.log(error);
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
       });
+      if (response == "logout"){
+        logout.value=true;
+      }
   }
 
     return {
@@ -107,6 +121,7 @@ export default defineComponent({
       markAsUnattandant,
       updateAttendance,
       colors,
+      logout,
     };
   },
 });

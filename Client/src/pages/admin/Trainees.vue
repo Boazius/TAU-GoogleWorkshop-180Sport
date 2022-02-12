@@ -11,21 +11,25 @@
         :table_data="trainees"
       ></user-table>
     </div>
+      <relogin-popup v-model="logout"/>
   </q-page>
 </template>
 
 <script>
 import userTable from "components/table/UserTable.vue";
 import axios from "axios";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 export default {
   data() {
     return {
       trainees: [],
+      logout: false,
       isReady: false,
     };
   },
   components: {
+    ReloginPopup,
     userTable,
   },
 
@@ -41,10 +45,18 @@ export default {
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
         return error;
       });
-    this.trainees = JSON.parse(JSON.stringify(response["list of trainees"]));
-    this.isReady = true;
+    if (response == "logout"){
+      this.logout=true;
+       }
+     else{
+      this.trainees = JSON.parse(JSON.stringify(response["list of trainees"]));
+      this.isReady = true;
+      }
   },
 };
 </script>

@@ -1,4 +1,5 @@
 <template>
+<div>
   <q-table
     :rows="rows"
     :columns="columns"
@@ -73,6 +74,8 @@
       </q-input>
     </template>
   </q-table>
+  <relogin-popup v-model="logout"/>
+  </div>
 </template>
 
 <script>
@@ -80,6 +83,7 @@ import { ref, onMounted, defineComponent } from "vue";
 import { userColumns } from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
 import axios from "axios";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 
 const id_token = localStorage.getItem("id_token");
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
@@ -88,7 +92,10 @@ const columns = userColumns;
 
 export default defineComponent({
   name: "TrainerTable",
-  components: { TableTopButtons },
+  components: { 
+    TableTopButtons,
+    ReloginPopup,
+   },
   props: ["table_data", "fromGroupPage"],
 
   methods: {
@@ -119,6 +126,7 @@ export default defineComponent({
     });
     const isReady = ref(false);
     const groupNames = ref();
+    const logout = ref(false);
 
     // emulate ajax call
     // SELECT * FROM ... WHERE...LIMIT...
@@ -209,16 +217,24 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         });
-
-      const groups = JSON.parse(JSON.stringify(response["list of group"]));
-      groupNames.value = [groups.length + 1];
-      for (let i = 0; i < groups.length; i++) {
-        groupNames.value[groups[i].id] =
-          groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
+      if (response == "logout"){
+        logout.value=true;
       }
-      isReady.value = true;
+      else{
+        const groups = JSON.parse(JSON.stringify(response["list of group"]));
+        groupNames.value = [groups.length + 1];
+        for (let i = 0; i < groups.length; i++) {
+          groupNames.value[groups[i].id] =
+            groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
+        }
+        isReady.value = true;
+      }
+
     }
 
     function getNames(group_ids) {
@@ -253,6 +269,7 @@ export default defineComponent({
       getGroupsNames,
       getNames,
       isReady,
+      logout,
       groupNames,
     };
   },
