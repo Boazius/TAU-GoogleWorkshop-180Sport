@@ -33,7 +33,14 @@
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
-            <q-list separator dense>
+            <q-list
+              separator
+              dense
+              v-if="
+                props.row.attendance_users &&
+                props.row.attendance_users.length > 0
+              "
+            >
               <q-item v-for="user in props.row.attendance_users" :key="user">
                 <q-item-section
                   ><span>{{ user[2] }}</span>
@@ -124,14 +131,14 @@ export default defineComponent({
       return count;
     },
     computeColor(code) {
-      if (code === 0) return;
+      if (code === 0) return "text-black";
       return code == 1 ? "text-positive" : "text-negative";
     },
     computeAttended(code) {
       if (code === 0) return "group.history.unknown";
       return code === 1
         ? "group.history.attendedSingle"
-        : "group.history.attendedSingle";
+        : "group.history.notAttendedSingle";
     },
   },
 });
