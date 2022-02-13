@@ -74,6 +74,13 @@ export async function setEditedUser({ commit }, payload) {
 }
 
 //
+//  Action: Set error message
+//
+export async function setError({ commit }, payload) {
+  commit("setError", payload);
+}
+
+//
 //  Action: Update user
 //
 export async function updateUserData({ commit }, payload) {}

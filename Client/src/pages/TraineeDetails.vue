@@ -29,15 +29,7 @@ export default defineComponent({
   created() {
     const user = { id: this.currentUser.id };
     localStorage.setItem("user", JSON.stringify(user));
-    // this.$router.push(`/user/${user.id}`);
 
-    //   if(localStorage.getItem("userdata")){
-    //       this.userData = JSON.parse(localStorage.getItem("userdata"));
-    //  }
-    //  else{
-    //    this.userData ={id: 4, name: "נינט לוי", phone: "0526831999", groups: 1, postick: "היי,לצערי לא אוכל להגיע", "attendance":1,"userType":3}
-    //  }
-    // window.addEventListener('beforeunload', this.handler)
   },
 
   data() {

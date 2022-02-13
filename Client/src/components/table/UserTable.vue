@@ -1,4 +1,5 @@
 <template>
+<div>
   <div v-if="isReady">
     <q-table
       :rows="rows"
@@ -38,7 +39,7 @@
             <q-item
               v-if="userType == 2"
               style="display: table-cell; vertical-align: end"
-            >
+           >
               {{ props.row.full_name }}
             </q-item>
           </q-td>
@@ -86,6 +87,8 @@
       </template>
     </q-table>
   </div>
+  <relogin-popup v-model="logout"/>
+  </div>
 </template>
 
 <script>
@@ -93,13 +96,17 @@ import { ref, onMounted, defineComponent, onUpdated } from "vue";
 import { useQuasar } from "quasar";
 import { userColumns, groupColumns } from "components/table/TableColumns.js";
 import TableTopButtons from "components/table/TableTopButtons.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({
   name: "userTable",
-  components: { TableTopButtons },
+  components: { 
+    TableTopButtons,
+    ReloginPopup,
+     },
   props: ["table_data", "fromGroupPage", "tableType"],
 
   methods: {
@@ -111,10 +118,6 @@ export default defineComponent({
       // const user = JSON.parse(JSON.stringify(row));
       // this.$store.dispatch("authentication/setEditedUser", user);
     },
-    // saveUser(row) {
-    //   user = JSON.stringify(row);
-    //   localStorage.setItem("userdata", user);
-    // },
   },
 
   computed: {
@@ -139,6 +142,7 @@ export default defineComponent({
     const $q = useQuasar();
     const columns = ref(props.fromGroupPage ? groupColumns : userColumns);
     const groupNames = ref();
+    const logout = ref(false);
     const isReady = ref(false);
 
     // emulate ajax call
@@ -168,7 +172,6 @@ export default defineComponent({
     // emulate 'SELECT count(*) FROM ...WHERE...'
     function getRowsNumberCount(filter) {
       if (!filter) {
-        console.log("here");
         return props.table_data.length;
       }
       let count = 0;
@@ -177,7 +180,6 @@ export default defineComponent({
           ++count;
         }
       });
-      console.log(count);
       return count;
     }
 
@@ -230,16 +232,24 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         });
-
-      const groups = JSON.parse(JSON.stringify(response["list of group"]));
-      groupNames.value = [groups.length + 1];
-      for (let i = 0; i < groups.length; i++) {
-        groupNames.value[groups[i].id] =
-          groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
+      if (response == "logout"){
+        logout.value=true;
       }
-      isReady.value = true;
+
+      else{
+        const groups = JSON.parse(JSON.stringify(response["list of group"]));
+        groupNames.value = [groups.length + 1];
+        for (let i = 0; i < groups.length; i++) {
+          groupNames.value[groups[i].id] =
+            groups[i].day + "- " + groups[i].meeting_place + " " + groups[i].time;
+        }
+        isReady.value = true;
+        }
     }
 
     function getNames(group_ids) {
@@ -273,6 +283,7 @@ export default defineComponent({
       onRequest,
       getGroupsNames,
       getNames,
+      logout,
       isReady,
     };
   },

@@ -12,7 +12,10 @@ export default {
 
     if (id_token === null || user_info === null) {
       this.$router.push("/login");
-      //TODO: add local storage error to avoid infinite loop
+      this.$store.dispatch("authentication/setError", {
+        show: true,
+        message: "app.loginErrorMessage",
+      });
     } else {
       const result = await this.$store.dispatch(
         "authentication/setActiveUser",

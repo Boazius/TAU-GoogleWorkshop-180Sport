@@ -2,26 +2,17 @@
   <q-dialog persistent>
     <q-card>
       <q-card-section class="row items-center" icon="done">
+        <q-btn
+          align="left"
+          icon="logout"
+          flat
+          color="primary"
+          @click="onLogout"
+          v-close-popup
+        />
         <span class="q-ml-sm item">
-          {{ $t("app.popup.savedChanges") }}
+          {{ $t("authentication.relogin") }}
         </span>
-        <q-btn
-          align="left"
-          icon="done"
-          flat
-          color="primary"
-          v-close-popup
-          @click="this.$router.go(-1)"
-          v-if="goBack"
-        />
-        <q-btn
-          align="left"
-          icon="done"
-          flat
-          color="primary"
-          v-close-popup
-          v-if="!goBack"
-        />
       </q-card-section>
     </q-card>
   </q-dialog>
@@ -31,8 +22,16 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "SavedChangesPopup",
-  props: ["goBack"],
+  name: "ReloginPopup",
+  methods: {
+    async onLogout() {
+      console.log("logging out");
+      await this.$store.dispatch("authentication/logout");
+      this.$router.push({
+        path: "/login",
+      });
+    },
+  },
 });
 </script>
 

@@ -1,55 +1,93 @@
 <template>
   <div>
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
-      <p class="q-ma-none">{{ $t("dashboard.date") }}</p>
-      <q-input class="item" v-model="date" type="date" dense />
-
-      <p class="q-ma-none">{{ $t("dashboard.day") }}</p>
-      <q-input
-        readonly
-        class="item"
-        v-model="editedTraining.day"
-        type="day"
-        dense
-      />
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.date") }}</p>
+        <q-input
+          class="item q-mr-md"
+          type="date"
+          v-model="editedTraining.date"
+          @change="
+            saved_changes = false;
+            getday();
+          "
+          dense
+        />
+      </div>
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.day") }}</p>
+        <!-- <q-select
+          v-model="editedTraining.day"
+          disable
+          :options="days.map((day) => (day = $t(day)))"
+          emit-value
+          map-options
+          name="day"
+          dense
+          item-aligned
+          class="item"
+          @change="updated=true"
+        /> -->
+        <q-input
+          disable
+          class="item"
+          v-model="editedTraining.day"
+          type="day"
+          dense
+          @change="updated = true"
+        />
+      </div>
     </div>
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
-      <p class="q-ma-none">{{ $t("dashboard.time") }}</p>
-      <q-input class="item" v-model="editedTraining.time" type="time" dense />
-
-      <p class="q-ma-none">{{ $t("dashboard.location") }}</p>
-      <q-input
-        class="item"
-        v-model="editedTraining.meeting_place"
-        type="text"
-        dense
-      />
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.time") }}</p>
+        <q-input
+          class="item q-mr-md"
+          v-model="editedTraining.time"
+          @change="saved_changes = false"
+          type="time"
+          dense
+        />
+      </div>
+      <div class="q-my-none items-center row">
+        <p class="q-ma-none q-mr-md">{{ $t("dashboard.location") }}</p>
+        <q-input
+          class="item"
+          v-model="editedTraining.meeting_place"
+          type="text"
+          dense
+          item-aligned
+          @change="saved_changes = false"
+        />
+      </div>
     </div>
 
     <div class="row justify-left q-gutter-x-md items-center q-pa-sm item">
       <p class="q-ma-none">{{ $t("dashboard.trainer") }}</p>
-      <!-- <q-select
+      <q-select
         v-model="trainer"
         :options="trainers"
         :option-label="(item) => item.full_name"
         emit-value
-        class="q-pb-md"
-      /> -->
+        class="item"
+        @change="saved_changes = false"
+      />
       <q-space />
       <black-button
         class="q-mt-sm q-mr-md"
         :loading="loading"
-        v-if="updated"
+        v-if="updated && !saved_changes"
         @click="saveTraining"
         color="primary"
         text-color="white"
         outline
         ripple
         >{{ $t("table.save") }}
-        <saved-changes-popup v-model="saved_dialog" :goBack="false" />
       </black-button>
+      <saved-changes-popup v-model="saved_dialog" :goBack="false" />
     </div>
+    <relogin-popup v-model="logout" />
   </div>
 </template>
 
@@ -58,6 +96,7 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import BlackButton from "components/basic/BlackButton.vue";
 import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
@@ -67,6 +106,7 @@ export default defineComponent({
   components: {
     BlackButton,
     SavedChangesPopup,
+    ReloginPopup,
   },
   data() {
     return {
@@ -74,69 +114,50 @@ export default defineComponent({
         day: this.training.day,
         time: this.training.time,
         meeting_place: this.training.meeting_place,
+        date: "",
       },
-      trainers: {},
+      trainers: [],
       trainer: {},
       updated: false,
+      saved_changes: true,
       saved_dialog: false,
+      everythingIsready: false,
+      logout: false,
+      daysHebrew: {
+        ראשון: "ראשון",
+        שני: "שני",
+        שלישי: "שלישי",
+        רביעי: "רביעי",
+        חמישי: "חמישי",
+        שישי: "שישי",
+        שבת: "שבת",
+        Sunday: "ראשון",
+        Monday: "שני",
+        Tuesday: "שלישי",
+        Wednesday: "רביעי",
+        Thursday: "חמישי",
+        Friday: "שישי",
+        Saturday: "שבת",
+      },
+      days: [
+        "trainee.days.sunday",
+        "trainee.days.monday",
+        "trainee.days.tuesday",
+        "trainee.days.wednesday",
+        "trainee.days.thursday",
+        "trainee.days.friday",
+        "trainee.days.saturday",
+      ],
     };
   },
 
-  computed: {
-    date() {
-      var myDate = new Date(this.training.date);
-      var dd = myDate.getDate();
-      var mm = myDate.getMonth() + 1;
-      var yyyy = myDate.getFullYear();
-      if (dd < 10) {
-        dd = "0" + dd;
-      }
-      if (mm < 10) {
-        mm = "0" + mm;
-      }
-      return yyyy + "-" + mm + "-" + dd;
-    },
-  },
-  async beforeMount() {
-    const response = await axios
-      .get(
-        `${serverUrl}/get_all_trainers_by_group/${this.training.group_id}/`,
-        {
-          headers: {
-            "x-access-token": id_token,
-          },
-        }
-      )
-      .then((res) => res.data)
-      .catch((error) => {
-        console.log(error);
-        return error;
-      });
-
-    if (response.success) {
-      this.trainers = JSON.parse(JSON.stringify(response.trainers));
-      if (
-        this.trainers.find((item) => item.id == this.training.trainers_id[0])
-      ) {
-        this.trainer = this.trainers.find(
-          (item) => item.id == this.training.trainers_id[0]
-        );
-        this.trainers_id = this.trainer.id;
-      }
-    }
-  },
-
-  updated() {
-    this.updated = true;
-  },
+  computed: {},
 
   methods: {
     //put traning info in database (update)
     async saveTraining() {
       var data = this.editedTraining;
-      data = Object.assign({ date: this.date });
-      data = Object.assign({ trainers_id: this.trainer.id });
-
+      data.trainers_id = this.trainer.id;
       const response = await axios
         .put(
           `${serverUrl}/training/${this.training.id}/`,
@@ -153,10 +174,79 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
         });
-      this.updated = false;
-      this.saved_dialog = true;
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.updated = false;
+        (this.saved_changes = true), (this.saved_dialog = true);
+      }
     },
+
+    getday() {
+      this.editedTraining.day = this.$t(
+        this.days[new Date(this.editedTraining.date).getDay()]
+      );
+    },
+  },
+
+  async beforeMount() {
+    const response = await axios
+      .get(
+        `${serverUrl}/get_all_trainers_by_group/${this.training.group_id}/`,
+        {
+          headers: {
+            "x-access-token": id_token,
+          },
+        }
+      )
+      .then((res) => res.data)
+      .catch((error) => {
+        console.log(error);
+        if (
+          error.response.status == 401 &&
+          error.response.data.message == "Token is invalid!"
+        ) {
+          return "logout";
+        }
+        return error;
+      });
+    if (response == "logout") {
+      this.logout = true;
+    } else {
+      if (response.success) {
+        this.trainers = JSON.parse(JSON.stringify(response.trainers));
+        if (
+          this.trainers.find((item) => item.id == this.training.trainers_id[0])
+        ) {
+          this.trainer = this.trainers.find(
+            (item) => item.id == this.training.trainers_id[0]
+          );
+          this.trainers_id = this.trainer.id;
+        }
+      }
+      var myDate = new Date(this.training.date);
+      var dd = myDate.getDate();
+      var mm = myDate.getMonth() + 1;
+      var yyyy = myDate.getFullYear();
+      if (dd < 10) {
+        dd = "0" + dd;
+      }
+      if (mm < 10) {
+        mm = "0" + mm;
+      }
+      this.editedTraining.date = yyyy + "-" + mm + "-" + dd;
+    }
+  },
+
+  updated() {
+    this.updated = true;
   },
 });
 </script>

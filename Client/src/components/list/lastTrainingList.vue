@@ -1,35 +1,39 @@
 <template>
   <div>
     <q-list
-      bordered
-      v-if="isReady && !isEmpty"
-      class="rounded-borders"
-      style="max-width: 600px"
-    >
-      <q-separator spaced />
+    bordered
+    class="rounded-borders bg-grey-1"
+      v-if="isReady && !isEmpty">      
       <training-toolbar :training="training" v-if="isReady"></training-toolbar>
+            <q-separator spaced />
+        <div class="column flex">
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.notPresent')"
         :attendance="2"
       ></attendance-fix-list>
+            <q-separator spaced />
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.present')"
         :attendance="1"
       ></attendance-fix-list>
+            <q-separator spaced />
+
       <attendance-fix-list
         v-if="isReady"
         :training="training"
         :header="$t('group.unknown')"
         :attendance="0"
       ></attendance-fix-list>
+            </div>
     </q-list>
     <div class="text-h8 q-ml-xl item2" v-if="isReady && isEmpty">
       {{ $t("group.noTraining") }}
     </div>
+  <relogin-popup v-model="logout"/>
   </div>
 </template>
 
@@ -38,12 +42,17 @@ import { defineComponent } from "vue";
 import { ref, onMounted } from "vue";
 import attendanceFixList from "./attendanceFixList.vue";
 import TrainingToolbar from "components/groups/TrainingToolbar.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
 export default defineComponent({
-  components: { attendanceFixList, TrainingToolbar },
+  components: { 
+    attendanceFixList, 
+    TrainingToolbar,
+    ReloginPopup,
+   },
   name: "lastTrainingList",
   props: ["group", "user"],
 
@@ -52,6 +61,7 @@ export default defineComponent({
     const training = ref([]);
     const isReady = ref(false);
     const isEmpty = ref(true);
+    const logout = ref(false);
 
     async function onRequest() {
       loading.value = true;
@@ -67,16 +77,22 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          console.log("sdfsdfsdfsdfsdf");
-          return error;
-        });
-      if (response["training"]) {
-        training.value = JSON.parse(JSON.stringify(response["training"]));
-        isEmpty.value = false;
-      } else if (response["message"] == "no training found") {
-        console.log("no training found");
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
+        return error;
+      });
+      if (response == "logout"){
+        logout.value=true;
       }
-      isReady.value = true;
+      else{
+        if (response["training"]) {
+          training.value = JSON.parse(JSON.stringify(response["training"]));
+          isEmpty.value = false;
+        } 
+        isReady.value = true;
+      }
+
     }
 
     onMounted(() => {
@@ -87,6 +103,7 @@ export default defineComponent({
       loading,
       training,
       isReady,
+      logout,
       isEmpty,
     };
   },

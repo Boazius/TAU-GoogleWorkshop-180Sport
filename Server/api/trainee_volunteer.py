@@ -106,7 +106,7 @@ def get_closest_training(current_user,user_id):
                 continue
                 #return jsonify({"success": False, "message": "no training found"}), 400
             training_date = datetime.strptime(str(training.date), "%Y-%m-%d")
-            if training_date>b_d:
+            if training_date>=b_d:
                 list_date.append(training.date)
         if list_date is None or list_date==[]:
             continue

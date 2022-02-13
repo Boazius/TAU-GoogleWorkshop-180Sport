@@ -1,4 +1,5 @@
 <template>
+<div>
   <section class="col q-gutter-x-md bg-grey-2 q-pa-md">
     <q-form
       @submit.prevent="formHandler"
@@ -60,7 +61,7 @@
         label-color="text-grey-1"
       />
 
-      <q-list class="q-ma-none q-pa-none" v-if="!fromAdmin">
+      <q-list class="q-ma-none q-pa-none" v-if="(!fromAdmin) && (editedUser.user_type!=1)">
         <q-item-label header>{{ $t("table.groups") }}</q-item-label>
         <q-separator />
         <q-item v-for="item in editedUserGroups" :key="item">
@@ -71,7 +72,7 @@
         </q-item>
       </q-list>
       <q-select
-        v-if="fromAdmin"
+        v-if="fromAdmin || (editedUser.user_type==1)"
         v-model="editedUserGroups"
         :options="allGroups"
         emit-value
@@ -153,6 +154,8 @@
       </div>
     </q-form>
   </section>
+  <relogin-popup v-model="logout"/>
+</div>
 </template>
 
 <script>
@@ -160,6 +163,7 @@ import BlackButton from "components/basic/BlackButton";
 import SavedChangesPopup from "components/basic/popup/SavedChangesPopup.vue";
 import DeletedPopup from "components/basic/popup/DeletedPopup.vue";
 import MissingDetailsPopup from "components/basic/popup/MissingDetailsPopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -196,12 +200,14 @@ export default {
       saved_dialog: false,
       missing_dialog: false,
       deleted_dialog: false,
+      logout:false,
     };
   },
 
   async created() {
     this.user = JSON.parse(localStorage.getItem("user"));
-    if (this.fromAdmin) {
+    const myuser = this.$store.getters["authentication/getCurrentUser"];
+    if (this.fromAdmin || myuser.user_type == 1) {
       await this.getAllGroups();
       if (this.user.id != 0) {
         await this.getUser();
@@ -210,7 +216,6 @@ export default {
           this.userOriginalGroupIds = this.userData.group_ids.split(/,/);
           for (let i = 0; i < this.userOriginalGroupIds.length; i++) {
             var groupid = parseInt(this.userOriginalGroupIds[i]);
-            console.log(groupid);
             for (let i = 0; i < this.allGroups.length; i++) {
               var group = this.allGroups[i];
               if (group.id == groupid) {
@@ -257,9 +262,17 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          return error;
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+    if (response == "logout"){
+        this.logout=true;
+      }
+    else{
       this.allGroups = JSON.parse(JSON.stringify(response["list of group"]));
+    }
     },
 
     async getUser() {
@@ -272,13 +285,20 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          return error;
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+    if (response == "logout"){
+        this.logout=true;
+        }
+    else{
       this.userData = JSON.parse(JSON.stringify(response.user));
+    }
     },
 
     async addUserToGroup(userid, groupid) {
-      console.log("add");
       const response = await axios
         .put(
           `${serverUrl}/add_user_to_group/${groupid}/`,
@@ -295,7 +315,13 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+      if (response == "logout"){
+        this.logout=true;
+      }
     },
 
     async getGroup(groupid) {
@@ -308,8 +334,15 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          return error;
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+      if (response == "logout"){
+        this.logout=true;
+        return false;
+      }
       return JSON.parse(JSON.stringify(response["Group"]));
     },
 
@@ -321,7 +354,7 @@ export default {
 
     // remove user from group
     async removeUserFromGroup(userId, groupId) {
-      await axios
+      const response = await axios
         .put(
           `${serverUrl}/delete_user_from_group/${groupId}/`,
           JSON.stringify({ user_id: userId }),
@@ -337,16 +370,22 @@ export default {
         })
         .catch(function (error) {
           console.log(error);
-        });
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+      });
+    if (response == "logout"){
+        this.logout=true;
+      }
     },
 
     async deleteUser() {
-      localStorage.setItem("user", {});
-      this.editedUser = {};
-      this.editedUserGroups = [];
-      this.editedUserType = {};
+        // localStorage.setItem("user", {});
+        // this.editedUser = {};
+        // this.editedUserGroups = [];
+        // this.editedUserType = {};
 
-      await axios
+      const response = await axios
         .delete(`${serverUrl}/user/${this.userData.id}/`, {
           headers: {
             "x-access-token": id_token,
@@ -355,11 +394,22 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         })
-        .then((this.deleted_dialog = true));
+        .then((this.deleted_dialog = true)
+        );
+      if (response == "logout"){
+        this.logout=true;
+      }
+      else{
+
       const storeuser = { id: 0 };
       localStorage.setItem("user", JSON.stringify(storeuser));
+      }
+
     },
 
     //post group info in database (create new)
@@ -412,8 +462,14 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
+            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+              return "logout";
+          }
           });
-
+        if (response == "logout"){
+          this.logout=true;
+          return;
+        }
         if (!response.success) {
           return;
         }
@@ -421,8 +477,8 @@ export default {
         this.saved_dialog = true;
 
         const newUserId = JSON.parse(JSON.stringify(response.user)).id;
-
-        if (this.fromAdmin) {
+        
+        if (this.fromAdmin || this.editedUser.user_type == 1) {
           // add user to groups
           for (let i = 0; i < this.editedUserGroups.length; i++) {
             var group = this.editedUserGroups[i];
@@ -460,6 +516,7 @@ export default {
     MissingDetailsPopup,
     SavedChangesPopup,
     DeletedPopup,
+    ReloginPopup,
   },
 };
 </script>

@@ -60,6 +60,7 @@
       >
       </editor-buttons>
     </div>
+    <relogin-popup v-model="logout" />
   </q-page>
 </template>
 
@@ -68,6 +69,7 @@ import { defineComponent } from "vue";
 import DashboardToolbar from "components/DashboardToolbar.vue";
 import confirmationPopup from "components/basic/popup/ConfirmationPopup.vue";
 import EditorButtons from "components/ClosestTraining/EditorButtons.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 import axios from "axios";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
@@ -78,7 +80,7 @@ export default defineComponent({
     return {
       trainingData: {},
       isReady: false,
-      // user: {},
+      logout: false,
       attendance: 0,
       dialog: false,
     };
@@ -95,9 +97,8 @@ export default defineComponent({
       var data = JSON.stringify({
         attendance: num,
       });
-      this.dialog = true;
 
-      await axios
+      const response = await axios
         .put(
           `${serverUrl}/trainee/update_attendance/${this.currentUser.id}/`,
           data,
@@ -111,9 +112,18 @@ export default defineComponent({
         .then(function (response) {
           console.log(JSON.stringify(response.data));
         })
-        .catch(function (error) {
+        .catch(async function (error) {
           console.log(error);
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
         });
+      if (response == "logout") {
+        this.logout = true;
+      } else this.dialog = true;
     },
 
     formatDate(date) {
@@ -144,12 +154,22 @@ export default defineComponent({
       .then((res) => res.data)
       .catch((error) => {
         console.log(error);
+        if (
+          error.response.status == 401 &&
+          error.response.data.message == "Token is invalid!"
+        ) {
+          return "logout";
+        }
         return error;
       });
-
-    response["training"]["date"] = this.formatDate(
-      response["training"]["date"]
-    );
+    if (response == "logout") {
+      console.log("logout");
+      this.logout = true;
+    } else {
+      response["training"]["date"] = this.formatDate(
+        response["training"]["date"]
+      );
+    }
 
     this.trainingData = JSON.parse(JSON.stringify(response["training"]));
     const days = [
@@ -171,6 +191,7 @@ export default defineComponent({
     DashboardToolbar,
     EditorButtons,
     confirmationPopup,
+    ReloginPopup,
   },
 });
 </script>

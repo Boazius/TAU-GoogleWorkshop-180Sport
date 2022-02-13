@@ -2,9 +2,14 @@ export default {
   failed: "Action failed",
   success: "Action was successful",
   app: {
+    greeting:
+      "180° is a social organization aimed at empowerment and social integration of people with disabilities through sport and educational programs",
     languageHeading: "Language",
     mainHeading: "180 Sport",
     groups: "Groups",
+    clickToLogin: "Click here to login",
+    loginErrorMessage:
+      "Failed to login, you might not be registered. Please contact admins",
     menu: {
       heading: "Menu",
       login: "Login",
@@ -24,21 +29,21 @@ export default {
       post: "Trainer's message",
       postTrainee: "Trainee's message",
       noNewPosts: "The are no messages",
-      newPost:"Send a message",
+      newPost: "Send a message",
       close: "Close",
       send: "Send",
       reply: "Reply",
       edit: "Edit",
       lastMessage: "My last sent message",
-      createMessage:"Write a message",
+      createMessage: "Write a message",
     },
     popup: {
       savedSelection: "Thank You, Your selection has been saved!",
       sentMessage: "Message sent",
-      savedChanges:"Saved changes succesfully",
+      savedChanges: "Saved changes succesfully",
       deleted: "Deleted succesfully ",
-      missingDetails:"Unable to save due to missing details",
-    }
+      missingDetails: "Unable to save due to missing details",
+    },
   },
   authentication: {
     signin: "Sign in with Google",
@@ -52,6 +57,7 @@ export default {
     invalidEmail: "No such email registered, please try again",
     field: "This field is required",
     wrong: "Something's went wrong, please try again",
+    relogin: "Please login again",
   },
   dashboard: {
     closest: "Closest training",
@@ -59,8 +65,7 @@ export default {
     day: "on day",
     time: "on",
     location: "at",
-    trainer:"Trainer",
-
+    trainer: "Trainer",
   },
   trainee: {
     days: {
@@ -71,7 +76,7 @@ export default {
       thursday: "Thursday",
       friday: "Friday",
       saturday: "Saturday",
-    } ,
+    },
     daysArray: [
       "Sunday",
       "Monday",
@@ -80,38 +85,48 @@ export default {
       "Thursday",
       "Friday",
       "Saturday",
-    ] 
+    ],
   },
-  userPage:{
+  userPage: {
     userType: "User type",
-    types:{
+    types: {
       admin: "Admin",
       trainer: "Trainer",
       trainee: "Trainee",
       volunteer: "Volunteer",
-    }
+    },
   },
   groups: {
     name: "Group ", //make number and description from api
-    add:"Add group",
-    edit:"Edit group",
+    add: "Add group",
+    edit: "Edit group",
     delete: "Delete group",
-    deleteMessagePart1:"Do you realy want to delete this group?",
-    deleteMessagePart2:"This process cannot be undone.",
-    cancle:"Cancle",
-    delete:"Delete",
-    chooseDay:"The day of the trainings",
-    chooseTime:"The time of the trainings",
-    chooseLocation:"The location of the trainings",
-    noGroups:"There are no groups to display",
+    deleteMessagePart1: "Do you realy want to delete this group?",
+    deleteMessagePart2: "This process cannot be undone.",
+    cancle: "Cancle",
+    delete: "Delete",
+    chooseDay: "The day of the trainings",
+    chooseTime: "The time of the trainings",
+    chooseLocation: "The location of the trainings",
+    noGroups: "There are no groups to display",
   },
   group: {
+    history: {
+      title: "Training history",
+      date: "Date",
+      time: "Time",
+      attendedSingle: "Attended",
+      notAttendedSingle: "Not attended",
+      attended: "Attended",
+      notAttended: "Not attended",
+      isHappened: "Training occured?",
+    },
     groupDetails: "Group details",
     groupParticipants: "Group participants",
     closest: "Closest training",
     prior: "Last training",
-    markPresent: "mark present",
-    markNotPresent: "mark not present",
+    markPresent: "Present",
+    markNotPresent: "Not present",
     present: "Present",
     notPresent: "Not present",
     unknown: "unknown",
@@ -138,11 +153,11 @@ export default {
     editGroups: "Edit groups",
     invalidGroups: "Invalid groups",
     hintGroups: "It is possible to take part of multiple groups",
-    email:"Email",
-    traineeVolunteer:"Trainee/Volunteer",
+    email: "Email",
+    traineeVolunteer: "Trainee/Volunteer",
     posticks: "Notes from trainer",
-    trainee:"Trainee",
-    volunteer:"Volunteer",
+    trainee: "Trainee",
+    volunteer: "Volunteer",
   },
   user: {
     userPageHeader: "User details",

@@ -31,6 +31,7 @@ def authorize():
 
     #return jsonify({"success": True, "token": token}), 200
     return redirect('https://180sport.netlify.app/login_success?id_token='+str(token)+'&user_info='+str(user_info))
+    # return redirect('http://localhost:8080/login_success?id_token='+str(token)+'&user_info='+str(user_info))
     # jsonify({"success": True, "token": token}), 200
 
 

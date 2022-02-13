@@ -20,6 +20,10 @@ export const setEditedUser = (state, payload) => {
   state.editedUser = JSON.parse(JSON.stringify(payload));
 };
 
+export const setError = (state, payload) => {
+  state.error = payload;
+};
+
 export const resetState = (state) => {
   state.user = {
     authenticated: false,

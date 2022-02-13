@@ -1,15 +1,16 @@
 <template>
+<div>
   <q-list
     bordered
-    class="rounded-borders"
-    style="max-width: 600px"
-    v-if="isReady"
+    class="rounded-borders bg-grey-1"
+    v-if="isReady && !isEmpty"
   >
-    <q-separator spaced />
     <training-toolbar :training="training"></training-toolbar>
-    <q-item v-for="item in training.attendance_users" :key="item">
+    <q-separator spaced />
+    <q-item   
+ v-for="item in training.attendance_users" :key="item">
       <q-item-section top>
-        <q-item-label lines="1">
+        <q-item-label>
           <span class="item-small">{{ item[2] }}</span>
         </q-item-label>
       </q-item-section>
@@ -22,7 +23,7 @@
               training.notes[item[1]][1] != '' &&
               training.notes[item[1]][0] == 0
             "
-            class="bg-white text-primary"
+            class="bg-grey-1 text-primary"
             flat
             icon="markunread"
             size="md"
@@ -34,7 +35,7 @@
               training.notes[item[1]][1] != '' &&
               training.notes[item[1]][0] == 1
             "
-            class="bg-white text-primary"
+            class="bg-grey-1 text-primary"
             flat
             icon="drafts"
             size="md"
@@ -59,7 +60,7 @@
           <q-chip
             dense
             style="width: 60px"
-            class="text-center"
+            class="text-center "
             text-color="white"
             :color="
               item[0] == 0 ? 'grey darken-1' : item[0] == 1 ? 'green' : 'red'
@@ -79,6 +80,11 @@
       </q-item-section>
     </q-item>
   </q-list>
+  <div class="text-h8 q-ml-xl item2" v-if="isReady && isEmpty">
+      {{ $t("group.noTraining") }}
+  </div>
+  <relogin-popup v-model="logout"/>
+  </div>
 </template>
 
 <script>
@@ -88,6 +94,7 @@ import axios from "axios";
 import TrainingToolbar from "../groups/TrainingToolbar.vue";
 import TrainerGetMessagePopup from "../basic/popup/TrainerGetMessagePopup.vue";
 import TrainerRecieveMessagePopup from "../basic/popup/TrainerRecieveMessagePopup.vue";
+import ReloginPopup from "components/basic/popup/ReloginPopup.vue";
 const serverUrl = "https://server-idhusddnia-ew.a.run.app";
 const id_token = localStorage.getItem("id_token");
 
@@ -96,6 +103,7 @@ export default defineComponent({
     TrainingToolbar,
     TrainerGetMessagePopup,
     TrainerRecieveMessagePopup,
+    ReloginPopup,
   },
   name: "closestTrainingList",
   props: ["group", "user"],
@@ -105,6 +113,8 @@ export default defineComponent({
     const training = ref({});
     const isReady = ref(false);
     const read = ref(false);
+    const isEmpty = ref(true);
+    const logout = ref(false);
 
     async function onRequest() {
       loading.value = true;
@@ -121,13 +131,22 @@ export default defineComponent({
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
+          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            return "logout";
+          }
           return error;
         });
-
-      if (response.success) {
-        training.value = JSON.parse(JSON.stringify(response.training));
+      if (response == "logout"){
+        logout.value=true;
       }
-      isReady.value = true;
+      else{
+        if (response.success) {
+          training.value = JSON.parse(JSON.stringify(response.training));
+          isEmpty.value = false;
+        }
+        isReady.value = true;
+      }
+      
     }
 
     onMounted(() => {
@@ -154,9 +173,19 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error);
-        });
-      training.value.notes[userId][0] = 1;
-      read.value = true;
+        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          return "logout";
+        }
+        return error;
+      });
+      if (response == "logout"){
+        logout.value=true;
+      }
+      else{
+        training.value.notes[userId][0] = 1;
+        read.value = true;
+      }
+
     }
 
     return {
@@ -167,6 +196,8 @@ export default defineComponent({
       training,
       markAsRead,
       read,
+      isEmpty,
+      logout,
     };
   },
 });
@@ -176,3 +207,5 @@ export default defineComponent({
 @import "assets/tableStyle.css";
 @import "assets/groupStyle.css";
 </style>
+
+
