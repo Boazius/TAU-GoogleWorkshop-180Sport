@@ -345,9 +345,6 @@ export default {
             },
           }
         )
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
         .catch(function (error) {
           console.log(error);
           if (
@@ -374,9 +371,6 @@ export default {
             },
           }
         )
-        .then((response) => {
-          console.log(JSON.stringify(response.data));
-        })
         .catch(function (error) {
           console.log(error);
           if (
@@ -456,9 +450,6 @@ export default {
               },
             }
           )
-          .then(function (response) {
-            console.log(JSON.stringify(response.data));
-          })
           .catch(function (error) {
             console.log(error);
             if (

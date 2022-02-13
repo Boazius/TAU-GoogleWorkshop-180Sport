@@ -260,7 +260,6 @@ export default {
           }
         })
         .map((training) => training.Training);
-      console.log(trainingHistory.value);
     });
 
     return {

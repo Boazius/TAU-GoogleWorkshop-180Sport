@@ -92,7 +92,7 @@
       </q-dialog>
       <message-sent-popup v-model="dialog" />
     </q-btn>
-  <relogin-popup v-model="logout"/>
+    <relogin-popup v-model="logout" />
   </div>
 </template>
 
@@ -107,10 +107,10 @@ import MessageSentPopup from "components/basic/popup/MessageSentPopup.vue";
 export default defineComponent({
   name: "TraineeGetMessagePopup",
   props: ["trainingData", "userId"],
-  components: { 
-    MessageSentPopup, 
-    ReloginPopup ,
-    },
+  components: {
+    MessageSentPopup,
+    ReloginPopup,
+  },
 
   setup(props) {
     const editor = ref("");
@@ -141,24 +141,22 @@ export default defineComponent({
             },
           }
         )
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
         .catch(function (error) {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
         });
-      if (response == "logout"){
-        logout.value=true;
+      if (response == "logout") {
+        logout.value = true;
+      } else {
+        initialEditor.value = editor.value;
+        dialog.value = true;
       }
-      else{
-      initialEditor.value = editor.value;
-      dialog.value = true;
     }
-    }
-
 
     function openMessages() {
       if (initialEditor.value != "") {

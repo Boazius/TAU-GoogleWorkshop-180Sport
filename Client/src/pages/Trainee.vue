@@ -163,7 +163,6 @@ export default defineComponent({
         return error;
       });
     if (response == "logout") {
-      console.log("logout");
       this.logout = true;
     } else {
       response["training"]["date"] = this.formatDate(

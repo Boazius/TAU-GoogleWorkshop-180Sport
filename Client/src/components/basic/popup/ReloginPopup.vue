@@ -25,7 +25,6 @@ export default defineComponent({
   name: "ReloginPopup",
   methods: {
     async onLogout() {
-      console.log("logging out");
       await this.$store.dispatch("authentication/logout");
       this.$router.push({
         path: "/login",
