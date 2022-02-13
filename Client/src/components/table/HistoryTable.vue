@@ -37,7 +37,7 @@
               separator
               dense
               v-if="
-                props.row.attendance_users &&
+                props.row.attendance_users !== null &&
                 Object.keys(props.row.attendance_users).length > 0
               "
             >
@@ -121,6 +121,9 @@ export default defineComponent({
       return yyyy + "-" + mm + "-" + dd;
     },
     attendanceCompute(users, attendanceCode) {
+      if (users === null || Object.keys(users).length === 0) {
+        return "-";
+      }
       let result = Object.keys(users);
       let count = 0;
       for (const key of result) {
@@ -130,11 +133,13 @@ export default defineComponent({
       }
       return count;
     },
-    computeColor(code) {
+    computeColor(payload) {
+      const code = Number.parseInt(payload);
       if (code === 0) return "text-black";
       return code == 1 ? "text-positive" : "text-negative";
     },
-    computeAttended(code) {
+    computeAttended(payload) {
+      const code = Number.parseInt(payload);
       if (code === 0) return "group.history.unknown";
       return code === 1
         ? "group.history.attendedSingle"
