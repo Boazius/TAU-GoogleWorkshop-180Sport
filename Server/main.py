@@ -26,21 +26,6 @@ google = oauth.register(
 db = SQLAlchemy(app)
 CORS(app)
 
-@app.route("/hello")
-def hello():
-    user = db.session.query(User_type).all()
-    if not user:
-        return str(1)
-    return "HI"
-
-
-@app.get('/users/group_id/<group_id>/')
-def get_all_users_by_group_id(group_id):
-    for user in db.session.query(User):
-        group_ids = user.group_ids
-        print(type(group_ids))
-    return "HELLO"
-
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
