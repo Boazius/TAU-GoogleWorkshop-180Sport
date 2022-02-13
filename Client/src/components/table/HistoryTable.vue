@@ -4,7 +4,7 @@
       :rows="trainingHistory"
       :columns="columns"
       row-key="date"
-      v-if="trainingHistory"
+      v-if="trainingHistory && trainingHistory.length > 0"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -38,9 +38,7 @@
                 <q-item-section
                   ><span>{{ user[2] }}</span>
                   <span :class="computeColor(user[0])">{{
-                    user[0] == 1
-                      ? $t("group.history.attendedSingle")
-                      : $t("group.history.attendedSingle")
+                    $t(computeAttended(user[0]))
                   }}</span></q-item-section
                 >
               </q-item>
@@ -49,6 +47,9 @@
         </q-tr>
       </template>
     </q-table>
+    <div v-else>
+      {{ $t("group.history.noTrainings") }}
+    </div>
   </div>
 </template>
 
@@ -66,7 +67,6 @@ export default defineComponent({
           label: "group.history.date",
           align: "left",
           field: (row) => this.formatDate(row.date),
-          // format: (val) => `${val}`,
           sortable: true,
         },
         {
@@ -90,10 +90,11 @@ export default defineComponent({
           sortable: true,
         },
         {
-          name: "is_happened",
-          label: "group.history.isHappened",
+          name: "unknown",
+          label: "group.history.unknown",
           align: "left",
-          field: (row) => (row.is_happened ? "V" : "X"),
+          field: (row) => this.attendanceCompute(row.attendance_users, 0),
+          sortable: true,
         },
       ],
     };
@@ -123,7 +124,14 @@ export default defineComponent({
       return count;
     },
     computeColor(code) {
+      if (code === 0) return;
       return code == 1 ? "text-positive" : "text-negative";
+    },
+    computeAttended(code) {
+      if (code === 0) return "group.history.unknown";
+      return code === 1
+        ? "group.history.attendedSingle"
+        : "group.history.attendedSingle";
     },
   },
 });
