@@ -38,7 +38,7 @@
               dense
               v-if="
                 props.row.attendance_users &&
-                props.row.attendance_users.length > 0
+                Object.keys(props.row.attendance_users).length > 0
               "
             >
               <q-item v-for="user in props.row.attendance_users" :key="user">
