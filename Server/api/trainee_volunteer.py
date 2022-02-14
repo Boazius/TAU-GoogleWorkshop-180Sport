@@ -13,7 +13,7 @@ def find_closest_date(x):
     today_date=date.today()
     b_d = datetime.strptime(str(today_date), "%Y-%m-%d")
     d = datetime.strptime(str(x), "%Y-%m-%d")
-    delta = d - b_d if d > b_d else timedelta.max
+    delta = d - b_d if d >= b_d else timedelta.max
     return delta
 
 @trainee.post('/trainee/message/<user_id>/<training_id>/')

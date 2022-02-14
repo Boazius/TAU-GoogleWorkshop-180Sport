@@ -14,3 +14,4 @@ today = datetime.now()
 idx = (today.weekday() + 1) % 7
 print(today - timedelta(days=7+idx))
 print(datetime.now() - timedelta(days=((datetime.now().isoweekday()) % 7)))
+
