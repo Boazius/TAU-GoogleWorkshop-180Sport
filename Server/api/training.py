@@ -4,7 +4,7 @@ from models import User, Group, Training
 from utils import token_required, login_required
 import json
 from sqlalchemy import func
-import datetime
+from datetime import timedelta, datetime
 
 training = Blueprint('training', __name__)
 
@@ -54,10 +54,17 @@ def check_dict(dct):
 
 def exists_training_date_by_group(group_id, date):
     from main import db
-    training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=date).first()
-    if not training_from_db:
-        return False
-    return True
+    last_sunday = date - timedelta(days=((datetime.now().isoweekday()) % 7))
+    index = 1
+    while index <= 7:
+        training_from_db = db.session.query(Training).filter_by(group_id=group_id, date=last_sunday).first()
+        if not training_from_db:
+            index += 1
+            last_sunday = last_sunday + timedelta(days=1)
+            continue
+        else:
+            return True
+    return False
 
 
 @training.post('/training/by_group_id/')
