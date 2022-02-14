@@ -1,161 +1,164 @@
 <template>
-<div>
-  <section class="col q-gutter-x-md bg-grey-2 q-pa-md">
-    <q-form
-      @submit.prevent="formHandler"
-      v-if="isReady"
-      autofocus
-      class="max-width"
-    >
-      <q-input
-        no-error-icon
-        v-model="editedUser.full_name"
-        name="name"
-        clearable
-        lazy-rules
-        clear-icon="close"
-        :label="$t('table.name')"
-        :rules="[
-          (val) => (val && val.length > 0) || $t('authentication.field'),
-        ]"
-        label-color="text-grey-1"
-      />
-      <q-input
-        v-if="!isNew"
-        disable
-        no-error-icon
-        v-model="editedUser.email"
-        ref="email"
-        name="email"
-        type="email"
-        lazy-rules
-        :label="$t('authentication.email')"
-        label-color="text-grey-1"
-        :rules="emailRules"
-      />
-      <q-input
-        v-if="isNew"
-        no-error-icon
-        v-model="editedUser.email"
-        ref="email"
-        name="email"
-        type="email"
-        lazy-rules
-        :label="$t('authentication.email')"
-        label-color="text-grey-1"
-        :rules="emailRules"
-      />
-      <q-input
-        no-error-icon
-        v-model="editedUser.phone_number"
-        name="phone"
-        type="tel"
-        clearable
-        clear-icon="close"
-        lazy-rules
-        mask="###-#######"
-        :label="$t('table.phone')"
-        :rules="[
-          (val) => (val && val.length > 9) || $t('authentication.field'),
-        ]"
-        label-color="text-grey-1"
-      />
+  <div>
+    <section class="col q-gutter-x-md bg-grey-2 q-pa-md">
+      <q-form
+        @submit.prevent="formHandler"
+        v-if="isReady"
+        autofocus
+        class="max-width"
+      >
+        <q-input
+          no-error-icon
+          v-model="editedUser.full_name"
+          name="name"
+          clearable
+          lazy-rules
+          clear-icon="close"
+          :label="$t('table.name')"
+          :rules="[
+            (val) => (val && val.length > 0) || $t('authentication.field'),
+          ]"
+          label-color="text-grey-1"
+        />
+        <q-input
+          v-if="!isNew"
+          disable
+          no-error-icon
+          v-model="editedUser.email"
+          ref="email"
+          name="email"
+          type="email"
+          lazy-rules
+          :label="$t('authentication.email')"
+          label-color="text-grey-1"
+          :rules="emailRules"
+        />
+        <q-input
+          v-if="isNew"
+          no-error-icon
+          v-model="editedUser.email"
+          ref="email"
+          name="email"
+          type="email"
+          lazy-rules
+          :label="$t('authentication.email')"
+          label-color="text-grey-1"
+          :rules="emailRules"
+        />
+        <q-input
+          no-error-icon
+          v-model="editedUser.phone_number"
+          name="phone"
+          type="tel"
+          clearable
+          clear-icon="close"
+          lazy-rules
+          mask="###-#######"
+          :label="$t('table.phone')"
+          :rules="[
+            (val) => (val && val.length > 9) || $t('authentication.field'),
+          ]"
+          label-color="text-grey-1"
+        />
 
-      <q-list class="q-ma-none q-pa-none" v-if="(!fromAdmin) && (editedUser.user_type!=1)">
-        <q-item-label header>{{ $t("table.groups") }}</q-item-label>
-        <q-separator />
-        <q-item v-for="item in editedUserGroups" :key="item">
-          <q-item-section>
-            {{ item.day + "- " + item.meeting_place + " " + item.time }}
-            <q-separator />
-          </q-item-section>
-        </q-item>
-      </q-list>
-      <q-select
-        v-if="fromAdmin || (editedUser.user_type==1)"
-        v-model="editedUserGroups"
-        :options="allGroups"
-        emit-value
-        map-options
-        use-chips
-        multiple
-        :option-label="
-          (item) => item.day + '- ' + item.meeting_place + ' ' + item.time
-        "
-        :label="$t('table.groups')"
-        class="q-pb-md"
-      />
-
-      <q-select
-        v-if="fromAdmin"
-        v-model="editedUserType"
-        :options="allUserTypes"
-        emit-value
-        map-options
-        :option-label="(item) => $t(item.label)"
-        :label="$t('userPage.userType')"
-        class="q-pb-md"
-      />
-
-      <div class="row q-mt-lg">
-        <black-button
-          class="q-mt-sm q-mr-md"
-          :type="'submit'"
-          :loading="loading"
-          color="primary"
-          @click="setUserInfo"
-          >{{ $t("table.save") }}
-          <saved-changes-popup v-model="saved_dialog" :goBack="fromAdmin" />
-          <missing-details-popup v-model="missing_dialog" />
-        </black-button>
-        <black-button
-          class="q-mt-sm"
-          :outline="true"
-          @click="onGoBack"
-          color="primary"
-          >{{ $t("table.cancel") }}</black-button
+        <q-list
+          class="q-ma-none q-pa-none"
+          v-if="!fromAdmin && editedUser.user_type != 1"
         >
-        <q-space></q-space>
-        <black-button
-          class="q-mt-sm"
-          v-if="!isNew && isReady && fromAdmin"
-          color="red"
-        >
-          {{ $t("groups.delete") }}
-          <q-popup-proxy>
-            <q-card>
-              <q-card-section class="row items-center">
-                <q-avatar icon="warning" color="red" text-color="white" />
-                <span class="q-ml-sm">
-                  {{ $t("groups.deleteMessagePart1") }}
-                  <br />
-                  {{ $t("groups.deleteMessagePart2") }}
-                </span>
-              </q-card-section>
-              <q-card-actions align="right">
-                <q-btn
-                  flat
-                  :label="$t('groups.cancle')"
-                  color="primary"
-                  v-close-popup
-                />
-                <q-btn
-                  flat
-                  :label="$t('groups.delete')"
-                  color="red"
-                  @click="deleteUser"
-                  v-close-popup
-                />
-              </q-card-actions>
-            </q-card>
-          </q-popup-proxy>
-          <deleted-popup v-model="deleted_dialog" />
-        </black-button>
-      </div>
-    </q-form>
-  </section>
-  <relogin-popup v-model="logout"/>
-</div>
+          <q-item-label header>{{ $t("table.groups") }}</q-item-label>
+          <q-separator />
+          <q-item v-for="item in editedUserGroups" :key="item">
+            <q-item-section>
+              {{ item.day + "- " + item.meeting_place + " " + item.time }}
+              <q-separator />
+            </q-item-section>
+          </q-item>
+        </q-list>
+        <q-select
+          v-if="fromAdmin || editedUser.user_type == 1"
+          v-model="editedUserGroups"
+          :options="allGroups"
+          emit-value
+          map-options
+          use-chips
+          multiple
+          :option-label="
+            (item) => item.day + '- ' + item.meeting_place + ' ' + item.time
+          "
+          :label="$t('table.groups')"
+          class="q-pb-md"
+        />
+
+        <q-select
+          v-if="fromAdmin"
+          v-model="editedUserType"
+          :options="allUserTypes"
+          emit-value
+          map-options
+          :option-label="(item) => $t(item.label)"
+          :label="$t('userPage.userType')"
+          class="q-pb-md"
+        />
+
+        <div class="row q-mt-lg">
+          <black-button
+            class="q-mt-sm q-mr-md"
+            :type="'submit'"
+            :loading="loading"
+            color="primary"
+            @click="setUserInfo"
+            >{{ $t("table.save") }}
+            <saved-changes-popup v-model="saved_dialog" :goBack="fromAdmin" />
+            <missing-details-popup v-model="missing_dialog" />
+          </black-button>
+          <black-button
+            class="q-mt-sm"
+            :outline="true"
+            @click="onGoBack"
+            color="primary"
+            >{{ $t("table.cancel") }}</black-button
+          >
+          <q-space></q-space>
+          <black-button
+            class="q-mt-sm"
+            v-if="!isNew && isReady && fromAdmin"
+            color="red"
+          >
+            {{ $t("groups.delete") }}
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="row items-center">
+                  <q-avatar icon="warning" color="red" text-color="white" />
+                  <span class="q-ml-sm">
+                    {{ $t("groups.deleteMessagePart1") }}
+                    <br />
+                    {{ $t("groups.deleteMessagePart2") }}
+                  </span>
+                </q-card-section>
+                <q-card-actions align="right">
+                  <q-btn
+                    flat
+                    :label="$t('groups.cancle')"
+                    color="primary"
+                    v-close-popup
+                  />
+                  <q-btn
+                    flat
+                    :label="$t('groups.delete')"
+                    color="red"
+                    @click="deleteUser"
+                    v-close-popup
+                  />
+                </q-card-actions>
+              </q-card>
+            </q-popup-proxy>
+            <deleted-popup v-model="deleted_dialog" />
+          </black-button>
+        </div>
+      </q-form>
+    </section>
+    <relogin-popup v-model="logout" />
+  </div>
 </template>
 
 <script>
@@ -200,7 +203,7 @@ export default {
       saved_dialog: false,
       missing_dialog: false,
       deleted_dialog: false,
-      logout:false,
+      logout: false,
     };
   },
 
@@ -262,17 +265,19 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-        return error;
-      });
-    if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+          return error;
+        });
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.allGroups = JSON.parse(JSON.stringify(response["list of group"]));
       }
-    else{
-      this.allGroups = JSON.parse(JSON.stringify(response["list of group"]));
-    }
     },
 
     async getUser() {
@@ -285,17 +290,19 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-        return error;
-      });
-    if (response == "logout"){
-        this.logout=true;
-        }
-    else{
-      this.userData = JSON.parse(JSON.stringify(response.user));
-    }
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+          return error;
+        });
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        this.userData = JSON.parse(JSON.stringify(response.user));
+      }
     },
 
     async addUserToGroup(userid, groupid) {
@@ -310,17 +317,17 @@ export default {
             },
           }
         )
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
         .catch(function (error) {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-      });
-      if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+        });
+      if (response == "logout") {
+        this.logout = true;
       }
     },
 
@@ -334,13 +341,16 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-        return error;
-      });
-      if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+          return error;
+        });
+      if (response == "logout") {
+        this.logout = true;
         return false;
       }
       return JSON.parse(JSON.stringify(response["Group"]));
@@ -365,25 +375,25 @@ export default {
             },
           }
         )
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-        })
         .catch(function (error) {
           console.log(error);
-        if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
-          return "logout";
-        }
-      });
-    if (response == "logout"){
-        this.logout=true;
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
+            return "logout";
+          }
+        });
+      if (response == "logout") {
+        this.logout = true;
       }
     },
 
     async deleteUser() {
-        // localStorage.setItem("user", {});
-        // this.editedUser = {};
-        // this.editedUserGroups = [];
-        // this.editedUserType = {};
+      // localStorage.setItem("user", {});
+      // this.editedUser = {};
+      // this.editedUserGroups = [];
+      // this.editedUserType = {};
 
       const response = await axios
         .delete(`${serverUrl}/user/${this.userData.id}/`, {
@@ -394,22 +404,21 @@ export default {
         .then((res) => res.data)
         .catch((error) => {
           console.log(error);
-          if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+          if (
+            error.response.status == 401 &&
+            error.response.data.message == "Token is invalid!"
+          ) {
             return "logout";
           }
           return error;
         })
-        .then((this.deleted_dialog = true)
-        );
-      if (response == "logout"){
-        this.logout=true;
+        .then((this.deleted_dialog = true));
+      if (response == "logout") {
+        this.logout = true;
+      } else {
+        const storeuser = { id: 0 };
+        localStorage.setItem("user", JSON.stringify(storeuser));
       }
-      else{
-
-      const storeuser = { id: 0 };
-      localStorage.setItem("user", JSON.stringify(storeuser));
-      }
-
     },
 
     //post group info in database (create new)
@@ -462,12 +471,15 @@ export default {
           .then((res) => res.data)
           .catch(function (error) {
             console.log(error);
-            if (error.response.status == 401 && error.response.data.message == "Token is invalid!"){
+            if (
+              error.response.status == 401 &&
+              error.response.data.message == "Token is invalid!"
+            ) {
               return "logout";
-          }
+            }
           });
-        if (response == "logout"){
-          this.logout=true;
+        if (response == "logout") {
+          this.logout = true;
           return;
         }
         if (!response.success) {
@@ -477,7 +489,7 @@ export default {
         this.saved_dialog = true;
 
         const newUserId = JSON.parse(JSON.stringify(response.user)).id;
-        
+
         if (this.fromAdmin || this.editedUser.user_type == 1) {
           // add user to groups
           for (let i = 0; i < this.editedUserGroups.length; i++) {
