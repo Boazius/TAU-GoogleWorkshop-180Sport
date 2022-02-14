@@ -268,7 +268,7 @@ def get_all_dates_by_group(current_user, group_id):
         list_of_dates = []
         for training in trainings_from_db:
             if training.group_id == int(group_id):
-                if training.date.date() < datetime.today().date():
+                if training.date < datetime.today().date():
                     list_of_dates.append(training.date)
         return jsonify({"success": True,
                         "dates": list_of_dates}), 200
