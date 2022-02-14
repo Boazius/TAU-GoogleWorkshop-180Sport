@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 import flask
 from flask import Blueprint, jsonify

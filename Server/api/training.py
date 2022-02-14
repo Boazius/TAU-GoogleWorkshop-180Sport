@@ -4,7 +4,7 @@ from models import User, Group, Training
 from utils import token_required, login_required
 import json
 from sqlalchemy import func
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 
 training = Blueprint('training', __name__)
 
@@ -83,7 +83,7 @@ def post_training_by_group_id(current_user):
         if not group_from_db:
             return jsonify({'success': False, 'message': 'No group found!'})
         day = group_from_db.day
-        training_date = datetime.date.today()
+        training_date = date.today()
         while training_date.weekday() != Days_and_numbers[day]:
             training_date += datetime.timedelta(1)
         if not exists_training_date_by_group(int(group_id), training_date):
@@ -146,9 +146,9 @@ def put_training(current_user, training_id):
                 training_from_db.time = data['time']
             if key == 'date':
                 date1 = data['date'].split('-')
-                the_date = datetime.date(int(date1[0]), int(date1[1]), int(date1[2]))
+                the_date = date(int(date1[0]), int(date1[1]), int(date1[2]))
                 training_from_db.date = the_date  # yyyy-mm-dd
-                training_from_db.day = days[int(datetime.date(int(date1[0]), int(date1[1]), int(date1[2])).weekday())]
+                training_from_db.day = days[int(date(int(date1[0]), int(date1[1]), int(date1[2])).weekday())]
             if key == 'meeting_place':
                 training_from_db.meeting_place = data['meeting_place']
             if key == 'is_happened':
@@ -250,7 +250,7 @@ def get_training_by_date(current_user, training_date, group_id):
                         "message": "User cannot view these details, unless it is admin/trainer"}), 401
     try:
         date1 = training_date.split('-')
-        the_date = datetime.date(int(date1[0]), int(date1[1]), int(date1[2]))
+        the_date = date(int(date1[0]), int(date1[1]), int(date1[2]))
         trainings_from_db = db.session.query(Training).all()
         chosen_training = None
         for training in trainings_from_db:
@@ -280,7 +280,7 @@ def post_training_by_group_id_sp(current_user):
         if not group_from_db:
             return jsonify({'success': False, 'message': 'No group found!'})
         day = group_from_db.day
-        training_date = datetime.date.today()
+        training_date = date.today()
         while training_date.weekday() != Days_and_numbers[day]:
             training_date += datetime.timedelta(1)
         if not exists_training_date_by_group(int(group_id), training_date):
