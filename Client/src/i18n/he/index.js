@@ -57,6 +57,7 @@ export default {
     field: "זהו שדה חובה",
     wrong: "משהו השתבש, אנא נסו שנית",
     relogin: "התחברו מחדש בבקשה",
+    notRegistered: "המשתמש אינו רשום",
   },
   dashboard: {
     closest: "האימון הקרוב",

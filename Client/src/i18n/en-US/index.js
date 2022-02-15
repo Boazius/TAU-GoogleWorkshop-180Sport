@@ -58,6 +58,7 @@ export default {
     field: "This field is required",
     wrong: "Something's went wrong, please try again",
     relogin: "Please login again",
+    notRegistered: "User is not registered",
   },
   dashboard: {
     closest: "Closest training",

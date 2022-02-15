@@ -31,6 +31,10 @@ export default {
         this.$router.push(`/${pageToRedirectTo}`);
       } else {
         this.$router.push("/login");
+        this.$store.dispatch("authentication/setError", {
+          show: true,
+          message: this.$t("authentication.notRegistered"),
+        });
       }
     }
   },

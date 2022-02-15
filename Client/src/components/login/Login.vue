@@ -26,9 +26,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Login",
-  data() {
-    return {};
-  },
   computed: {
     error: {
       get() {

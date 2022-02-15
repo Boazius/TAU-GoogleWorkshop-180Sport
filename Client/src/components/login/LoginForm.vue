@@ -34,15 +34,6 @@
         $t("authentication.login")
       }}</black-button>
     </q-form>
-    <!-- <div class="q-mt-md q-px-md">
-      {{ $t("authentication.already") }}
-      <span
-        class="text-primary text-underline cursor-pointer"
-        @click="$emit('signinMode', true)"
-      >
-        {{ $t("authentication.signin2") }}</span
-      >
-    </div> -->
   </div>
 </template>
 
