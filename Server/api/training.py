@@ -85,7 +85,7 @@ def post_training_by_group_id(current_user):
         day = group_from_db.day
         training_date = date.today()
         while training_date.weekday() != Days_and_numbers[day]:
-            training_date += datetime.timedelta(1)
+            training_date += timedelta(days=1)
         if not exists_training_date_by_group(int(group_id), training_date):
             users_from_db = db.session.query(User).all()
             list_of_trainers = []
@@ -282,7 +282,7 @@ def post_training_by_group_id_sp(current_user):
         day = group_from_db.day
         training_date = date.today()
         while training_date.weekday() != Days_and_numbers[day]:
-            training_date += datetime.timedelta(1)
+            training_date += timedelta(days=1)
         if not exists_training_date_by_group(int(group_id), training_date):
             users_from_db = db.session.query(User).all()
             list_of_trainers = []
