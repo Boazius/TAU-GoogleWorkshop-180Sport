@@ -57,6 +57,7 @@ export default {
     field: "זהו שדה חובה",
     wrong: "משהו השתבש, אנא נסו שנית",
     relogin: "התחברו מחדש בבקשה",
+    notRegistered: "המשתמש אינו רשום",
   },
   dashboard: {
     closest: "האימון הקרוב",
@@ -92,7 +93,7 @@ export default {
     add: "הוסף קבוצה",
     edit: "ערוך פרטי קבוצה",
     delete: "מחק קבוצה",
-    deleteMessagePart1: "את/ה בטוח/ה שברצונך למחוק את הקבוצה הזו?",
+    deleteMessagePart1: "את/ה בטוח/ה שברצונך לבצע מחיקה?",
     deleteMessagePart2: "פעולה זו אינה הפיכה.",
     cancle: "ביטול",
     delete: "מחיקה",

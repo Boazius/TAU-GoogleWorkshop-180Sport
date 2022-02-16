@@ -58,6 +58,7 @@ export default {
     field: "This field is required",
     wrong: "Something's went wrong, please try again",
     relogin: "Please login again",
+    notRegistered: "User is not registered",
   },
   dashboard: {
     closest: "Closest training",
@@ -101,7 +102,7 @@ export default {
     add: "Add group",
     edit: "Edit group",
     delete: "Delete group",
-    deleteMessagePart1: "Do you realy want to delete this group?",
+    deleteMessagePart1: "Do you realy want to delete?",
     deleteMessagePart2: "This process cannot be undone.",
     cancle: "Cancle",
     delete: "Delete",
