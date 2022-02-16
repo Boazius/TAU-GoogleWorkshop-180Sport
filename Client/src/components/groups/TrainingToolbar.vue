@@ -58,7 +58,7 @@
           type="text"
           dense
           item-aligned
-          @change="saved_changes = false"
+          @update="saved_changes = false"
         />
       </div>
     </div>
