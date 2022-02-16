@@ -71,7 +71,7 @@
         :option-label="(item) => item.full_name"
         emit-value
         class="item"
-        @popup-hide="saved_changes = false"
+        @update:model-value ="saved_changes = false"
       />
       <q-space />
       <black-button
