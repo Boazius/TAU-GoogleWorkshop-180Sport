@@ -71,7 +71,7 @@
         :option-label="(item) => item.full_name"
         emit-value
         class="item"
-        @input="saved_changes = false; console.log('change')"
+        @input-value="saved_changes = false"
       />
       <q-space />
       <black-button
