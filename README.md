@@ -1,78 +1,31 @@
 # 180Sport - Sport without borders
+# Team 3
 
-# A Project for the TAU Google workshop course.
-# A Web app by Boaz, Gal, Dana, and Danielle for 180Sport: to schedule and manage an Attendence sheet of trainers, trainees, and volunteers
+# Team Members:
+  - Dana Troushinsky - troushinsky@mail.tau.ac.il
+  - Gal Emanuel – galemanuel@mail.tau.ac.il 
+  - Danielle Rotholtz - rotholtz@mail.tau.ac.il
+  - Boaz Yakubov - boazy@mail.tau.ac.il
 
-This web app has four different kinds of users:
+# 180° sport:
 
-Trainees:
-  -will know who their trainers are in each group they are in
-  -will know when and where is the next training session
-  -will be able to mark their planned attendance: are they coming to the next training session or not.
-  
-Volunteers:
-  -will be able to do the same things trainees do,
-  -will also be able to see all trainees and volunteers in their groups.
+180° is a social organization aimed at empowerment and social integration of people with disabilities through sport and educational programs. 
+180° Initiates runs walking and running groups for children, youths and adults with disabilities and special needs of all kinds.
+The groups are at different levels and integrate special needs training with accompanying volunteers. 
+These days each group trainer manages the attendance via WhatsApp.
 
-Trainers:
-  -will be able to do the same things volunteers do,
-  -will also be able to mark attendance once the session starts
-  -will be able to add notes about each trainee in their groups.
-  -will be able to edit group session informaton: time and place, as well as any misc notes about it.
-  
- Admins:
-  -will be able to see every group and every user in it
-  -will be able to add, edit, and remove users, and change their user type.
-  -will be able to create new groups and delete/edit existing ones.
-  
-  
-every user must login using google login/ email+password when entering the app, and then will be redirected to the corresponding page for them.
+# Main Idea
 
+A web platform that will be a system for the administrative management of each group with the trainer, volunteers, and trainees.
 
-# Code Documentation:
+# Technologies and Architectural Overview:
+![image](https://user-images.githubusercontent.com/93919949/154307915-ba1b3fe0-37c2-4dda-bcf3-57a0c47e561b.png)
 
-This project was programmed using quasar.dev , Vue 3.
-Source in Src folder.
+# Main APIs:
 
-* assets folder: images used for the website
-* boot folder: for Vue Options API form, and other internal files.
-* Components folder - for all quasar components used, such us buttons and headers.
-* 
+Google authentication – we used the Google's API for user's authentication. 
+This is a way for Internet users to grant websites access to their information on other websites but without giving them the passwords.
 
+# Usage Instructions:
 
-
-Google workshop website:
-https://sites.google.com/view/cloudweb21a/Home
-+ Week 5   - 17/11/2021       -  Milestone 1 (Proof Of Concept - Flow Demo)
-+ Week 6   - 24/11/2021       -  UX Research
-+ Week 7   -  1/12/2021        -  TBD
-+ Week 8   - 15/12/2021       - Milestone 2 (Backend and prepratation for Mileston 3) - NOT GRADED
-+ Week 9   - 5/1/2021           -   Milestone 3 (Final Presentations) 
-
-
-
-
-## Usage instructions:
-
-## Install the dependencies
-```bash
-yarn
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-```bash
-quasar dev
-```
-
-### Lint the files
-```bash
-yarn run lint
-```
-
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+https://github.com/Boazius/Google-Workshop-180Sport/blob/main/documentation-team3-180sport.pdf
