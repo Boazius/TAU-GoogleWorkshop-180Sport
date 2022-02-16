@@ -58,7 +58,7 @@
           type="text"
           dense
           item-aligned
-          @update="saved_changes = false"
+          @change="saved_changes = false"
         />
       </div>
     </div>
@@ -71,7 +71,7 @@
         :option-label="(item) => item.full_name"
         emit-value
         class="item"
-        @change="saved_changes = false"
+        @input="saved_changes = false"
       />
       <q-space />
       <black-button
