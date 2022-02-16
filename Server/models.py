@@ -74,11 +74,11 @@ class Training(Base):
     day = Column(String(15), nullable=False)
     time = Column(String(50), nullable=False)
     meeting_place = Column(String(50), nullable=False)
-    attendance_users = Column(String(500)) #dict
+    attendance_users = Column(String(7000)) #dict
     is_happened = Column(Boolean())
-    trainers_id = Column(String(500)) #list
-    notes = Column(String(500)) #dict
-    trainer_notes = Column(String(500)) #dict
+    trainers_id = Column(String(100)) #list
+    notes = Column(String(7500)) #dict
+    trainer_notes = Column(String(7000)) #dict
 
 
     def to_dict(self):
