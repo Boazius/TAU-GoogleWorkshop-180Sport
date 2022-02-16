@@ -1,4 +1,4 @@
-# 180Sport - Sport without borders
+# 180Sport 
 # Team 3
 
 # Team Members:
